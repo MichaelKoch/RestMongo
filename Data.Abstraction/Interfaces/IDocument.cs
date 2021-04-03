@@ -11,5 +11,6 @@ namespace Data.Interfaces
         ObjectId Id { get; set; }
 
         DateTime CreatedAt { get; }
+        long ChangedAt{get;set;}
     }
 }

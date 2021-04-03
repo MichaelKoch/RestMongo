@@ -9,5 +9,7 @@ namespace Data.Models
         public ObjectId Id { get; set; }
 
         public DateTime CreatedAt => Id.CreationTime;
+        public long ChangedAt{get;set;}
+
     }
 }

@@ -1,9 +1,8 @@
 using Data.Attributes;
 using Data.Models;
-
 namespace Models
 {
-    [BsonCollection("Peoble")]
+    [BsonCollection("collection2")]
     public class Person : Document
     {
         public string FirstName { get; set;}

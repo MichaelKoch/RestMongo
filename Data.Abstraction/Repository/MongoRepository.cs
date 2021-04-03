@@ -20,6 +20,62 @@ namespace Data.Repositories
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
+
+            // var _bsoncollection = database.GetCollection<BsonDocument>(GetCollectionName(typeof(TDocument)));
+            // Task.Run(async () => TailCollectionAsync(_bsoncollection)).Wait();
+        }
+
+        private static async Task TailCollectionAsync(IMongoCollection<BsonDocument> collection)
+        {
+            // Set lastInsertDate to the smallest value possible
+            BsonValue lastInsertDate = BsonMinKey.Value;
+
+            var options = new FindOptions<BsonDocument>
+            {
+                // Our cursor is a tailable cursor and informs the server to await
+                CursorType = CursorType.TailableAwait
+            };
+
+            // Initially, we don't have a filter. An empty BsonDocument matches everything.
+            BsonDocument filter = new();
+
+            // NOTE: This loops forever. It would be prudent to provide some form of 
+            // an escape condition based on your needs; e.g. the user presses a key.
+            while (true)
+            {
+                try
+                {
+                    using (var cursor = await collection.FindAsync(filter, options))
+                    {
+
+                        // This callback will get invoked with each new document found
+                        await cursor.ForEachAsync(document =>
+                        {
+                            try
+                            {
+                                
+                                // Write the document to the console.
+                                Console.WriteLine(document.ToJson());
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+
+                        }).ConfigureAwait(false);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+                // Start the cursor and wait for the initial response
+
+
+                // The tailable cursor died so loop through and restart it
+                // Now, we want documents that are strictly greater than the last value we saw
+              
+            }
         }
 
         private protected string GetCollectionName(Type documentType)
@@ -75,37 +131,57 @@ namespace Data.Repositories
             });
         }
 
+        private void setChangedDate(TDocument document)
+        {
+           long timestamp =  DateTime.UtcNow.Ticks;
+           document.ChangedAt = timestamp;
+        }
+         private void setChangedDate(ICollection<TDocument> documents)
+        {
+           long timestamp =  DateTime.UtcNow.Ticks;
+           foreach(var d in documents)
+           {
+               d.ChangedAt = timestamp;
+           }
+          }
+
 
         public virtual void InsertOne(TDocument document)
         {
+            setChangedDate(document);
             _collection.InsertOne(document);
         }
 
         public virtual Task InsertOneAsync(TDocument document)
         {
+             setChangedDate(document);
             return Task.Run(() => _collection.InsertOneAsync(document));
         }
 
         public void InsertMany(ICollection<TDocument> documents)
         {
+            setChangedDate(documents);
             _collection.InsertMany(documents);
         }
 
 
         public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
         {
+            setChangedDate(documents);
             await _collection.InsertManyAsync(documents);
         }
 
         public void ReplaceOne(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+              setChangedDate(document);
             _collection.FindOneAndReplace(filter, document);
         }
 
         public virtual async Task ReplaceOneAsync(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+             setChangedDate(document);
             await _collection.FindOneAndReplaceAsync(filter, document);
         }
 

@@ -15,13 +15,15 @@ namespace server
     {
         public static void Main(string[] args)
         {
-            Data.Repositories.MongoRepository<Person> repo = new Data.Repositories.MongoRepository<Person>(
+            Data.Repositories.MongoRepository<Person> repo = new(
                 new MongoDbSettings(){
                     ConnectionString="mongodb://admin:admin@db.mongo-dev",
                     DatabaseName="demo"
                 }
             );
-            var count = repo.AsQueryable().Where(c=> c.LastName.Contains("ccc")).ToList();
+            var count = repo.AsQueryable().Skip(100).Take(500).ToList();
+            repo.InsertOne(new Person(){FirstName="Michael",
+            LastName="koch"});
             CreateHostBuilder(args).Build().Run();
         }
 
