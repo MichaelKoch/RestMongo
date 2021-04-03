@@ -1,0 +1,12 @@
+using Data.Attributes;
+using Data.Models;
+
+namespace Models
+{
+    [BsonCollection("Peoble")]
+    public class Person : Document
+    {
+        public string FirstName { get; set;}
+        public string LastName { get; set;}
+    }
+}

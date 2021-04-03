@@ -9,3 +9,4 @@
 /workspace/server/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.dll
 /workspace/server/Data.Abstraction/obj/Debug/net5.0/ref/Data.Abstraction.dll
 /workspace/server/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.pdb
+/workspace/server/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.csprojAssemblyReference.cache
