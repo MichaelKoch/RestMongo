@@ -1,0 +1,12 @@
+/workspace/server/Data.Abstratction/bin/Debug/net5.0/Data.Abstratction.deps.json
+/workspace/server/Data.Abstratction/bin/Debug/net5.0/Data.Abstratction.dll
+/workspace/server/Data.Abstratction/bin/Debug/net5.0/ref/Data.Abstratction.dll
+/workspace/server/Data.Abstratction/bin/Debug/net5.0/Data.Abstratction.pdb
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.csprojAssemblyReference.cache
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.AssemblyInfoInputs.cache
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.AssemblyInfo.cs
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.csproj.CoreCompileInputs.cache
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.dll
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/ref/Data.Abstratction.dll
+/workspace/server/Data.Abstratction/obj/Debug/net5.0/Data.Abstratction.pdb
