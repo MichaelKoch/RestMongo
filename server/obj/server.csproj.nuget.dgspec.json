@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/workspace/server/server/server.csproj": {}
+    "/workspace/git/mongobase/server/server.csproj": {}
   },
   "projects": {
-    "/workspace/server/Data.Abstraction/Data.Abstraction.csproj": {
+    "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspace/server/Data.Abstraction/Data.Abstraction.csproj",
+        "projectUniqueName": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj",
         "projectName": "Data.Abstraction",
-        "projectPath": "/workspace/server/Data.Abstraction/Data.Abstraction.csproj",
+        "projectPath": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj",
         "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspace/server/Data.Abstraction/obj/",
+        "outputPath": "/workspace/git/mongobase/Data.Abstraction/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
@@ -66,14 +66,14 @@
         }
       }
     },
-    "/workspace/server/server/server.csproj": {
+    "/workspace/git/mongobase/server/server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspace/server/server/server.csproj",
+        "projectUniqueName": "/workspace/git/mongobase/server/server.csproj",
         "projectName": "server",
-        "projectPath": "/workspace/server/server/server.csproj",
+        "projectPath": "/workspace/git/mongobase/server/server.csproj",
         "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspace/server/server/obj/",
+        "outputPath": "/workspace/git/mongobase/server/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
@@ -88,8 +88,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "/workspace/server/Data.Abstraction/Data.Abstraction.csproj": {
-                "projectPath": "/workspace/server/Data.Abstraction/Data.Abstraction.csproj"
+              "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj": {
+                "projectPath": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj"
               }
             }
           }

@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Data;
 using Data.Attributes;
 using Data.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
+
 
 namespace Data.Repositories
 {
@@ -20,65 +22,10 @@ namespace Data.Repositories
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
-
-            // var _bsoncollection = database.GetCollection<BsonDocument>(GetCollectionName(typeof(TDocument)));
-            // Task.Run(async () => TailCollectionAsync(_bsoncollection)).Wait();
-        }
-
-        private static async Task TailCollectionAsync(IMongoCollection<BsonDocument> collection)
-        {
-            // Set lastInsertDate to the smallest value possible
-            BsonValue lastInsertDate = BsonMinKey.Value;
-
-            var options = new FindOptions<BsonDocument>
-            {
-                // Our cursor is a tailable cursor and informs the server to await
-                CursorType = CursorType.TailableAwait
-            };
-
-            // Initially, we don't have a filter. An empty BsonDocument matches everything.
-            BsonDocument filter = new();
-
-            // NOTE: This loops forever. It would be prudent to provide some form of 
-            // an escape condition based on your needs; e.g. the user presses a key.
-            while (true)
-            {
-                try
-                {
-                    using (var cursor = await collection.FindAsync(filter, options))
-                    {
-
-                        // This callback will get invoked with each new document found
-                        await cursor.ForEachAsync(document =>
-                        {
-                            try
-                            {
-                                
-                                // Write the document to the console.
-                                Console.WriteLine(document.ToJson());
-                            }
-                            catch (Exception ex)
-                            {
-
-                            }
-
-                        }).ConfigureAwait(false);
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                }
-                // Start the cursor and wait for the initial response
-
-
-                // The tailable cursor died so loop through and restart it
-                // Now, we want documents that are strictly greater than the last value we saw
-              
-            }
         }
 
         private protected string GetCollectionName(Type documentType)
+
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
                     typeof(BsonCollectionAttribute),
@@ -97,10 +44,13 @@ namespace Data.Repositories
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
+
+
         public virtual IEnumerable<TProjected> FilterBy<TProjected>(
             Expression<Func<TDocument, bool>> filterExpression,
             Expression<Func<TDocument, TProjected>> projectionExpression)
         {
+
             return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
 
@@ -130,20 +80,23 @@ namespace Data.Repositories
                 return _collection.Find(filter).SingleOrDefaultAsync();
             });
         }
-
+        private long getServerTimeStamp()
+        {
+            return this._collection.Database.getServerTimeStap();
+        }
         private void setChangedDate(TDocument document)
         {
-           long timestamp =  DateTime.UtcNow.Ticks;
-           document.ChangedAt = timestamp;
+            long timestamp = getServerTimeStamp();
+            document.ChangedAt = timestamp;
         }
-         private void setChangedDate(ICollection<TDocument> documents)
+        private void setChangedDate(ICollection<TDocument> documents)
         {
-           long timestamp =  DateTime.UtcNow.Ticks;
-           foreach(var d in documents)
-           {
-               d.ChangedAt = timestamp;
-           }
-          }
+            long timestamp = getServerTimeStamp();
+            foreach (var d in documents)
+            {
+                d.ChangedAt = timestamp;
+            }
+        }
 
 
         public virtual void InsertOne(TDocument document)
@@ -154,7 +107,7 @@ namespace Data.Repositories
 
         public virtual Task InsertOneAsync(TDocument document)
         {
-             setChangedDate(document);
+            setChangedDate(document);
             return Task.Run(() => _collection.InsertOneAsync(document));
         }
 
@@ -174,34 +127,36 @@ namespace Data.Repositories
         public void ReplaceOne(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-              setChangedDate(document);
+            setChangedDate(document);
             _collection.FindOneAndReplace(filter, document);
         }
 
         public virtual async Task ReplaceOneAsync(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-             setChangedDate(document);
+            setChangedDate(document);
             await _collection.FindOneAndReplaceAsync(filter, document);
         }
 
-        public void DeleteOne(Expression<Func<TDocument, bool>> filterExpression)
+        public void DeleteById(ObjectId id)
         {
-            _collection.FindOneAndDelete(filterExpression);
+             DeleteById( new List<ObjectId>(){id});
         }
-
-        public Task DeleteOneAsync(Expression<Func<TDocument, bool>> filterExpression)
+         public void DeleteById(List<ObjectId> ids)
         {
-            return Task.Run(() => _collection.FindOneAndDeleteAsync(filterExpression));
+            var filter = Builders<TDocument>.Filter.In(doc => doc.Id, ids);
+            var r = _collection.DeleteManyAsync(filter).Result;
         }
 
         public void DeleteById(string id)
         {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
-            _collection.FindOneAndDelete(filter);
+            DeleteById(new ObjectId(id));
         }
-
+        public void DeleteById(IList<string> ids)
+        {
+           DeleteById(ids.Select(i=> new ObjectId(i)).ToList());
+        }
+        
         public Task DeleteByIdAsync(string id)
         {
             return Task.Run(() =>
@@ -212,14 +167,16 @@ namespace Data.Repositories
             });
         }
 
-        public void DeleteMany(Expression<Func<TDocument, bool>> filterExpression)
-        {
-            _collection.DeleteMany(filterExpression);
-        }
 
-        public Task DeleteManyAsync(Expression<Func<TDocument, bool>> filterExpression)
-        {
-            return Task.Run(() => _collection.DeleteManyAsync(filterExpression));
-        }
+        // private void DeleteMany(Expression<Func<TDocument, bool>> filterExpression)
+        // {
+        //                _collection.DeleteMany(filterExpression.);
+
+        // }
+
+        // private Task DeleteManyAsync(Expression<Func<TDocument, bool>> filterExpression)
+        // {
+        //     return Task.Run(() => _collection.DeleteManyAsync(filterExpression));
+        // }
     }
 }

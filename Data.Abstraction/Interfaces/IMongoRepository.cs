@@ -37,16 +37,10 @@ namespace Data.Interfaces
 
         Task ReplaceOneAsync(TDocument document);
 
-        void DeleteOne(Expression<Func<TDocument, bool>> filterExpression);
-
-        Task DeleteOneAsync(Expression<Func<TDocument, bool>> filterExpression);
-
         void DeleteById(string id);
+        void DeleteById(IList<string> ids);
 
         Task DeleteByIdAsync(string id);
 
-        void DeleteMany(Expression<Func<TDocument, bool>> filterExpression);
-
-        Task DeleteManyAsync(Expression<Func<TDocument, bool>> filterExpression);
     }
 }

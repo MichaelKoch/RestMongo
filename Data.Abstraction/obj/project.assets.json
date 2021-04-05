@@ -636,11 +636,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspace/server/Data.Abstraction/Data.Abstraction.csproj",
+      "projectUniqueName": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj",
       "projectName": "Data.Abstraction",
-      "projectPath": "/workspace/server/Data.Abstraction/Data.Abstraction.csproj",
+      "projectPath": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/workspace/server/Data.Abstraction/obj/",
+      "outputPath": "/workspace/git/mongobase/Data.Abstraction/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"

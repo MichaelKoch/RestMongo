@@ -10,3 +10,15 @@
 /workspace/server/Data.Abstraction/obj/Debug/net5.0/ref/Data.Abstraction.dll
 /workspace/server/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.pdb
 /workspace/server/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.csprojAssemblyReference.cache
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.AssemblyInfoInputs.cache
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.AssemblyInfo.cs
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.csproj.CoreCompileInputs.cache
+/workspace/git/mongobase/Data.Abstraction/bin/Debug/net5.0/Data.Abstraction.deps.json
+/workspace/git/mongobase/Data.Abstraction/bin/Debug/net5.0/Data.Abstraction.dll
+/workspace/git/mongobase/Data.Abstraction/bin/Debug/net5.0/ref/Data.Abstraction.dll
+/workspace/git/mongobase/Data.Abstraction/bin/Debug/net5.0/Data.Abstraction.pdb
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.dll
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/ref/Data.Abstraction.dll
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.pdb
+/workspace/git/mongobase/Data.Abstraction/obj/Debug/net5.0/Data.Abstraction.csprojAssemblyReference.cache

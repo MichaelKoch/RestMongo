@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FUuOTCdVVFYsLo0hn8CPtDmaFLoXpjII9wZr3n0quWhtRfhEjCV5gI45CYU0VU+24Xl8H461K81a4IhuQ8HxyA==",
+  "dgSpecHash": "0PGlH/dxepiqKAGNKBLWHe5hMaziOGv6wOcSY9o8Nfkaauc30eKS5+wjOpRdB/ZsXb1sBsixj9wubdWftr+qkg==",
   "success": true,
-  "projectFilePath": "/workspace/server/Data.Abstraction/Data.Abstraction.csproj",
+  "projectFilePath": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj",
   "expectedPackageFiles": [
     "/root/.nuget/packages/dnsclient/1.4.0/dnsclient.1.4.0.nupkg.sha512",
     "/root/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",

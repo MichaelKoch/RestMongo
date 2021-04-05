@@ -2,7 +2,7 @@ using Data.Attributes;
 using Data.Models;
 namespace Models
 {
-    [BsonCollection("collection2")]
+    [BsonCollection("People")]
     public class Person : Document
     {
         public string FirstName { get; set;}
