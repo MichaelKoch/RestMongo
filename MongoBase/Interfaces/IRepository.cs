@@ -9,7 +9,7 @@ namespace MongoBase.Interfaces
     public interface IRepository<TDocument> where TDocument : IDocument
     {
         IQueryable<TDocument> AsQueryable();
-
+        IEnumerable<TDocument> Query(string query);
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);
 

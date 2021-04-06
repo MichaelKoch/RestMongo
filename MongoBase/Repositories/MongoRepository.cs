@@ -21,7 +21,10 @@ namespace MongoBase.Repositories
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
-
+        public IEnumerable<TDocument> Query(string query)
+        {
+            return this._collection.Find<TDocument>(query).ToList<TDocument>();
+        }
         private protected static string GetCollectionName(Type documentType)
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
@@ -99,7 +102,7 @@ namespace MongoBase.Repositories
         public virtual TDocument InsertOne(TDocument document)
         {
             SetChangedDate(document);
-             _collection.InsertOne(document);
+            _collection.InsertOne(document);
             return document;
         }
 

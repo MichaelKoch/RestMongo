@@ -1,16 +1,12 @@
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+
 using MongoDB.Bson;
-using MongoDB.Driver;
 using MongoBase.Interfaces;
-using MongoBase.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Query;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace MongoBase.Controllers
 {
@@ -23,13 +19,29 @@ namespace MongoBase.Controllers
             this._repository = repository;
         }
 
-        [HttpGet]
-        [EnableQuery(MaxTop = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
-        public virtual IQueryable<TDocument> Get()
+        
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="query">a mongo query for syntax see : https://docs.mongodb.com/manual/tutorial/query-documents/</param>
+        /// <returns>the query result</returns>
+        [HttpPost("query")]
+        public virtual IEnumerable<TDocument> Query([FromBody] dynamic query)
         {
-            return this._repository.AsQueryable();
+            return this._repository.Query(JsonSerializer.Serialize(query));
         }
 
+        [HttpGet("delta")]
+        public virtual IEnumerable<TDocument> delta([FromQuery] long since = 0, [FromQuery] int skip = 0, [FromQuery] int take = 200)
+        {
+            var query = this._repository.AsQueryable().
+                        Where(i => i.ChangedAt >= since)
+                        .Take(take)
+                        .Skip(skip)
+                        .OrderBy(c => c.ChangedAt);
+            return query;
+
+        }
         // GET api/<TestController>/5
         [HttpGet("{id}")]
         public virtual TDocument Get(string id)

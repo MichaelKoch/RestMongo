@@ -3,7 +3,6 @@
     <TargetFramework>net5</TargetFramework>
   </PropertyGroup>
  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.WebApi.OData" Version="5.7.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
