@@ -22,7 +22,7 @@ namespace MongoBase.Repositories
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
 
-        private protected string GetCollectionName(Type documentType)
+        private protected static string GetCollectionName(Type documentType)
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
                     typeof(BsonCollectionAttribute),
@@ -77,18 +77,18 @@ namespace MongoBase.Repositories
                 return _collection.Find(filter).SingleOrDefaultAsync();
             });
         }
-        private long getServerTimeStamp()
+        private long GetServerTimeStamp()
         {
-            return this._collection.Database.getServerTimeStap();
+            return this._collection.Database.GetServerTimeStap();
         }
-        private void setChangedDate(TDocument document)
+        private void SetChangedDate(TDocument document)
         {
-            long timestamp = getServerTimeStamp();
+            long timestamp = GetServerTimeStamp();
             document.ChangedAt = timestamp;
         }
-        private void setChangedDate(ICollection<TDocument> documents)
+        private void SetChangedDate(ICollection<TDocument> documents)
         {
-            long timestamp = getServerTimeStamp();
+            long timestamp = GetServerTimeStamp();
             foreach (var d in documents)
             {
                 d.ChangedAt = timestamp;
@@ -98,53 +98,50 @@ namespace MongoBase.Repositories
 
         public virtual void InsertOne(TDocument document)
         {
-            setChangedDate(document);
+            SetChangedDate(document);
             _collection.InsertOne(document);
         }
 
         public virtual Task InsertOneAsync(TDocument document)
         {
-            setChangedDate(document);
+            SetChangedDate(document);
             return Task.Run(() => _collection.InsertOneAsync(document));
         }
 
         public void InsertMany(ICollection<TDocument> documents)
         {
-            setChangedDate(documents);
+            SetChangedDate(documents);
             _collection.InsertMany(documents);
         }
 
 
         public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
         {
-            setChangedDate(documents);
-            await _collection.InsertManyAsync(documents);
+            SetChangedDate(documents);
+            await _collection.InsertManyAsync(documents).ConfigureAwait(false);
         }
 
         public void ReplaceOne(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            setChangedDate(document);
+            SetChangedDate(document);
             _collection.FindOneAndReplace(filter, document);
         }
 
         public virtual async Task ReplaceOneAsync(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            setChangedDate(document);
-            await _collection.FindOneAndReplaceAsync(filter, document);
+            SetChangedDate(document);
+            await _collection.FindOneAndReplaceAsync(filter, document).ConfigureAwait(false);
         }
 
         public void DeleteById(ObjectId id)
         {
-            DeleteById( new List<ObjectId>(){id});
+            DeleteById(new List<ObjectId>() { id });
         }
-        
+
         public void DeleteById(List<ObjectId> ids)
         {
-
-
-
             var filter = Builders<TDocument>.Filter.In(doc => doc.Id, ids);
             var r = _collection.DeleteManyAsync(filter).Result;
         }
@@ -155,9 +152,9 @@ namespace MongoBase.Repositories
         }
         public void DeleteById(IList<string> ids)
         {
-           DeleteById(ids.Select(i=> new ObjectId(i)).ToList());
+            DeleteById(ids.Select(i => new ObjectId(i)).ToList());
         }
-        
+
         public Task DeleteByIdAsync(string id)
         {
             return Task.Run(() =>
@@ -169,7 +166,7 @@ namespace MongoBase.Repositories
         }
 
 
-        // private void DeleteMany(Expression<Func<TDocument, bool>> filterExpression)
+        // inte void DeleteMany(Expression<Func<TDocument, bool>> filterExpression)
         // {
         //                _collection.DeleteMany(filterExpression.);
 
