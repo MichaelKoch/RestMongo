@@ -2,7 +2,7 @@ using System;
 using MongoBase.Interfaces;
 using MongoDB.Bson;
 
-namespace MongoBase
+namespace MongoBase.Models
 {
     public class ConnectionSettings : IConnectionSettings
     {

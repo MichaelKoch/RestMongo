@@ -25,7 +25,7 @@ namespace MongoBase.Interfaces
 
         Task<TDocument> FindByIdAsync(string id);
 
-        void InsertOne(TDocument document);
+        TDocument InsertOne(TDocument document);
 
         Task InsertOneAsync(TDocument document);
 

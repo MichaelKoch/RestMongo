@@ -1,6 +1,6 @@
 using MongoBase.Enums;
 using MongoBase.Interfaces;
-namespace MongoBase.Attributes
+namespace MongoBase.Models
 {
     public class MongoEvent : IMongoEvent
     {

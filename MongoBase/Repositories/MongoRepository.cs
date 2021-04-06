@@ -96,10 +96,11 @@ namespace MongoBase.Repositories
         }
 
 
-        public virtual void InsertOne(TDocument document)
+        public virtual TDocument InsertOne(TDocument document)
         {
             SetChangedDate(document);
-            _collection.InsertOne(document);
+             _collection.InsertOne(document);
+            return document;
         }
 
         public virtual Task InsertOneAsync(TDocument document)

@@ -6,6 +6,8 @@ using MongoDB.Driver;
 using MongoBase.Attributes;
 using MongoBase.Enums;
 using MongoBase.Interfaces;
+using MongoBase.Models;
+
 namespace MongoBase.Repositories
 {
     public class MongoEventRepository
