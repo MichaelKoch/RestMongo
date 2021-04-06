@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Data
+namespace MongoBase
 {
     public static class IMongoDatabaseExtentsions
     {

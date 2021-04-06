@@ -2,7 +2,7 @@ using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Data.Interfaces
+namespace MongoBase
 {
     public interface IDocument
     {
@@ -11,6 +11,7 @@ namespace Data.Interfaces
         ObjectId Id { get; set; }
 
         DateTime CreatedAt { get; }
+
         long ChangedAt{get;set;}
     }
 }

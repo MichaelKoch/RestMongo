@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Data.Interfaces
+namespace MongoBase
 {
-    public interface IMongoRepository<TDocument> where TDocument : IDocument
+    public interface IRepository<TDocument> where TDocument : IDocument
     {
         IQueryable<TDocument> AsQueryable();
 

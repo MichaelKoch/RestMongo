@@ -1,9 +1,11 @@
 using Data.Enums;
-
-public interface IMongoEvent
+namespace MongoBase
+{
+   public interface IMongoEvent
 {
     string CollectionName{get;set;}
     string ObjectId{get;set;}
     long ChangeAt { get;set; }
     ChangeTypeEnum ChangeType{get;set;}
+} 
 }

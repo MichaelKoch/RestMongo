@@ -1,6 +1,6 @@
 
 
-namespace Data.Enums
+namespace MongoBase.Enums
 {
     public enum ChangeTypeEnum : int
     {

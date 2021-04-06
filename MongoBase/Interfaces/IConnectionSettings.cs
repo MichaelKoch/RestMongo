@@ -2,14 +2,14 @@ using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Data.Interfaces
+namespace Mon
 {
-    public interface IMongoDbSettings
+    public interface IConnectionSettings
     {
         string ConnectionString
         { get; set; }
 
-         string DatabaseName
+        string DatabaseName
         { get; set; }
     }
 }

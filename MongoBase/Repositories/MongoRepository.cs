@@ -140,7 +140,7 @@ namespace Data.Repositories
 
         public void DeleteById(ObjectId id)
         {
-             DeleteById( new List<ObjectId>(){id});
+DeleteById( new List<ObjectId>(){id});
         }
          public void DeleteById(List<ObjectId> ids)
         {
