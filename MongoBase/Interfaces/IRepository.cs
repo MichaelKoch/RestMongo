@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MongoBase
+namespace MongoBase.Interfaces
 {
     public interface IRepository<TDocument> where TDocument : IDocument
     {

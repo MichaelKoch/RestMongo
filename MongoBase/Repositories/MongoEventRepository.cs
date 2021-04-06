@@ -3,29 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Data.Attributes;
-using Data.Enums;
-using Data.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Bindings;
 using MongoDB.Driver.Core.Operations;
-
-namespace Data.Repositories
+using MongoBase.Attributes;
+using MongoBase.Enums;
+using MongoBase.Interfaces;
+namespace MongoBase.Repositories
 {
-    public class MongoEvents
+    public class MongoEventRepository
     {
 
         public IMongoCollection<IMongoEvent> _collection;
         public IMongoCollection<BsonDocument> _eventSource;
         private readonly IMongoDatabase _database;
 
-        public MongoEvents(IMongoDbSettings settings, string collectionName = "entityEvents")
+        public MongoEventRepository(IConnectionSettings settings, string collectionName = "entityEvents")
         {
             _database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = this.getOrCreateCollection();
             _eventSource = this._database.GetCollection<BsonDocument>(collectionName);
-           // Task.Run(async () => TailCollectionAsync()).Wait();
+            // Task.Run(async () => TailCollectionAsync()).Wait();
         }
 
         public void Publish(List<IDocument> changes, ChangeTypeEnum changeType)
@@ -48,9 +47,9 @@ namespace Data.Repositories
         }
         private long getServerTicks()
         {
-            var serverStatusCmd = new BsonDocumentCommand<BsonDocument>(new BsonDocument { { "serverStatus", 1 } }); 
-                return _database.RunCommand(serverStatusCmd)["localTime"].ToUniversalTime().Ticks;
-                
+            var serverStatusCmd = new BsonDocumentCommand<BsonDocument>(new BsonDocument { { "serverStatus", 1 } });
+            return _database.RunCommand(serverStatusCmd)["localTime"].ToUniversalTime().Ticks;
+
         }
         private async Task TailCollectionAsync()
         {

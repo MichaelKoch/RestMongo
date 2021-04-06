@@ -1,5 +1,5 @@
 using System;
-using Data.Interfaces;
+using MongoBase.Interfaces;
 using MongoDB.Bson;
 
 namespace MongoBase

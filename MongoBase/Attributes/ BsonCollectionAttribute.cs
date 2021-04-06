@@ -1,5 +1,5 @@
 using System;
-namespace Data.Attributes
+namespace MongoBase.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class BsonCollectionAttribute : Attribute

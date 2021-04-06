@@ -241,20 +241,6 @@
             "rid": "win"
           }
         }
-      },
-      "Data.Abstraction/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v5.0",
-        "dependencies": {
-          "MongoDB.Driver": "2.12.1",
-          "Swashbuckle.AspNetCore": "5.6.3"
-        },
-        "compile": {
-          "bin/placeholder/Data.Abstraction.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Data.Abstraction.dll": {}
-        }
       }
     }
   },
@@ -636,16 +622,10 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
-    },
-    "Data.Abstraction/1.0.0": {
-      "type": "project",
-      "path": "../Data.Abstraction/Data.Abstraction.csproj",
-      "msbuildProject": "../Data.Abstraction/Data.Abstraction.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
-      "Data.Abstraction >= 1.0.0",
       "MongoDB.Driver >= 2.12.1",
       "Swashbuckle.AspNetCore >= 5.6.3"
     ]
@@ -674,11 +654,7 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {
-            "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj": {
-              "projectPath": "/workspace/git/mongobase/Data.Abstraction/Data.Abstraction.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {

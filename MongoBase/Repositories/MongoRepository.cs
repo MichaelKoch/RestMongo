@@ -4,28 +4,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Data;
-using Data.Attributes;
-using Data.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoBase.Interfaces;
+using MongoBase.Attributes;
 
-
-namespace Data.Repositories
+namespace MongoBase.Repositories
 {
-    public class MongoRepository<TDocument> : IMongoRepository<TDocument>
+    public class Repository<TDocument> : IRepository<TDocument>
         where TDocument : IDocument
     {
         private readonly IMongoCollection<TDocument> _collection;
 
-        public MongoRepository(IMongoDbSettings settings)
+        public Repository(IConnectionSettings settings)
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
 
         private protected string GetCollectionName(Type documentType)
-
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
                     typeof(BsonCollectionAttribute),
@@ -140,10 +137,14 @@ namespace Data.Repositories
 
         public void DeleteById(ObjectId id)
         {
-DeleteById( new List<ObjectId>(){id});
+            DeleteById( new List<ObjectId>(){id});
         }
-         public void DeleteById(List<ObjectId> ids)
+        
+        public void DeleteById(List<ObjectId> ids)
         {
+
+
+
             var filter = Builders<TDocument>.Filter.In(doc => doc.Id, ids);
             var r = _collection.DeleteManyAsync(filter).Result;
         }

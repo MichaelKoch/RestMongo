@@ -33,7 +33,6 @@
     ".NETCoreApp,Version=v5.0": {
       "server/1.0.0": {
         "dependencies": {
-          "Data.Abstraction": "1.0.0",
           "MongoDB.Driver": "2.12.1",
           "Swashbuckle.AspNetCore": "5.6.3",
           "Microsoft.AspNetCore.Antiforgery": "5.0.0.0",
@@ -515,18 +514,6 @@
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.1.2",
           "System.Runtime.CompilerServices.Unsafe": "5.0.0"
-        }
-      },
-      "Data.Abstraction/1.0.0": {
-        "dependencies": {
-          "MongoDB.Driver": "2.12.1",
-          "Swashbuckle.AspNetCore": "5.6.3"
-        },
-        "runtime": {
-          "Data.Abstraction.dll": {}
-        },
-        "compile": {
-          "Data.Abstraction.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
@@ -2346,11 +2333,6 @@
       "sha512": "sha512-4J2JQXbftjPMppIHJ7IC+VXQ9XfEagN92vZZNoG12i+zReYlim5dMoXFC1Zzg7tsnKDM7JPo5bYfFK4Jheq44w==",
       "path": "system.text.encoding.codepages/4.5.1",
       "hashPath": "system.text.encoding.codepages.4.5.1.nupkg.sha512"
-    },
-    "Data.Abstraction/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     },
     "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
       "type": "referenceassembly",

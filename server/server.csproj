@@ -9,8 +9,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
-  <ItemGroup>
+ <!--  <ItemGroup>
     <ProjectReference Include="..\Data.Abstraction\Data.Abstraction.csproj" />
-  </ItemGroup>
+  </ItemGroup> -->
 
 </Project>

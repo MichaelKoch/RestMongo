@@ -112,8 +112,6 @@
 /workspace/git/mongobase/server/bin/Debug/net5.0/runtimes/linux/native/libmongocrypt.so
 /workspace/git/mongobase/server/bin/Debug/net5.0/runtimes/osx/native/libmongocrypt.dylib
 /workspace/git/mongobase/server/bin/Debug/net5.0/runtimes/win/native/mongocrypt.dll
-/workspace/git/mongobase/server/bin/Debug/net5.0/Data.Abstraction.dll
-/workspace/git/mongobase/server/bin/Debug/net5.0/Data.Abstraction.pdb
 /workspace/git/mongobase/server/obj/Debug/net5.0/staticwebassets/server.StaticWebAssets.Manifest.cache
 /workspace/git/mongobase/server/obj/Debug/net5.0/staticwebassets/server.StaticWebAssets.xml
 /workspace/git/mongobase/server/obj/Debug/net5.0/scopedcss/bundle/server.styles.css
