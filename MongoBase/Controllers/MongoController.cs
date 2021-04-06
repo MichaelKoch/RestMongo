@@ -9,6 +9,8 @@ using MongoDB.Driver;
 using MongoBase.Interfaces;
 using MongoBase.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 
 namespace MongoBase.Controllers
 {
@@ -22,9 +24,10 @@ namespace MongoBase.Controllers
         }
 
         [HttpGet]
-        public virtual IEnumerable<TDocument> Get()
+        [EnableQuery(MaxTop = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
+        public virtual IQueryable<TDocument> Get()
         {
-            return null;
+            return this._repository.AsQueryable();
         }
 
         // GET api/<TestController>/5
@@ -32,14 +35,13 @@ namespace MongoBase.Controllers
         public virtual TDocument Get(string id)
         {
             return this._repository.FindById(id);
-
         }
 
         // POST api/<TestController>
         [HttpPost]
         public virtual string Post([FromBody] TDocument value)
         {
-          return this._repository.InsertOne(value).Id.ToString();
+            return this._repository.InsertOne(value).Id.ToString();
         }
 
         // PUT api/<TestController>/5
