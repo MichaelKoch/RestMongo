@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using MongoBase;
 using MongoBase.Interfaces;
 using MongoBase.Models;
 using MongoBase.Repositories;
@@ -31,37 +32,17 @@ namespace SampleServer
 
 
 
-        private void AddConfigSections(IServiceCollection services)
-        {
-            ConnectionSettings mongoSettings = new ConnectionSettings();
-            Configuration.GetSection("mongo").Bind(mongoSettings);
-            services.AddSingleton<IConnectionSettings>(mongoSettings);
-        }
-
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddOData();
-            services.AddMvcCore(options =>
-        {
-            foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
-            {
-                outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
-            }
-            foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
-            {
-                inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
-            }
-        });
-            services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddMongoBase(Configuration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleServer", Version = "v1" });
             });
-            AddConfigSections(services);
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+
+           
 
 
         }
@@ -73,18 +54,14 @@ namespace SampleServer
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleServer v1"));
+                app.UseSwaggerUI(c =>
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleServer v1")
+                );
             }
-
+            app.UseMongoBase();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseMvc(routeBuilder =>
-            {
 
-                routeBuilder.EnableDependencyInjection();
-                routeBuilder.Select().Filter().MaxTop(null).Count();
-
-            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

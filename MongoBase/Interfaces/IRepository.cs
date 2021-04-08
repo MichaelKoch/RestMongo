@@ -9,7 +9,8 @@ namespace MongoBase.Interfaces
     public interface IRepository<TDocument> where TDocument : IDocument
     {
         IQueryable<TDocument> AsQueryable();
-        IEnumerable<TDocument> Query(string query);
+        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int top = 1000, int skip = 0);
+        PagedResultModel<TDocument> Query(string query, string orderby = null, int top = 1000, int skip = 0);
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);
 

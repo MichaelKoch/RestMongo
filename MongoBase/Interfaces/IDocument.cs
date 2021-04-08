@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -7,11 +9,9 @@ namespace MongoBase.Interfaces
     public interface IDocument
     {
         [BsonId]
-        [BsonRepresentation(BsonType.String)]
-        ObjectId Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
-        DateTime CreatedAt { get; }
-
-        long ChangedAt{get;set;}
+        long ChangedAt { get; set; }
     }
 }
