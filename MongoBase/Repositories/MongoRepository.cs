@@ -15,7 +15,7 @@ namespace MongoBase.Repositories
     public class Repository<TDocument> : IRepository<TDocument>
         where TDocument : IDocument
     {
-        private readonly IMongoCollection<TDocument> _collection;
+        protected readonly IMongoCollection<TDocument> _collection;
 
         public Repository(IConnectionSettings settings)
         {

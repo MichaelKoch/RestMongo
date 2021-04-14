@@ -31,7 +31,7 @@ namespace MongoBase.Controllers
         [HttpPost("mongoquery")]
         [SwaggerResponse(200)]
         public virtual PagedResultModel<TDocument> MongoQuery([FromBody] dynamic query,
-            [FromQuery(Name = "$top")] int top = 1000,
+            [FromQuery(Name = "$top")] int top = 200,
             [FromQuery(Name = "$skip")] int skip = 0,
             [FromQuery(Name = "$orderby")] string orderby = "")
         {
@@ -40,30 +40,40 @@ namespace MongoBase.Controllers
 
         [HttpGet("")]
         [SwaggerResponse(200)]
-        public virtual PagedResultModel<TDocument> Get(
-            [FromQuery(Name = "$top")] int top = 1000,
+        [SwaggerResponse(409)]
+        public virtual ActionResult<PagedResultModel<TDocument>> Get(
+            [FromQuery(Name = "$top")] int top = 200,
             [FromQuery(Name = "$skip")] int skip = 0,
             [FromQuery(Name = "$filter")] string filter = ""
             )
         {
-            if (top - skip > 10000)
+            if (top - skip > 1000)
             {
 
-                throw new NotSupportedException("max page size : 10000");
+                return Conflict("MAX PAGE SIZE EXCEEDED");
             }
 
             var oriQueryString = Request.QueryString;
             var t = HttpUtility.ParseQueryString(Request.QueryString.ToUriComponent());
+            var count =0;
             t.Remove("$top");
             t.Remove("$skip");
             Request.QueryString = new QueryString("?" + t.ToString());
             var queryOptions = new ODataQueryOptions(SchemaAttribute.GetODataQueryContext(typeof(TDocument)), Request);
             var countQuery = this._repository.AsQueryable();
             countQuery = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
+            
 
             Request.QueryString = oriQueryString;
             queryOptions = new ODataQueryOptions(SchemaAttribute.GetODataQueryContext(typeof(TDocument)), Request);
             var resultQuery = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
+            resultQuery = resultQuery.Skip(skip);
+            resultQuery = resultQuery.Take(top);
+            count = resultQuery.Count();
+            if(count > 1000)
+            {
+                return Conflict("MAX PAGE SIZE EXCEEDED");
+            }
             var retVal = new PagedResultModel<TDocument>()
             {
                 Total = countQuery.Count(),
@@ -80,10 +90,10 @@ namespace MongoBase.Controllers
         public virtual IEnumerable<TDocument> delta([FromQuery] long since = 0, [FromQuery] int skip = 0, [FromQuery] int take = 200)
         {
             var query = this._repository.AsQueryable().
-                        Where(i => i.ChangedAt >= since)
+                        Where(i => i.ChangedAt > since)
                         .Take(take)
                         .Skip(skip)
-                        .OrderBy(c => c.ChangedAt);
+                        .OrderByDescending(c => c.ChangedAt);
             return query;
 
         }
@@ -127,7 +137,7 @@ namespace MongoBase.Controllers
             {
                 return NotFound();
             }
-            if (instance.ChangedAt / 1000 != value.ChangedAt / 1000)
+            if (instance.ChangedAt != value.ChangedAt)
             {
                 return Conflict("CONCURRENT UPDATE");
             }

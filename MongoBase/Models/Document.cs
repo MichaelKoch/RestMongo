@@ -12,12 +12,12 @@ namespace MongoBase.Models
     {
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("Id")]
-        public string Id { get; set; }
+        public virtual string Id { get; set; }
 
 
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("ChangedAt")]
-        public long ChangedAt { get; set; }
+        public virtual long ChangedAt { get; set; }
         public BaseDocument()
         {
             this.Id = Guid.NewGuid().ToString();
