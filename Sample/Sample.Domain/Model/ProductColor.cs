@@ -4,8 +4,8 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models
 {
-    [MongoBase.Attributes.BsonCollection("viewProduct")]
-    public class Product: MongoBase.Models.BaseDocument
+    [MongoBase.Attributes.BsonCollection("viewProductColor")]
+    public class ProductColor: MongoBase.Models.BaseDocument
     {
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("MaterialNumber")]
@@ -46,6 +46,5 @@ namespace Sample.Domain.Models
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("Color")]
         public string Color { get; set; }
-       
     }
 }
