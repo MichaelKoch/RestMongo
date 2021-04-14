@@ -2,7 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
+   
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
+  </ItemGroup>
   
 </Project>

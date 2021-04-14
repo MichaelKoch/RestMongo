@@ -13,6 +13,7 @@ using MongoBase;
 using MongoBase.Interfaces;
 using MongoBase.Models;
 using MongoBase.Repositories;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,21 +31,15 @@ namespace SampleServer
 
         public IConfiguration Configuration { get; }
 
-
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+       // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMongoBase(Configuration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleServer", Version = "v1" });
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
-
-
-           
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,11 +56,7 @@ namespace SampleServer
             app.UseMongoBase();
             app.UseRouting();
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }
