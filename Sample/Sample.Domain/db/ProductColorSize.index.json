@@ -1,0 +1,10 @@
+{
+  "indexOn": "ProductColorSize",
+  "fields":
+   {
+      "MaterialNumber":true,
+      "Color":true,
+      "MaterialText":true
+   }
+}
+   

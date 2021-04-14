@@ -4,12 +4,25 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models
 {
-    [MongoBase.Attributes.BsonCollection("viewProduct")]
-    public class Product: MongoBase.Models.BaseDocument
+    [MongoBase.Attributes.BsonCollection("ProductColorSize")]
+    public class ProductColorSize: MongoBase.Models.BaseDocument
     {
+        public override string Id
+        {
+            get { return $"{long.Parse(this.EAN)}"; }
+            set { }
+        }
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("MaterialNumber")]
         public string MaterialNumber { get; set; }
+
+        [SchemaAttribute(isSimple: true)]
+        [JsonPropertyName("ColorSize")]
+        public string ColorSize { get; set; }
+
+        [SchemaAttribute(isSimple: true)]
+        [JsonPropertyName("EAN11")]
+        public string EAN { get; set; }
 
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("MainProductGroup")]
@@ -43,6 +56,16 @@ namespace Sample.Domain.Models
         [JsonPropertyName("MaterialText")]
         public string MaterialText { get; set; }
 
-       
+        [SchemaAttribute(isSimple: true)]
+        [JsonPropertyName("Color")]
+        public string Color { get; set; }
+
+        [SchemaAttribute(isSimple: true)]
+        [JsonPropertyName("Size1")]
+        public string Size1 { get; set; }
+
+        [SchemaAttribute(isSimple: true)]
+        [JsonPropertyName("Size2")]
+        public string Size2 { get; set; }
     }
 }

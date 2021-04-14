@@ -7,6 +7,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
   </ItemGroup>
-  
-</Project>
+  <ItemGroup> 
+  <Content Include="db\**"> 
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+  </Content> 
+</ItemGroup>
+ </Project>

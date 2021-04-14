@@ -5,39 +5,40 @@ using System.Linq;
 using System.Text.Json;
 using MongoBase.Models;
 using System.Collections.Generic;
+using MongoBase.Repositories;
+using Sample.Domain.Models;
 
 namespace Sample.Domain.DataAdapter
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
-        {
-
-            ProductSourceRepository repo = new ProductSourceRepository();
-            List<Product> deltaMaterialized = new List<Product>();
-            ProductRepository target = new ProductRepository(new() { ConnectionString = "mongodb://localhost", DatabaseName = "sample" });
-
-            var delta = repo.getDeltaSince(target.getMaxLastChanged());
-            foreach (var d in delta)
+        private static readonly ConnectionSettings db = new ()
             {
-                try
-                {
-                    var p = JsonSerializer.Deserialize<Product>(d.JSON);
-                    p.Locale = d.Locale;
-                    p.ChangedAt = d.CreatedDate.Ticks;
-                    deltaMaterialized.Add(p);
-                }
-                catch (Exception ex)
-                {
+                DatabaseName = "DomainProduct",
+                ConnectionString = "mongodb://localhost"
+            };
+        internal static void Main(string[] args)
+        {
+            //SyncProductColorSize();
+            Sample.Domain.Initializer.Run(db);
+            //    var target = new Repository<Product>(db);
+            //    var t = target.AsQueryable().Where(
+            //        i=>
+            //             i.Brand == "01" &&
+            //             i.MainProductGroup == "001"
+            //    ).ToList();
+        }
 
-                }
-            }
-            target.StoreSyncDelta(deltaMaterialized);
-
-            
-            // List<Product> delta = source.AsQueryable().Where(c => c.ChangedAt > lastKnowSync).ToList();
-            // target.StoreSyncDelta(delta);
-
+        private static void SyncProductColorSize()
+        {
+            var db = new ConnectionSettings()
+            {
+                DatabaseName = "DomainProduct",
+                ConnectionString = "mongodb://localhost"
+            };
+            var source = new ProductColorSizeSourceRepository();
+            var target = new Repository<ProductColorSize>(db);
+            source.Sync(target);
         }
     }
 }

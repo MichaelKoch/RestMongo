@@ -13,8 +13,54 @@ using System.Text.RegularExpressions;
 namespace MongoBase.Repositories
 {
     public class Repository<TDocument> : IRepository<TDocument>
-        where TDocument : IDocument
+                 where TDocument : IDocument
     {
+    public void StoreSyncDelta(IList<TDocument> delta)
+        {
+            IQueryable<TDocument> query = this.AsQueryable();
+            List<TDocument> inserts = new();
+            List<TDocument> updates = new();
+            if (_collection.AsQueryable().Where(c => c.ChangedAt > 0).Any())
+            {
+                foreach (var p in delta)
+                {
+                    var exists = query.Where(c => c.Id == p.Id).Any();
+                    if (exists)
+                    {
+                        updates.Add(p);
+                    }
+                    else
+                    {
+                        inserts.Add(p);
+                    }
+                }
+            }
+            else
+            {
+                inserts.AddRange(delta);
+            }
+            var waitfor = new List<Task>();
+            if (inserts.Count > 0)
+            {
+                waitfor.Add(this._collection.InsertManyAsync(inserts));
+            }
+            foreach (var u in updates)
+            {
+                waitfor.Add(this._collection.ReplaceOneAsync(i=>i.Id == u.Id,u));
+            }
+            Task.WaitAll(waitfor.ToArray());
+        }
+        public long GetMaxLastChanged()
+        {
+            long retVal = 0;
+            int total = this.AsQueryable().Count();
+            if (total > 0)
+            {
+                retVal = this.AsQueryable().Max(c => c.ChangedAt);
+            }
+            return retVal;
+        }
+
         protected readonly IMongoCollection<TDocument> _collection;
 
         public Repository(IConnectionSettings settings)
@@ -32,15 +78,14 @@ namespace MongoBase.Repositories
             {
                 if (!string.IsNullOrWhiteSpace(orderbyField))
                 {
-                    RegexOptions options = RegexOptions.None;
-                    Regex regex = new Regex("[ ]{2,}", options);
+                    var regex = new Regex("[ ]{2,}",  RegexOptions.None);
                     var orderInfo = regex.Replace(orderbyField, " ");
                     var fieldAndDirection = orderInfo.Split(" ");
-                    if (fieldAndDirection.Count() == 1)
+                    if (fieldAndDirection.Length == 1)
                     {
                         orderbyDict.Add(fieldAndDirection[0].Trim(), "asc");
                     }
-                    if (fieldAndDirection.Count() == 2)
+                    if (fieldAndDirection.Length == 2)
                     {
                         orderbyDict.Add(fieldAndDirection[0].Trim(), fieldAndDirection[1].Trim());
                     }
@@ -54,8 +99,10 @@ namespace MongoBase.Repositories
             var retVal = new PagedResultModel<TDocument>();
             if ((orderby == null) || (orderby.Count == 0))
             {
-                orderby = new Dictionary<string, string>();
-                orderby.Add("Id", "asc");
+                orderby = new Dictionary<string, string>
+                {
+                    { "Id", "asc" }
+                };
             }
             retVal.Total = (int)this._collection.CountDocuments(query);
 
@@ -116,13 +163,10 @@ namespace MongoBase.Repositories
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
-
-
         public virtual IEnumerable<TProjected> FilterBy<TProjected>(
             Expression<Func<TDocument, bool>> filterExpression,
             Expression<Func<TDocument, TProjected>> projectionExpression)
         {
-
             return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
 
@@ -142,11 +186,7 @@ namespace MongoBase.Repositories
         }
         public virtual Task<TDocument> FindByIdAsync(string id)
         {
-            return Task.Run(() =>
-            {
-
-                return _collection.AsQueryable().SingleOrDefault(c => c.Id == id);
-            });
+            return Task.Run(() => _collection.AsQueryable().SingleOrDefault(c => c.Id == id));
         }
         private long GetServerTimeStamp()
         {
@@ -165,7 +205,6 @@ namespace MongoBase.Repositories
                 d.ChangedAt = timestamp;
             }
         }
-
 
         public virtual TDocument InsertOne(TDocument document)
         {
@@ -209,7 +248,7 @@ namespace MongoBase.Repositories
 
         public void DeleteById(string id)
         {
-            DeleteById(new List<string>() { id.ToString() });
+            DeleteById(new List<string>() { id });
         }
 
         public void DeleteById(List<string> ids)
@@ -218,7 +257,6 @@ namespace MongoBase.Repositories
             var r = _collection.DeleteManyAsync(filter).Result;
         }
 
-        
         public void DeleteById(IList<string> ids)
         {
             DeleteById(ids);
@@ -233,17 +271,5 @@ namespace MongoBase.Repositories
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }
-
-
-        // inte void DeleteMany(Expression<Func<TDocument, bool>> filterExpression)
-        // {
-        //                _collection.DeleteMany(filterExpression.);
-
-        // }
-
-        // private Task DeleteManyAsync(Expression<Func<TDocument, bool>> filterExpression)
-        // {
-        //     return Task.Run(() => _collection.DeleteManyAsync(filterExpression));
-        // }
     }
 }
