@@ -43,9 +43,7 @@ namespace Sample.Domain.Models
         [JsonPropertyName("MaterialText")]
         public string MaterialText { get; set; }
 
-        [SchemaAttribute(isSimple: true)]
-        [JsonPropertyName("Color")]
-        public string Color { get; set; }
+      
        
     }
 }

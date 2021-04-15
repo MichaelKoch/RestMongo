@@ -60,7 +60,6 @@ namespace MongoBase.Repositories
             }
             return retVal;
         }
-
         protected readonly IMongoCollection<TDocument> _collection;
 
         public Repository(IConnectionSettings settings)
@@ -105,7 +104,6 @@ namespace MongoBase.Repositories
                 };
             }
             retVal.Total = (int)this._collection.CountDocuments(query);
-
             var matchInfo = new BsonDocument { { "$match", BsonDocument.Parse(query) } };
             var skipInfo = new BsonDocument { { "$skip", skip } };
             var topInfo = new BsonDocument { { "$limit", top } };
@@ -114,11 +112,11 @@ namespace MongoBase.Repositories
             foreach (string field in orderby.Keys)
             {
                 var direction = orderby[field];
-                if (direction.ToLower() == "desc")
+                if (string.Equals(direction, "desc", StringComparison.OrdinalIgnoreCase))
                 {
                     sortInfoField.Add(field, -1);
                 }
-                else if ((direction.ToLower() == "asc") || (direction.ToLower() == ""))
+                else if ((string.Equals(direction, "asc", StringComparison.OrdinalIgnoreCase)) || (string.Equals(direction, "", StringComparison.OrdinalIgnoreCase)))
                 {
                     sortInfoField.Add(field, 1);
                 }
@@ -134,11 +132,7 @@ namespace MongoBase.Repositories
                 skipInfo,
                 sortInfoDoc
             };
-
-
-
             var results = this._collection.Aggregate<TDocument>(pipeline);
-
             retVal.Values = results.ToList();
             retVal.Skip = skip;
             retVal.Top = top;

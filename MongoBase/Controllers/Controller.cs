@@ -20,14 +20,15 @@ namespace MongoBase.Controllers
 
         [HttpGet("delta")]
         [SwaggerResponse(200)]
-        public virtual IEnumerable<TDocument> Delta([FromQuery] long since = 0, [FromQuery] int skip = 0, [FromQuery] int take = 200)
+        public virtual ActionResult<IEnumerable<TDocument>> Delta([FromQuery] long since = 0, [FromQuery] int skip = 0, [FromQuery] int take = 200)
         {
+
             var query = this._repository.AsQueryable().
                         Where(i => i.ChangedAt > since)
                         .Take(take)
                         .Skip(skip)
                         .OrderByDescending(c => c.ChangedAt);
-            return query;
+            return query.ToList();
         }
         // POST api/<TestController>
         [HttpPost]

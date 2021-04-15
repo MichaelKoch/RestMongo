@@ -9,8 +9,19 @@ namespace Sample.Domain.Models
     {
         public override string Id
         {
-            get { return $"{long.Parse(this.EAN)}"; }
-            set { }
+            get {
+                    if(!string.IsNullOrEmpty(EAN))
+                    {
+                        return this.EAN;
+                    }else if(!string.IsNullOrEmpty(UPC))
+                    {
+                        return this.UPC;
+                    }
+                    else
+                    {
+                        return Guid.NewGuid().ToString();
+                    }
+                }
         }
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("MaterialNumber")]
@@ -23,6 +34,10 @@ namespace Sample.Domain.Models
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("EAN11")]
         public string EAN { get; set; }
+
+        [SchemaAttribute(isSimple: true)]
+        [JsonPropertyName("UPC")]
+        public string UPC { get; set; }
 
         [SchemaAttribute(isSimple: true)]
         [JsonPropertyName("MainProductGroup")]

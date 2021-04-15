@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Sample.Domain.Repositories
 {
-    public class ProductRepository : MongoBase.Repositories.Repository<Product>
+    public class WTFRepository : MongoBase.Repositories.Repository<WTFModel>
     {
         protected ProductContext _productContext;
-        public ProductRepository(
+        public WTFRepository(
                 IConnectionSettings connecttionSettings,
                 ProductContext productContext) : base(connecttionSettings)
         {

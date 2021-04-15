@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Sample.Domain.Repositories
 {
-    public class ProductRepository : MongoBase.Repositories.Repository<Product>
+    public class ProductColorRepository : MongoBase.Repositories.Repository<ProductColor>
     {
         protected ProductContext _productContext;
-        public ProductRepository(
+        public ProductColorRepository(
                 IConnectionSettings connecttionSettings,
                 ProductContext productContext) : base(connecttionSettings)
         {
-            this._productContext = productContext;
+            this._productContext = productContext; 
         }
-       
+
     }
 }

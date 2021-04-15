@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Sample.Domain.Repositories
 {
-    public class ProductRepository : MongoBase.Repositories.Repository<Product>
+    public class ProductColorSizeRepository : MongoBase.Repositories.Repository<ProductColorSize>
     {
         protected ProductContext _productContext;
-        public ProductRepository(
-                IConnectionSettings connecttionSettings,
-                ProductContext productContext) : base(connecttionSettings)
+        public ProductColorSizeRepository(
+                      IConnectionSettings connecttionSettings,
+                      ProductContext productContext) : base(connecttionSettings)
         {
             this._productContext = productContext;
         }

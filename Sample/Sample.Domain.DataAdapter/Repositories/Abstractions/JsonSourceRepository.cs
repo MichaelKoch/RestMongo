@@ -21,9 +21,14 @@ namespace Sample.Domain.DataAdapter.Repositories.Abstractions
                 throw new FileNotFoundException("data sample file not found");
             }
             _data = JsonSerializer.Deserialize<List<TDocument>>(File.ReadAllText(_dataFileName));
+            this.Transform();
             MarkRandomUpdates(100);
         }
         protected virtual void MarkRandomUpdates(int simulatedUpdateCount)
+        {
+            
+        }
+        protected virtual void Transform()
         {
             
         }

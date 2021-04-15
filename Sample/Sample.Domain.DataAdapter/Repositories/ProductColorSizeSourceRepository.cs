@@ -20,5 +20,21 @@ namespace Sample.Domain.DataAdapter.Repositories
             ).ToList();
             repo.StoreSyncDelta(delta);
         }
+
+        protected override void Transform()
+        {
+            foreach(var i in this._data)
+            {
+                i.MaterialNumber = long.Parse(i.MaterialNumber).ToString();
+                i.FormMaterialNumber =  long.Parse(i.FormMaterialNumber).ToString();
+                i.QualityMaterialNumber = long.Parse(i.QualityMaterialNumber).ToString();
+                i.EAN =  long.Parse(i.EAN).ToString();
+                if(i.EAN.Length == 12)
+                {
+                    i.UPC = i.EAN;
+                    i.EAN = null;
+                }
+            }
+        }
     }
 }

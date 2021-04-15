@@ -7,9 +7,9 @@ namespace Sample.Domain.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ProductColorSizesController : MongoBase.Controllers.Controller<ProductColorSize>
+    public class WTFController : MongoBase.Controllers.Controller<WTFModel>
     {
-        public ProductColorSizesController(IRepository<ProductColorSize> repository) : base(repository)
+        public WTFController(ProductContext context) : base(context.WTFS)
         {
 
         }

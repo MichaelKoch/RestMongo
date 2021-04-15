@@ -31,9 +31,6 @@ namespace MongoBase
                 }
             });
             services.AddMvc(options => options.EnableEndpointRouting = false);
-            ConnectionSettings mongoSettings = new ConnectionSettings();
-            Configuration.GetSection("mongo").Bind(mongoSettings);
-            services.AddSingleton<IConnectionSettings>(mongoSettings);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
     }

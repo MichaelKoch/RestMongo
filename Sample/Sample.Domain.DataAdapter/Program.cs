@@ -19,14 +19,7 @@ namespace Sample.Domain.DataAdapter
             };
         internal static void Main(string[] args)
         {
-            //SyncProductColorSize();
-            Sample.Domain.Initializer.Run(db);
-            //    var target = new Repository<Product>(db);
-            //    var t = target.AsQueryable().Where(
-            //        i=>
-            //             i.Brand == "01" &&
-            //             i.MainProductGroup == "001"
-            //    ).ToList();
+            SyncProductColorSize();
         }
 
         private static void SyncProductColorSize()

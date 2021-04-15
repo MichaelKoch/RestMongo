@@ -5,11 +5,11 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Sample.Domain.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class ProductColorController : MongoBase.Controllers.ReadController<ProductColor>
+    public class ProductColorsController : MongoBase.Controllers.ReadController<ProductColor>
     {
-        public ProductColorController(IRepository<ProductColor> repository) : base(repository)
+        public ProductColorsController(IRepository<ProductColor> repository) : base(repository)
         {
 
         }
