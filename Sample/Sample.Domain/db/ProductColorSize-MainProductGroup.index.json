@@ -1,0 +1,8 @@
+{
+  "indexOn": "ProductColorSize",
+  "fields": {
+    "MainProductGroup": "asc"
+
+  }
+}
+   

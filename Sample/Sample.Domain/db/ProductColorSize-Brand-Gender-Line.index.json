@@ -1,0 +1,11 @@
+{
+  "indexOn": "ProductColorSize",
+  "fields": {
+    "Brand": "asc",
+    "Gender": "asc",
+    "Line": "asc"
+
+
+  }
+}
+   

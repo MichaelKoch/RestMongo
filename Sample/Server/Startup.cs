@@ -20,7 +20,7 @@ using Sample.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Swashbuckle.AspNetCore.Newtonsoft;
 using System.Threading.Tasks;
 
 namespace SampleServer
@@ -37,6 +37,11 @@ namespace SampleServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddMvc(options => options.EnableEndpointRouting = false).AddNewtonsoftJson();
+
             services.AddMongoBase(Configuration);
             services.AddSwaggerGen(c =>
             {
@@ -55,6 +60,10 @@ namespace SampleServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMvc(routeBuilder =>
+            {
+                routeBuilder.EnableDependencyInjection();
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

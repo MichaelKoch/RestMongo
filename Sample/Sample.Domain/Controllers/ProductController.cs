@@ -17,14 +17,24 @@ namespace Sample.Domain.Controllers
         {
             var result =  base.Get(top, skip, filter).Value;
             var matnrs = result.Values.Select(m => m.MaterialNumber);
+
+
+            //load variants
             var query = Builders<ProductColorSize>.Filter;
             var pcs = this._context.ProductColorSizes.AsQueryable().Where(c => matnrs.Contains(c.MaterialNumber)).ToList();
-
             Parallel.ForEach(result.Values,p =>
             {
                 p.Variants = pcs.Where(c => c.MaterialNumber == p.MaterialNumber).OrderBy(c => c.ColorSize).ToList();
             });
-          
+
+
+            //load variants
+            query = Builders<ProductColorSize>.Filter;
+            var pc = this._context.ProductColors.AsQueryable().Where(c => matnrs.Contains(c.MaterialNumber)).ToList();
+            Parallel.ForEach(result.Values, p =>
+            {
+                p.Colors = pc.Where(c => c.MaterialNumber == p.MaterialNumber).OrderBy(c => c.Color).ToList();
+            });
             return result;
 
         }

@@ -12,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="data\ProductColorSize.sample.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="data\sample.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

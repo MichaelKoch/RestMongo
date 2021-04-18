@@ -17,10 +17,7 @@ namespace MongoBase
     {
         public static void UseMongoBase(this IApplicationBuilder application)
         {
-            application.UseMvc(routeBuilder =>
-            {
-                routeBuilder.EnableDependencyInjection();
-            });
+           
         }
     }
 

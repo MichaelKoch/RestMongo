@@ -27,7 +27,7 @@ namespace Sample.Domain.DataAdapter
             var db = new ConnectionSettings()
             {
                 DatabaseName = "DomainProduct",
-                ConnectionString = "mongodb://localhost"
+                ConnectionString = "mongodb://192.168.2.210"
             };
             var source = new ProductColorSizeSourceRepository();
             var target = new Repository<ProductColorSize>(db);
