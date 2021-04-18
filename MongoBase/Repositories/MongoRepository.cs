@@ -15,7 +15,12 @@ namespace MongoBase.Repositories
     public class Repository<TDocument> : IRepository<TDocument>
                  where TDocument : IDocument
     {
-    public void StoreSyncDelta(IList<TDocument> delta)
+
+        private readonly IMongoCollection<TDocument> _collection;
+
+        public IMongoCollection<TDocument> Collection => _collection;
+
+        public void StoreSyncDelta(IList<TDocument> delta)
         {
             IQueryable<TDocument> query = this.AsQueryable();
             List<TDocument> inserts = new();
@@ -46,7 +51,7 @@ namespace MongoBase.Repositories
             }
             foreach (var u in updates)
             {
-                waitfor.Add(this._collection.ReplaceOneAsync(i=>i.Id == u.Id,u));
+                waitfor.Add(this._collection.ReplaceOneAsync(i => i.Id == u.Id, u));
             }
             Task.WaitAll(waitfor.ToArray());
         }
@@ -60,8 +65,7 @@ namespace MongoBase.Repositories
             }
             return retVal;
         }
-        protected readonly IMongoCollection<TDocument> _collection;
-
+   
         public Repository(IConnectionSettings settings)
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
@@ -77,7 +81,7 @@ namespace MongoBase.Repositories
             {
                 if (!string.IsNullOrWhiteSpace(orderbyField))
                 {
-                    var regex = new Regex("[ ]{2,}",  RegexOptions.None);
+                    var regex = new Regex("[ ]{2,}", RegexOptions.None);
                     var orderInfo = regex.Replace(orderbyField, " ");
                     var fieldAndDirection = orderInfo.Split(" ");
                     if (fieldAndDirection.Length == 1)
@@ -93,6 +97,13 @@ namespace MongoBase.Repositories
 
             return this.Query(query, orderbyDict, top, skip);
         }
+
+        public IList<TDocument> Query(FilterDefinition<TDocument> filter)
+        {
+            return this._collection.Find(filter).ToList();
+        }
+
+
         public PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int top = 1000, int skip = 0)
         {
             var retVal = new PagedResultModel<TDocument>();
@@ -184,7 +195,7 @@ namespace MongoBase.Repositories
         }
         private long GetServerTimeStamp()
         {
-            return this._collection.Database.GetServerTimeStap();
+            return new DateTime(this._collection.Database.GetServerTimeStap()).Ticks;
         }
         private void SetChangedDate(TDocument document)
         {

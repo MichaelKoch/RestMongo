@@ -20,12 +20,17 @@ namespace MongoBase.Controllers
 
         [HttpGet("delta")]
         [SwaggerResponse(200)]
-        public virtual ActionResult<IEnumerable<TDocument>> Delta([FromQuery] long since = 0, [FromQuery] int skip = 0, [FromQuery] int take = 200)
+        public virtual ActionResult<IEnumerable<TDocument>> Delta([FromQuery] long since = 0,
+             [FromQuery(Name = "$top")] int top = 200,
+             [FromQuery(Name = "$skip")] int skip = 0)
         {
-
+            if (top - skip > this.maxPageSize)
+            {
+                StatusCode(412, "MAX PAGE SIZE EXCEEDED");
+            }
             var query = this._repository.AsQueryable().
                         Where(i => i.ChangedAt > since)
-                        .Take(take)
+                        .Take(top)
                         .Skip(skip)
                         .OrderByDescending(c => c.ChangedAt);
             return query.ToList();
@@ -47,7 +52,7 @@ namespace MongoBase.Controllers
         // PUT api/<TestController>/5
         [HttpPut("{id}")]
         [SwaggerResponse(204)]
-        [SwaggerResponse(409)]
+        [SwaggerResponse(404)]
         public virtual ActionResult Put(string id, [FromBody] TDocument value)
         {
             var instance = this._repository.FindById(value.Id);

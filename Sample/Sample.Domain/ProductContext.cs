@@ -10,7 +10,7 @@ namespace Sample.Domain
         private readonly ProductRepository _products;
         private readonly ProductColorRepository _productColors;
         private readonly ProductColorSizeRepository _productColorSizes;
-        private readonly WTFRepository _wtfs;
+       
 
         public ProductContext(IConnectionSettings settings)
         {
@@ -24,6 +24,6 @@ namespace Sample.Domain
         public ProductColorRepository ProductColors => _productColors;
 
         public ProductColorSizeRepository ProductColorSizes => _productColorSizes;
-        public WTFRepository WTFS => _wtfs;
+       
     }
 }

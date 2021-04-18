@@ -8,9 +8,6 @@
         "MaterialNumber": {
           "$first": "$MaterialNumber"
         },
-        "Color": {
-          "$first": "$Color"
-        },
         "MainProductGroup": {
           "$first": "$MainProductGroup"
         },

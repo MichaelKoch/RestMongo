@@ -9,13 +9,9 @@
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.5.7" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-   
-   
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
     <ProjectReference Include="..\Sample.Domain\Sample.Domain.csproj" />
   </ItemGroup>
-
 </Project>

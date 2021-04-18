@@ -3,9 +3,11 @@
   "fields":
    {
       "MaterialNumber":"asc",
+      "MainProductGroup":"asc", 
+      "RetailProductGroup": "asc",
       "Color":"asc",
       "Size1": "asc",
-      "RetailProductGroup": "asc"
+      "Size2": "asc"
   }
 }
    

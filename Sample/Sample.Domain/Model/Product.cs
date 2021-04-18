@@ -1,5 +1,6 @@
 ﻿using MongoBase.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models
@@ -43,7 +44,11 @@ namespace Sample.Domain.Models
         [JsonPropertyName("MaterialText")]
         public string MaterialText { get; set; }
 
-      
-       
+
+        public List<ProductColorSize> Variants { get; set; }
+
+        public List<ProductColor> Colors { get; set; }
+
+
     }
 }

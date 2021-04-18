@@ -18,7 +18,10 @@ namespace MongoBase.Controllers
         {
             this._repository = repository;
         }
+         
 
+
+        
 
         /// <summary>
         ///     
@@ -27,7 +30,7 @@ namespace MongoBase.Controllers
         /// <returns>the query result</returns>
         [HttpPost("mongoquery")]
         [SwaggerResponse(200)]
-        [SwaggerResponse(409)]
+        [SwaggerResponse(412)]
         public virtual ActionResult<PagedResultModel<TDocument>> MongoQuery([FromBody] dynamic query,
             [FromQuery(Name = "$top")] int top = 200,
             [FromQuery(Name = "$skip")] int skip = 0,
@@ -35,48 +38,41 @@ namespace MongoBase.Controllers
         {
             if (top - skip > this.maxPageSize)
             {
-                Conflict("MAX PAGE SIZE EXCEEDED");
+                StatusCode(412,"MAX PAGE SIZE EXCEEDED");
             }
             return this._repository.Query(JsonSerializer.Serialize(query), orderby, top, skip);
         }
 
         [HttpGet("")]
         [SwaggerResponse(200)]
-        [SwaggerResponse(409)]
+        [SwaggerResponse(412)]
         public virtual ActionResult<PagedResultModel<TDocument>> Get(
             [FromQuery(Name = "$top")] int top = 200,
             [FromQuery(Name = "$skip")] int skip = 0,
             [FromQuery(Name = "$filter")] string filter = ""
             )
         {
-            if (top - skip > 1000)
+            if (top > 1000)
             {
-                return Conflict("MAX PAGE SIZE EXCEEDED");
+                return StatusCode(412,"MAX PAGE SIZE EXCEEDED");
             }
 
             var oriQueryString = Request.QueryString;
             var t = HttpUtility.ParseQueryString(Request.QueryString.ToUriComponent());
-            var count = 0;
+            var total = 0;
             t.Remove("$top");
             t.Remove("$skip");
             Request.QueryString = new QueryString("?" + t.ToString());
             var queryOptions = new ODataQueryOptions(SchemaAttribute.GetODataQueryContext(typeof(TDocument)), Request);
-            var countQuery = this._repository.AsQueryable();
-            countQuery = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
-            Request.QueryString = oriQueryString;
-            queryOptions = new ODataQueryOptions(SchemaAttribute.GetODataQueryContext(typeof(TDocument)), Request);
-            var resultQuery = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
-            resultQuery = resultQuery.Skip(skip);
-            resultQuery = resultQuery.Take(top);
-            count = resultQuery.Count();
-            if (count > 1000)
-            {
-                return Conflict("MAX PAGE SIZE EXCEEDED");
-            }
+            var query = this._repository.AsQueryable();
+            query = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
+            total = query.Count();
+            query = query.Skip(skip);
+            query = query.Take(top);
             var retVal = new PagedResultModel<TDocument>()
             {
-                Total = countQuery.Count(),
-                Values = resultQuery.ToList(),
+                Total = total,
+                Values = query.ToList(),
                 Skip = skip,
                 Top = top
             };

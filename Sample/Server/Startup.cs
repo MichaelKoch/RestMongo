@@ -34,7 +34,7 @@ namespace SampleServer
 
         public IConfiguration Configuration { get; }
 
-       // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMongoBase(Configuration);
@@ -45,14 +45,16 @@ namespace SampleServer
             });
             ConnectionSettings mongoSettings = new ConnectionSettings();
             Configuration.GetSection("mongo").Bind(mongoSettings);
+            //ConnectionSettings mongoSettings = new ConnectionSettings() { ConnectionString = "mongodb://localhost", DatabaseName = "DomainPoduct" };
+
             services.AddSingleton<IConnectionSettings>(mongoSettings);
             services.AddScoped<ProductContext>();
-            SchemaInitializer.Run(mongoSettings,typeof(ProductContext).Assembly);
+            SchemaInitializer.Run(mongoSettings, typeof(ProductContext).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {           
+        {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
