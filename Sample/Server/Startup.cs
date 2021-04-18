@@ -41,7 +41,7 @@ namespace SampleServer
 
             services.AddControllers().AddNewtonsoftJson();
             services.AddMvc(options => options.EnableEndpointRouting = false).AddNewtonsoftJson();
-
+            services.AddResponseCompression();
             services.AddMongoBase(Configuration);
             services.AddSwaggerGen(c =>
             {
@@ -60,6 +60,7 @@ namespace SampleServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.EnableDependencyInjection();
