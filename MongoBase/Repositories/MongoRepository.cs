@@ -72,7 +72,7 @@ namespace MongoBase.Repositories
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
 
-        public PagedResultModel<TDocument> Query(string query, string orderby = null, int top = 1000, int skip = 0)
+        public PagedResultModel<TDocument> Query(string query, string orderby = null)
         {
             var orderbyDict = new Dictionary<string, string>();
             orderby = orderby.Replace(";", ",");
@@ -95,7 +95,7 @@ namespace MongoBase.Repositories
                 }
             }
 
-            return this.Query(query, orderbyDict, top, skip);
+            return this.Query(query, orderbyDict);
         }
 
         public IList<TDocument> Query(FilterDefinition<TDocument> filter)
@@ -104,7 +104,7 @@ namespace MongoBase.Repositories
         }
 
 
-        public PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int top = 1000, int skip = 0)
+        public PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null)
         {
             var retVal = new PagedResultModel<TDocument>();
             if ((orderby == null) || (orderby.Count == 0))
@@ -115,11 +115,15 @@ namespace MongoBase.Repositories
                 };
             }
             retVal.Total = (int)this._collection.CountDocuments(query);
+            if(retVal.Total > 1000)
+            {
+                throw new NotSupportedException("MAX PAGE SIZE EXEEDED");
+            }
             var matchInfo = new BsonDocument { { "$match", BsonDocument.Parse(query) } };
-            var skipInfo = new BsonDocument { { "$skip", skip } };
-            var topInfo = new BsonDocument { { "$limit", top } };
+       
             var sortInfoField = new BsonDocument();
             var sortInfoDoc = new BsonDocument { { "$sort", sortInfoField } };
+          
             foreach (string field in orderby.Keys)
             {
                 var direction = orderby[field];
@@ -139,14 +143,12 @@ namespace MongoBase.Repositories
             PipelineDefinition<TDocument, TDocument> pipeline = new BsonDocument[]
             {
                 matchInfo,
-                topInfo,
-                skipInfo,
                 sortInfoDoc
             };
             var results = this._collection.Aggregate<TDocument>(pipeline);
             retVal.Values = results.ToList();
-            retVal.Skip = skip;
-            retVal.Top = top;
+            //retVal.Skip = skip;
+            //retVal.Top = top;
             return retVal;
         }
         private protected static string GetCollectionName(Type documentType)
@@ -275,6 +277,11 @@ namespace MongoBase.Repositories
                 var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
                 _collection.FindOneAndDeleteAsync(filter);
             });
+        }
+
+        public async virtual Task<IList<TDocument>> LoadRelations(IList<TDocument> values, IList<string> relations)
+        {
+            return values;
         }
     }
 }

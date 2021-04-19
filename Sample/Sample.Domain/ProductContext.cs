@@ -20,7 +20,7 @@ namespace Sample.Domain
         }
 
         public ProductRepository Products => _products;
-
+       
         public ProductColorRepository ProductColors => _productColors;
 
         public ProductColorSizeRepository ProductColorSizes => _productColorSizes;

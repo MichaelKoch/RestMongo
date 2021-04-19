@@ -39,32 +39,29 @@ namespace SampleServer
         {
 
 
-            services.AddControllers().AddNewtonsoftJson();
-            services.AddMvc(options => options.EnableEndpointRouting = false).AddNewtonsoftJson();
+            services.AddControllers();
+            services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddResponseCompression();
-            services.AddMongoBase(Configuration);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleServer", Version = "v1" });
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                c.ResolveConflictingActions(apiDescriptions => {
+                    return apiDescriptions.First();
+                });
             });
-            ConnectionSettings mongoSettings = new ConnectionSettings();
-            Configuration.GetSection("mongo").Bind(mongoSettings);
-            //ConnectionSettings mongoSettings = new ConnectionSettings() { ConnectionString = "mongodb://localhost", DatabaseName = "DomainPoduct" };
 
+            services.AddMongoBase(Configuration);
+            var mongoSettings = new ConnectionSettings();
+            Configuration.GetSection("mongo").Bind(mongoSettings);
             services.AddSingleton<IConnectionSettings>(mongoSettings);
-            services.AddScoped<ProductContext>();
             SchemaInitializer.Run(mongoSettings, typeof(ProductContext).Assembly);
+            services.AddScoped<ProductContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
-            app.UseMvc(routeBuilder =>
-            {
-                routeBuilder.EnableDependencyInjection();
-            });
+            app.UseMvc(routeBuilder => routeBuilder.EnableDependencyInjection());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

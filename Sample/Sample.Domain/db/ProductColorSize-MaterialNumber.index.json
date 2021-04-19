@@ -1,9 +1,8 @@
 {
   "indexOn": "ProductColorSize",
   "fields":
-   {
-      "MaterialNumber":"asc"
-     
+  {
+    "MaterialNumber": "asc"
   }
 }
    

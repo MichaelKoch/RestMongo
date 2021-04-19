@@ -9,8 +9,8 @@ namespace MongoBase.Interfaces
     public interface IRepository<TDocument> where TDocument : IDocument
     {
         IQueryable<TDocument> AsQueryable();
-        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int top = 1000, int skip = 0);
-        PagedResultModel<TDocument> Query(string query, string orderby = null, int top = 1000, int skip = 0);
+        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null);
+        PagedResultModel<TDocument> Query(string query, string orderby = null);
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);
 
@@ -42,6 +42,7 @@ namespace MongoBase.Interfaces
         void DeleteById(IList<string> ids);
 
         Task DeleteByIdAsync(string id);
+        Task<IList<TDocument>> LoadRelations(IList<TDocument> values,IList<string> relations);
 
     }
 }

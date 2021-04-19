@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoBase", "..\MongoBase\MongoBase.csproj", "{4EF76D12-D176-4466-B841-B3D2972FFB17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Domain.DataAdapter", "Sample.Domain.DataAdapter\Sample.Domain.DataAdapter.csproj", "{41A5D70A-615E-4EF6-B87F-598975A46138}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Domain.DataAdapter", "Sample.Domain.DataAdapter\Sample.Domain.DataAdapter.csproj", "{41A5D70A-615E-4EF6-B87F-598975A46138}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C48EA866-A6CB-46B4-85A4-E27445E967BF}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

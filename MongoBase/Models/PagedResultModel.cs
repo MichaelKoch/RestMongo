@@ -14,5 +14,5 @@ public class PagedResultModel<TDocument> where TDocument : IDocument
     public int Total { get; set; }
 
     [JsonPropertyName("Values")]
-    public List<TDocument> Values { get; set; }
+    public IList<TDocument> Values { get; set; }
 }

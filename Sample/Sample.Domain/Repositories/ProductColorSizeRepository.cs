@@ -11,6 +11,10 @@ namespace Sample.Domain.Repositories
     public class ProductColorSizeRepository : MongoBase.Repositories.Repository<ProductColorSize>
     {
         protected ProductContext _productContext;
+        public async Task<List<ProductColorSize>> GetByProductNumber(List<string> materialNumbers)
+        {
+            return AsQueryable().Where(i => materialNumbers.Contains(i.MaterialNumber)).ToList();
+        }
         public ProductColorSizeRepository(
                       IConnectionSettings connecttionSettings,
                       ProductContext productContext) : base(connecttionSettings)
