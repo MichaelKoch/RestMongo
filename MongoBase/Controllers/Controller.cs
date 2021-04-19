@@ -13,10 +13,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MongoBase.Controllers
 {
-    public class Controller<TDocument> : ReadController<TDocument> where TDocument : IDocument
+    public class Controller<TDocument> : ReadController<TDocument>, IReadWriteController<TDocument> where TDocument : IDocument
     {
-        public Controller(IRepository<TDocument> repository):base(repository)
-        {}
+        public Controller(IRepository<TDocument> repository) : base(repository)
+        { }
 
         [HttpGet("delta")]
         [SwaggerResponse(200)]

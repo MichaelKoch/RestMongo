@@ -11,6 +11,7 @@ namespace MongoBase.Interfaces
         IQueryable<TDocument> AsQueryable();
         PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null);
         PagedResultModel<TDocument> Query(string query, string orderby = null);
+        IEnumerable<TDocument> Search(string searchTerm,int maxCount);
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);
 
@@ -43,6 +44,7 @@ namespace MongoBase.Interfaces
 
         Task DeleteByIdAsync(string id);
         Task<IList<TDocument>> LoadRelations(IList<TDocument> values,IList<string> relations);
+        Task<IList<TDocument>> LoadRelations(IList<TDocument> values, string relations);
 
     }
 }

@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Http;
 using MongoBase.Attributes;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
+using System;
 
 namespace MongoBase.Controllers
 {
-    public class ReadController<TDocument> : ControllerBase where TDocument : IDocument
+    public class ReadController<TDocument> : ControllerBase, IReadController<TDocument> where TDocument : IDocument
     {
         protected readonly IRepository<TDocument> _repository;
         protected readonly int maxPageSize = 1000; //TODO => get it from configuration
@@ -19,32 +20,56 @@ namespace MongoBase.Controllers
         {
             this._repository = repository;
         }
-         
 
 
-        
+
+
 
         /// <summary>
         ///     
         /// </summary>
         /// <param name="query">a mongo query for syntax see : https://docs.mongodb.com/manual/tutorial/query-documents/</param>
         /// <returns>the query result</returns>
-        [HttpPost("mongoquery")]
+        [HttpPost("query")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412)]
         public virtual ActionResult<PagedResultModel<TDocument>> MongoQuery([FromBody] dynamic query,
             [FromQuery(Name = "$orderby")] string orderby = "",
             [FromQuery(Name = "$expand")] string expand = "")
         {
-            //if (top - skip > this.maxPageSize)
-            //{
-            //    StatusCode(412,"MAX PAGE SIZE EXCEEDED");
-            //}
-            var retVal= this._repository.Query(JsonSerializer.Serialize(query), orderby);
-            var expands = expand.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToArray();
-            retVal.Values = _repository.LoadRelations(retVal.Values, expands).Result;
+           //TODO : Clean response code 
+            var retVal = this._repository.Query(JsonSerializer.Serialize(query), orderby);
+            retVal.Values = _repository.LoadRelations(retVal.Values, expand).Result;
             return retVal;
         }
+
+
+        [HttpGet("search")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(412)]
+        public virtual ActionResult<IList<TDocument>> Search(
+            [FromQuery(Name = "$term")] string searchTerm,
+            [FromQuery(Name = "$expand")] string expand = ""
+        )
+        {
+            IList<TDocument> retVal = null;
+            try
+            {
+                retVal = this._repository.Search(searchTerm, 30).ToList();
+                retVal = this._repository.LoadRelations(retVal, expand).Result.ToList();
+            }
+            catch (System.NotSupportedException notSupported)
+            {
+                return StatusCode(412, notSupported.Message);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Ok(retVal);
+        }
+
+
 
         [HttpGet("")]
         [SwaggerResponse(200)]
@@ -58,7 +83,7 @@ namespace MongoBase.Controllers
         {
             if (top > 1000)
             {
-                return StatusCode(412,"MAX PAGE SIZE EXCEEDED");
+                return StatusCode(412, "MAX PAGE SIZE EXCEEDED");
             }
             //TODO => QUICK HACK REUSING ODATA QUERY PARSER 
             var oriQueryString = Request.QueryString;
@@ -81,8 +106,8 @@ namespace MongoBase.Controllers
                 Skip = skip,
                 Top = top
             };
-            var expands = expand.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToArray();
-            retVal.Values = _repository.LoadRelations(retVal.Values, expands).Result;
+           
+            retVal.Values = _repository.LoadRelations(retVal.Values, expand).Result;
             return retVal;
         }
 
@@ -99,8 +124,8 @@ namespace MongoBase.Controllers
             {
                 return NotFound();
             }
-            var expands = expand.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToArray();
-            instance  = _repository.LoadRelations(new List<TDocument>() { instance }, expands).Result[0];
+         
+            instance = _repository.LoadRelations(new List<TDocument>() { instance }, expand).Result[0];
             return instance;
         }
     }

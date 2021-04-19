@@ -66,13 +66,18 @@ namespace MongoBase.Repositories
             return retVal;
         }
    
+
+
         public Repository(IConnectionSettings settings)
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
 
-        public PagedResultModel<TDocument> Query(string query, string orderby = null)
+
+
+
+        public PagedResultModel<TDocument> Query(string query, string orderby = null,string expand ="")
         {
             var orderbyDict = new Dictionary<string, string>();
             orderby = orderby.Replace(";", ",");
@@ -94,8 +99,9 @@ namespace MongoBase.Repositories
                     }
                 }
             }
-
-            return this.Query(query, orderbyDict);
+            var retVal    = this.Query(query, orderbyDict);
+            retVal.Values = this.LoadRelations(retVal.Values, expand).Result;
+            return retVal;
         }
 
         public IList<TDocument> Query(FilterDefinition<TDocument> filter)
@@ -162,6 +168,19 @@ namespace MongoBase.Repositories
         public virtual IQueryable<TDocument> AsQueryable()
         {
             return _collection.AsQueryable();
+        }
+
+
+        public virtual IEnumerable<TDocument> Search(string searchTerm,int maxCount=50)
+        {
+            var query = Builders<TDocument>.Filter.Text(searchTerm);
+            var totalCount = (int)this._collection.CountDocuments(query);
+            if (totalCount > maxCount)
+            {
+                throw new NotSupportedException("MAX PAGE SIZE EXEEDED");
+            }
+            return _collection.Find(Builders<TDocument>.Filter.Text(searchTerm)).ToList();
+            
         }
 
         public virtual IEnumerable<TDocument> FilterBy(
@@ -278,10 +297,17 @@ namespace MongoBase.Repositories
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }
+        public async virtual Task<IList<TDocument>> LoadRelations(IList<TDocument> values, string relations)
+        {
+            var expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
+            return LoadRelations(values,expands).Result;
 
+        }
         public async virtual Task<IList<TDocument>> LoadRelations(IList<TDocument> values, IList<string> relations)
         {
             return values;
         }
+
+        
     }
 }
