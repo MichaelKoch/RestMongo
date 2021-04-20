@@ -22,9 +22,6 @@ namespace MongoBase.Controllers
         }
 
 
-
-
-
         /// <summary>
         ///     
         /// </summary>
@@ -44,31 +41,7 @@ namespace MongoBase.Controllers
         }
 
 
-        [HttpGet("search")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(412)]
-        public virtual ActionResult<IList<TDocument>> Search(
-            [FromQuery(Name = "$term")] string searchTerm,
-            [FromQuery(Name = "$expand")] string expand = ""
-        )
-        {
-            IList<TDocument> retVal = null;
-            try
-            {
-                retVal = this._repository.Search(searchTerm, 30).ToList();
-                retVal = this._repository.LoadRelations(retVal, expand).Result.ToList();
-            }
-            catch (System.NotSupportedException notSupported)
-            {
-                return StatusCode(412, notSupported.Message);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return Ok(retVal);
-        }
-
+        
 
 
         [HttpGet("")]
@@ -93,7 +66,7 @@ namespace MongoBase.Controllers
             t.Remove("$skip");
             t.Remove("$expand");
             Request.QueryString = new QueryString("?" + t.ToString());
-            var queryOptions = new ODataQueryOptions(SchemaAttribute.GetODataQueryContext(typeof(TDocument)), Request);
+            var queryOptions = new ODataQueryOptions(IsQueryableAttribute.GetODataQueryContext(typeof(TDocument)), Request);
             var query = this._repository.AsQueryable();
             query = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
             total = query.Count();
@@ -111,9 +84,6 @@ namespace MongoBase.Controllers
             return retVal;
         }
 
-
-
-        // GET api/<TestController>/5
         [HttpGet("{id}")]
         [SwaggerResponse(200)]
         [SwaggerResponse(404, "NOT FOUND")]
@@ -124,7 +94,6 @@ namespace MongoBase.Controllers
             {
                 return NotFound();
             }
-         
             instance = _repository.LoadRelations(new List<TDocument>() { instance }, expand).Result[0];
             return instance;
         }

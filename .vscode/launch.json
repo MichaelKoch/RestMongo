@@ -1,17 +1,16 @@
 {
     "version": "0.2.0",
     "configurations": [
-
         {
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": "Debug SampleServer",
+            "name": "Debug Server",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Sample/Server/bin/Debug/net5.0/SampleServer.dll",
+            "program": "${workspaceFolder}/Sample/Server/bin/Debug/net5.0/Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Sample/Server",
             "stopAtEntry": false,
@@ -26,6 +25,31 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
+        },    {
+            // Use IntelliSense to find out which attributes exist for C# debugging
+            // Use hover for the description of the existing attributes
+            // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+            "name": "Debug DataAdapter",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build.DataAdapter",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Sample/Sample.Domain.DataAdapter/bin/Debug/net5.0/Sample.Domain.DataAdapter.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Sample/Sample.Domain.DataAdapter",
+            "stopAtEntry": false,
+            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\\\bNow listening on:\\\\s+(https?://\\\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            },
+            
         }
     ]
 }

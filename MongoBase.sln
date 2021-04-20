@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoBase", "MongoBase\Mong
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoBase.Test", "MongoBase.Test\MongoBase.Test.csproj", "{65B73517-D171-4993-8555-0223FA140B06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleServer", "Sample\Server\SampleServer.csproj", "{22F94A55-5A79-4F91-9240-E79463DEBD96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleServer", "Sample\Server\Server.csproj", "{22F94A55-5A79-4F91-9240-E79463DEBD96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

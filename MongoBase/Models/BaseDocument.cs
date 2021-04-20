@@ -10,12 +10,12 @@ namespace MongoBase.Models
 {
     public class BaseDocument : IDocument
     {
-        [SchemaAttribute(isSimple: true)]
+        [IsQueryableAttribute]
         [JsonPropertyName("Id")]
         public virtual string Id { get; set; }
 
 
-        [SchemaAttribute(isSimple: true)]
+        [IsQueryableAttribute]
         [JsonPropertyName("ChangedAt")]
         public virtual long ChangedAt { get; set; }
         public BaseDocument()

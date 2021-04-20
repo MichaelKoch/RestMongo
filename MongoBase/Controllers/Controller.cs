@@ -13,28 +13,12 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MongoBase.Controllers
 {
-    public class Controller<TDocument> : ReadController<TDocument>, IReadWriteController<TDocument> where TDocument : IDocument
+    public class Controller<TDocument> : ReadDeltaQueryController<TDocument>, IReadWriteController<TDocument> where TDocument : IDocument
     {
         public Controller(IRepository<TDocument> repository) : base(repository)
         { }
 
-        [HttpGet("delta")]
-        [SwaggerResponse(200)]
-        public virtual ActionResult<IEnumerable<TDocument>> Delta([FromQuery] long since = 0,
-             [FromQuery(Name = "$top")] int top = 200,
-             [FromQuery(Name = "$skip")] int skip = 0)
-        {
-            if (top - skip > this.maxPageSize)
-            {
-                StatusCode(412, "MAX PAGE SIZE EXCEEDED");
-            }
-            var query = this._repository.AsQueryable().
-                        Where(i => i.ChangedAt > since)
-                        .Take(top)
-                        .Skip(skip)
-                        .OrderByDescending(c => c.ChangedAt);
-            return query.ToList();
-        }
+        
         // POST api/<TestController>
         [HttpPost]
         [SwaggerResponse(200)]

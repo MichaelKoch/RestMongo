@@ -10,7 +10,7 @@ namespace MongoBase.Interfaces
     {
         IQueryable<TDocument> AsQueryable();
         PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null);
-        PagedResultModel<TDocument> Query(string query, string orderby = null);
+        PagedResultModel<TDocument> Query(string query, string orderby,string expand ="");
         IEnumerable<TDocument> Search(string searchTerm,int maxCount);
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);

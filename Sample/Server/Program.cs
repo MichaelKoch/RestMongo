@@ -18,7 +18,7 @@ namespace SampleServer
         {
 
 
-            //var model = SchemaAttribute.GetODataQueryContext(typeof(TestModel));
+            //var model = IsQueryableAttribute.GetODataQueryContext(typeof(TestModel));
             CreateHostBuilder(args).Build().Run();
         }
 
