@@ -13,7 +13,7 @@ public class MaterialText : MongoBase.Models.BaseDocument
     
     [IsQueryableAttribute()]
     [JsonPropertyName("MaterialNumber")]
-    public string MaterialNumber { get; set; }
+    public int MaterialNumber { get; set; }
     
     [IsQueryableAttribute()]
     [JsonPropertyName("Locale")]

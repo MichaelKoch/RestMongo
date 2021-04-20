@@ -5,13 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MongoBase.Interfaces;
+using MongoBase.Repositories;
 using Sample.Domain.Models;
 
 namespace Sample.Domain.DataAdapter.Abstractions
 {
 
    public abstract class JsonSourceDataAdapter<TSource,TTarget>
-   {
+          where TSource : IDocument 
+          where TTarget : IDocument
+    {    
         public JsonSourceDataAdapter()
         {
             
@@ -24,14 +28,14 @@ namespace Sample.Domain.DataAdapter.Abstractions
                 throw new System.ArgumentNullException(nameof(repo));
             }
             long lastKnowTimestamp = repo.GetMaxLastChanged();
-            List<ProductColorSize> delta = source.Where(d=>
-                d.ChangedAt > lastKnowTimestamp &&
-                d.EAN != null
+            IList<TTarget> converted = Transform(source.ToList());
+            IList<TTarget> delta = converted.Where(d=>
+                d.ChangedAt > lastKnowTimestamp
             ).ToList();
             repo.StoreSyncDelta(delta);
         }
 
-        protected virtual IEnumerable<TSource> Extract()
+        public virtual IEnumerable<TSource> Extract()
         {
             string dataFileName = $"data/{typeof(TSource).Name}.sample.json";
              if(!File.Exists(dataFileName))
@@ -41,9 +45,7 @@ namespace Sample.Domain.DataAdapter.Abstractions
             return JsonSerializer.Deserialize<List<TSource>>(File.ReadAllText(dataFileName)); 
         }
 
-        protected abstract IList<TTarget> Transform(IList<TSource> source)
-        {
-            return source;
-        }
+        public abstract IList<TTarget> Transform(IList<TSource> source);
+      
    }
 }

@@ -17,45 +17,69 @@ namespace MongoBase.Repositories
     {
 
         private readonly IMongoCollection<TDocument> _collection;
+        private readonly IMongoDatabase _database;
+        private readonly MongoClient _client;
+
 
         public IMongoCollection<TDocument> Collection => _collection;
-
+      
         public void StoreSyncDelta(IList<TDocument> delta)
         {
-            IQueryable<TDocument> query = this.AsQueryable();
-            List<TDocument> inserts = new();
-            List<TDocument> updates = new();
-            if (_collection.AsQueryable().Where(c => c.ChangedAt > 0).Any())
+            if (delta == null || delta.Count == 0) return;
+
+            var bulkOps = new List<WriteModel<TDocument>>();
+            if (_collection.AsQueryable().Count() == 0)
             {
-                foreach (var p in delta)
-                {
-                    var exists = query.Where(c => c.Id == p.Id).Any();
-                    if (exists)
-                    {
-                        updates.Add(p);
-                    }
-                    else
-                    {
-                        inserts.Add(p);
-                    }
-                }
+                _collection.InsertMany(delta);
             }
             else
             {
-                inserts.AddRange(delta);
+                foreach (var record in delta)
+                {
+                    var upsertOne = new ReplaceOneModel<TDocument>(
+                        Builders<TDocument>.Filter.Where(x => x.Id == record.Id),
+                        record)
+                    { IsUpsert = true };
+                    bulkOps.Add(upsertOne);
+                }
+                _collection.BulkWrite(bulkOps);
             }
-            var waitfor = new List<Task>();
-            if (inserts.Count > 0)
-            {
-                waitfor.Add(this._collection.InsertManyAsync(inserts));
+
+
+                //IQueryable<TDocument> query = this.AsQueryable();
+                //List<TDocument> inserts = new();
+                //List<TDocument> updates = new();
+                //if (_collection.AsQueryable().Where(c => c.ChangedAt > 0).Any())
+                //{
+                //    foreach (var p in delta)
+                //    {
+                //        var exists = query.Where(c => c.Id == p.Id).Any();
+                //        if (exists)
+                //        {
+                //            updates.Add(p);
+                //        }
+                //        else
+                //        {
+                //            inserts.Add(p);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    inserts.AddRange(delta);
+                //}
+                //var waitfor = new List<Task>();
+                //if (inserts.Count > 0)
+                //{
+                //    waitfor.Add(this._collection.InsertManyAsync(inserts));
+                //}
+                //foreach (var u in updates)
+                //{
+                //    waitfor.Add(this._collection.ReplaceOneAsync(i => i.Id == u.Id, u));
+                //}
+                //Task.WaitAll(waitfor.ToArray());
             }
-            foreach (var u in updates)
-            {
-                waitfor.Add(this._collection.ReplaceOneAsync(i => i.Id == u.Id, u));
-            }
-            Task.WaitAll(waitfor.ToArray());
-        }
-        public long GetMaxLastChanged()
+            public long GetMaxLastChanged()
         {
             long retVal = 0;
             int total = this.AsQueryable().Count();
@@ -70,8 +94,9 @@ namespace MongoBase.Repositories
 
         public Repository(IConnectionSettings settings)
         {
-            var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
-            _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
+            _client = new MongoClient(settings.ConnectionString);
+            _database= _client.GetDatabase(settings.DatabaseName);
+            _collection = _database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
 
 

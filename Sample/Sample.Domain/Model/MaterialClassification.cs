@@ -12,7 +12,7 @@ public class MaterialClassification : MongoBase.Models.BaseDocument
     public override long ChangedAt { get; set; }
     [IsQueryableAttribute()]
     [JsonPropertyName("MaterialNumber")]
-    public string MaterialNumber { get; set; }
+    public int MaterialNumber { get; set; }
     [IsQueryableAttribute()]
     [JsonPropertyName("Locale")]
     public string Locale { get; set; }

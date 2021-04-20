@@ -13,13 +13,13 @@ public class MaterialComposition : MongoBase.Models.BaseDocument
     public override long ChangedAt { get; set; }
     [IsQueryableAttribute()]
     [JsonPropertyName("MaterialNumber")]
-    public string MaterialNumber { get; set; }
+    public int MaterialNumber { get; set; }
     [IsQueryableAttribute()]
     [JsonPropertyName("Locale")]
     public string Locale { get; set; }
     [IsQueryableAttribute()]
-    [JsonPropertyName("MaterialComposition")]
-    public string MaterialCompositionText { get; set; }
+    [JsonPropertyName("MaterialCompositionID")]
+    public string MaterialCompositionID { get; set; }
     
     [IsQueryableAttribute()]
     [JsonPropertyName("Component")]

@@ -3,4 +3,4 @@
 **/TestResults
 **/.vs
 /db
-
+**/*.sample.json

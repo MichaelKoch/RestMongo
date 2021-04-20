@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Sample.Domain.DataAdapter
 {
-    public class ArticleVariantDataAdapter: JsonSourceDataAdapter<ArticleVariant,ArticleVariant>
+    public class MaterialClassificationDataAdapter : JsonSourceDataAdapter<MaterialClassification, MaterialClassification>
     {
         
     
 
-        public override IList<ArticleVariant> Transform(IList<ArticleVariant> source)
+        public override IList<MaterialClassification> Transform(IList<MaterialClassification> source)
         {
+
             long timestamp = DateTime.UtcNow.Ticks;
-            source = source.Where(s => s.EAN >= 0).ToList();
+            
             foreach (var i in source)
             {
                 i.ChangedAt = timestamp;

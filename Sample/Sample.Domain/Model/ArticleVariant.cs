@@ -7,37 +7,37 @@ namespace Sample.Domain.Models
     [MongoBase.Attributes.BsonCollection("ArticleVariant")]
     public class ArticleVariant: MongoBase.Models.BaseDocument
     {
-        public override string Id
-        {
-            get {
-                    if(!string.IsNullOrEmpty(EAN))
-                    {
-                        return this.EAN;
-                    }else if(!string.IsNullOrEmpty(UPC))
-                    {
-                        return this.UPC;
-                    }
-                    else
-                    {
-                        return Guid.NewGuid().ToString();
-                    }
-                }
-        }
+    //    public override string Id
+    //    {
+    //        get {
+    //                if(!string.IsNullOrEmpty(EAN))
+    //                {
+    //                    return this.EAN;
+    //                }else if(!string.IsNullOrEmpty(UPC))
+    //                {
+    //                    return this.UPC;
+    //                }
+    //                else
+    //                {
+    //                    return Guid.NewGuid().ToString();
+    //                }
+    //            }
+    //    }
         [IsQueryableAttribute()]
         [JsonPropertyName("MaterialNumber")]
-        public string MaterialNumber { get; set; }
+        public int MaterialNumber { get; set; }
 
         [IsQueryableAttribute()]
         [JsonPropertyName("ColorSize")]
         public string ColorSize { get; set; }
 
         [IsQueryableAttribute()]
-        [JsonPropertyName("EAN11")]
-        public string EAN { get; set; }
+        [JsonPropertyName("EAN")]
+        public long EAN { get; set; }
 
         [IsQueryableAttribute()]
         [JsonPropertyName("UPC")]
-        public string UPC { get; set; }
+        public long UPC { get; set; }
 
         [IsQueryableAttribute()]
         [JsonPropertyName("MainProductGroup")]
@@ -61,11 +61,11 @@ namespace Sample.Domain.Models
 
         [IsQueryableAttribute()]
         [JsonPropertyName("FormMaterialNumber")]
-        public string FormMaterialNumber { get; set; }
+        public int FormMaterialNumber { get; set; }
 
         [IsQueryableAttribute()]
         [JsonPropertyName("QualityMaterialNumber")]
-        public string QualityMaterialNumber { get; set; }
+        public int QualityMaterialNumber { get; set; }
 
         [IsQueryableAttribute()]
         [JsonPropertyName("MaterialText")]
