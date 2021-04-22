@@ -14,10 +14,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MongoBase.Controllers
 {
-    public class LocalizedEntityController<TDocument> : LocalizedReadController<TDocument> 
-        where TDocument : ILocalizedFeedDocument
+    public class EntityController<TDocument> : ReadController<TDocument> 
+        where TDocument : IFeedDocument
     {
-        public LocalizedEntityController(IRepository<TDocument> repository,int maxPageSize =100):base(repository,maxPageSize)
+        public EntityController(IRepository<TDocument> repository,int maxPageSize =100):base(repository,maxPageSize)
         {
             this._repository = repository;
             this._maxPageSize = maxPageSize;
