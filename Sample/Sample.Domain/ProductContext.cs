@@ -1,29 +1,38 @@
-﻿// using MongoBase.Interfaces;
-// using Sample.Domain.Interfaces;
-// using Sample.Domain.Repositories;
+﻿using MongoBase.Interfaces;
+using MongoBase.Utils;
+using Sample.Domain.Repositories;
 
-// namespace Sample.Domain
-// {
+namespace Sample.Domain
+{
 
-//     public class ProductContext : IProductContext
-//     {
-//         private readonly ProductRepository _products;
-//         private readonly ProductColorRepository _productColors;
-//         private readonly ProductColorSizeRepository _productColorSizes;
-       
+    public class ProductContext 
+    {
+        private readonly ArticleVariantRepository _articleVariants;
+        private readonly MaterialClassificationRepository _materialClassifications;
+        private readonly MaterialCompositionRepository _materialCompositions;
+        private readonly MaterialTextRepository _materialTexts;
+        private readonly CollectionMaterialRepository _collectionMaterials;
 
-//         public ProductContext(IConnectionSettings settings)
-//         {
-//             _products = new ProductRepository(settings,this);
-//             _productColors = new ProductColorRepository(settings,this);
-//             _productColorSizes = new ProductColorSizeRepository(settings,this);
-//         }
 
-//         public ProductRepository Products => _products;
-       
-//         public ProductColorRepository ProductColors => _productColors;
 
-//         public ProductColorSizeRepository ProductColorSizes => _productColorSizes;
-       
-//     }
-// }
+        public ProductContext(IConnectionSettings settings)
+        {
+           
+            _articleVariants = new ArticleVariantRepository(settings,this);
+            _materialClassifications = new MaterialClassificationRepository(settings, this);
+            _materialCompositions = new MaterialCompositionRepository(settings, this);
+            _materialTexts = new MaterialTextRepository(settings, this);
+            _collectionMaterials = new CollectionMaterialRepository(settings, this);
+        }
+
+        public ArticleVariantRepository ArticleVariants => _articleVariants;
+
+        public MaterialClassificationRepository MaterialClassifications => _materialClassifications;
+
+        public MaterialCompositionRepository MaterialCompositions => _materialCompositions;
+
+        public MaterialTextRepository MaterialTexts => _materialTexts;
+
+        public CollectionMaterialRepository CollectionMaterials => _collectionMaterials;
+    }
+}

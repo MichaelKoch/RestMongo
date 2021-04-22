@@ -14,12 +14,18 @@ namespace Sample.Domain.DataAdapter
         public override IList<ArticleVariant> Transform(IList<ArticleVariant> source)
         {
             long timestamp = DateTime.UtcNow.Ticks;
-            source = source.Where(s => s.EAN >= 0).ToList();
+            source = source.Where(s => s.EAN >= 0 && s.UPC >=0).ToList();
             foreach (var i in source)
             {
-                i.ChangedAt = timestamp;
+                i.Id = i.EAN.ToString();
+                if(i.EAN.ToString().Length != 11)
+                {
+                    i.EAN = 0;
+                    i.UPC = i.EAN;
+                }
+                i.Timestamp = timestamp;
             }
-            return source.ToList();
+            return this.Distinct(source);
         }
     }
 }

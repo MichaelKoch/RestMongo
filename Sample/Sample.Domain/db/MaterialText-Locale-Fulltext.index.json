@@ -1,0 +1,10 @@
+{
+  "indexOn": "MaterialText",
+  "fields": {
+    "Locale": "asc",
+    "DisplayText": "text",
+    "DetailText": "text",
+    "Description": "text"
+  }
+}
+   

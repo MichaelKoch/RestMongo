@@ -9,20 +9,13 @@ namespace MongoBase.Interfaces
     public interface IRepository<TDocument> where TDocument : IDocument
     {
         IQueryable<TDocument> AsQueryable();
-        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null);
-        PagedResultModel<TDocument> Query(string query, string orderby,string expand ="");
+        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 100);
+        PagedResultModel<TDocument> Query(string query, string orderby,string expand ="", int maxPageSize = 100);
         IEnumerable<TDocument> Search(string searchTerm,int maxCount);
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);
 
-        IEnumerable<TProjected> FilterBy<TProjected>(
-            Expression<Func<TDocument, bool>> filterExpression,
-            Expression<Func<TDocument, TProjected>> projectionExpression);
-
-        TDocument FindOne(Expression<Func<TDocument, bool>> filterExpression);
-
-        Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
-
+        
         TDocument FindById(string id);
 
         Task<TDocument> FindByIdAsync(string id);
@@ -36,15 +29,14 @@ namespace MongoBase.Interfaces
         Task InsertManyAsync(ICollection<TDocument> documents);
 
         void ReplaceOne(TDocument document);
-
+        
         Task ReplaceOneAsync(TDocument document);
 
         void DeleteById(string id);
         void DeleteById(IList<string> ids);
 
         Task DeleteByIdAsync(string id);
-        Task<IList<TDocument>> LoadRelations(IList<TDocument> values,IList<string> relations);
-        Task<IList<TDocument>> LoadRelations(IList<TDocument> values, string relations);
+      
 
     }
 }

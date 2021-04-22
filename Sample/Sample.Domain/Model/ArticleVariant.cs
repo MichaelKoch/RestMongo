@@ -1,28 +1,29 @@
 ﻿using MongoBase.Attributes;
+using MongoBase.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models
 {
     [MongoBase.Attributes.BsonCollection("ArticleVariant")]
-    public class ArticleVariant: MongoBase.Models.BaseDocument
+    public class ArticleVariant: MongoBase.Models.BaseDocument,IFeedDocument
     {
-    //    public override string Id
-    //    {
-    //        get {
-    //                if(!string.IsNullOrEmpty(EAN))
-    //                {
-    //                    return this.EAN;
-    //                }else if(!string.IsNullOrEmpty(UPC))
-    //                {
-    //                    return this.UPC;
-    //                }
-    //                else
-    //                {
-    //                    return Guid.NewGuid().ToString();
-    //                }
-    //            }
-    //    }
+        public override string Id
+        {
+            get
+            {
+                if (EAN> 0)
+                {
+                    return this.EAN.ToString();
+                }
+                else if (UPC > 0)
+                {
+                    return this.UPC.ToString();
+                }
+                return "INVALID";
+            }
+        }
         [IsQueryableAttribute()]
         [JsonPropertyName("MaterialNumber")]
         public int MaterialNumber { get; set; }
@@ -82,5 +83,19 @@ namespace Sample.Domain.Models
         [IsQueryableAttribute()]
         [JsonPropertyName("Size2")]
         public string Size2 { get; set; }
+
+        [IsQueryableAttribute()]
+        [JsonPropertyName("Timestamp")]
+        public long Timestamp { get; set; }
+
+        [JsonPropertyName("SalesText")]
+        public MaterialText SalesText { get; set; }
+
+        [JsonPropertyName("Attributes")]
+        public IList<MaterialClassification> Attributes { get; set; }
+
+        [JsonPropertyName("Compositions")]
+        public IList<MaterialComposition> Compositions { get; set; }
+
     }
 }

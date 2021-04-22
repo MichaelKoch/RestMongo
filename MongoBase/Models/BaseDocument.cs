@@ -15,9 +15,6 @@ namespace MongoBase.Models
         public virtual string Id { get; set; }
 
 
-        [IsQueryableAttribute]
-        [JsonPropertyName("ChangedAt")]
-        public virtual long ChangedAt { get; set; }
         public BaseDocument()
         {
             this.Id = Guid.NewGuid().ToString();

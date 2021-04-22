@@ -18,9 +18,9 @@ namespace Sample.Domain.DataAdapter
             
             foreach (var i in source)
             {
-                i.ChangedAt = timestamp;
+                i.Timestamp = timestamp;
             }
-            return source.ToList();
+            return this.Distinct(source);
         }
     }
 }

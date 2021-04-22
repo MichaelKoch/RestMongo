@@ -1,0 +1,9 @@
+{
+  "indexOn": "MaterialText",
+  "fields": {
+    "Locale": "asc",
+    "MaterialNumber": "asc"
+
+  }
+}
+   

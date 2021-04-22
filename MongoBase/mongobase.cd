@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="MongoBase.Controllers.ReadController&lt;TDocument&gt;">
+    <Position X="3.75" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAABAAAAAAAAAAAAAAAgAAAAAAAAAAgA=</HashCode>
+      <FileName>Controllers\Abstractions\ReadController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MongoBase.Controllers.ReadDeltaController&lt;TDocument&gt;">
+    <Position X="4.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Abstractions\ReadDeltaController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MongoBase.Controllers.ReadDeltaQueryFulltextController&lt;TDocument&gt;">
+    <Position X="1.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Controllers\Abstractions\ReadDeltaQueryFulltextController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MongoBase.Controllers.EntityController&lt;TDocument&gt;">
+    <Position X="3.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Controllers\EntityController.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MongoBase.Controllers.FeedController&lt;TDocument&gt;">
+    <Position X="6.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\FeedController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MongoBase.Models.ConnectionSettings">
+    <Position X="10.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAABAAA=</HashCode>
+      <FileName>Models\ConnectionSettings.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MongoBase.Repositories.Repository&lt;TDocument&gt;">
+    <Position X="8.75" Y="6.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAEAkAAgRMACAIIAIgAAAKABAAwABAAAAAAiAAA=</HashCode>
+      <FileName>Repositories\MongoRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MongoBase.Models.BaseDocument">
+    <Position X="8.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Models\BaseDocument.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="8.91" />
+</ClassDiagram>

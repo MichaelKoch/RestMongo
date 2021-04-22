@@ -9,26 +9,32 @@ using MongoDB.Driver;
 using MongoBase.Interfaces;
 using MongoBase.Attributes;
 using System.Text.RegularExpressions;
+using MongoBase.Exceptions;
 
 namespace MongoBase.Repositories
 {
-    public class Repository<TDocument> : IRepository<TDocument>
+    public class MongoRepository<TDocument> : IRepository<TDocument>
                  where TDocument : IDocument
     {
-
+        public readonly IConnectionSettings ConnectionSettings;
         private readonly IMongoCollection<TDocument> _collection;
         private readonly IMongoDatabase _database;
         private readonly MongoClient _client;
-
+        private readonly Type documentType = typeof(TDocument);
+        public MongoRepository(IConnectionSettings settings)
+        {
+            ConnectionSettings = settings;
+            _client = new MongoClient(settings.ConnectionString);
+            _database = _client.GetDatabase(settings.DatabaseName);
+            _collection = _database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
+        }
 
         public IMongoCollection<TDocument> Collection => _collection;
-      
         public void StoreSyncDelta(IList<TDocument> delta)
         {
             if (delta == null || delta.Count == 0) return;
-
             var bulkOps = new List<WriteModel<TDocument>>();
-            if (_collection.AsQueryable().Count() == 0)
+            if ( _collection.AsQueryable().Count() == 0)
             {
                 _collection.InsertMany(delta);
             }
@@ -79,30 +85,22 @@ namespace MongoBase.Repositories
                 //}
                 //Task.WaitAll(waitfor.ToArray());
             }
-            public long GetMaxLastChanged()
+        public long GetMaxLastChanged()
         {
+            if(!documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+                return 0;
+            }
             long retVal = 0;
             int total = this.AsQueryable().Count();
             if (total > 0)
             {
-                retVal = this.AsQueryable().Max(c => c.ChangedAt);
+                retVal = this.AsQueryable().Cast<IFeedDocument>().Max(c => c.Timestamp);
             }
             return retVal;
         }
    
-
-
-        public Repository(IConnectionSettings settings)
-        {
-            _client = new MongoClient(settings.ConnectionString);
-            _database= _client.GetDatabase(settings.DatabaseName);
-            _collection = _database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
-        }
-
-
-
-
-        public PagedResultModel<TDocument> Query(string query, string orderby = null,string expand ="")
+        public PagedResultModel<TDocument> Query(string query, string orderby = null,string expand ="", int maxPageSize = 100)
         {
             var orderbyDict = new Dictionary<string, string>();
             orderby = orderby.Replace(";", ",");
@@ -124,8 +122,8 @@ namespace MongoBase.Repositories
                     }
                 }
             }
-            var retVal    = this.Query(query, orderbyDict);
-            retVal.Values = this.LoadRelations(retVal.Values, expand).Result;
+            var retVal    = this.Query(query, orderbyDict,maxPageSize);
+        
             return retVal;
         }
 
@@ -135,7 +133,7 @@ namespace MongoBase.Repositories
         }
 
 
-        public PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null)
+        public PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null,int maxPageSize=1000)
         {
             var retVal = new PagedResultModel<TDocument>();
             if ((orderby == null) || (orderby.Count == 0))
@@ -145,13 +143,14 @@ namespace MongoBase.Repositories
                     { "Id", "asc" }
                 };
             }
+            
             retVal.Total = (int)this._collection.CountDocuments(query);
-            if(retVal.Total > 1000)
+            if(retVal.Total > maxPageSize)
             {
-                throw new NotSupportedException("MAX PAGE SIZE EXEEDED");
+                throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
             }
-            var matchInfo = new BsonDocument { { "$match", BsonDocument.Parse(query) } };
        
+            var matchInfo = new BsonDocument { { "$match", BsonDocument.Parse(query) } };
             var sortInfoField = new BsonDocument();
             var sortInfoDoc = new BsonDocument { { "$sort", sortInfoField } };
           
@@ -178,8 +177,8 @@ namespace MongoBase.Repositories
             };
             var results = this._collection.Aggregate<TDocument>(pipeline);
             retVal.Values = results.ToList();
-            //retVal.Skip = skip;
-            //retVal.Top = top;
+            retVal.Skip = 0;
+            retVal.Top = retVal.Total;
             return retVal;
         }
         private protected static string GetCollectionName(Type documentType)
@@ -196,13 +195,13 @@ namespace MongoBase.Repositories
         }
 
 
-        public virtual IEnumerable<TDocument> Search(string searchTerm,int maxCount=50)
+        public virtual IEnumerable<TDocument> Search(string searchTerm,int maxPageSize = 50)
         {
             var query = Builders<TDocument>.Filter.Text(searchTerm);
             var totalCount = (int)this._collection.CountDocuments(query);
-            if (totalCount > maxCount)
+            if (totalCount > maxPageSize)
             {
-                throw new NotSupportedException("MAX PAGE SIZE EXEEDED");
+                throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
             }
             return _collection.Find(Builders<TDocument>.Filter.Text(searchTerm)).ToList();
             
@@ -243,57 +242,79 @@ namespace MongoBase.Repositories
         {
             return new DateTime(this._collection.Database.GetServerTimeStap()).Ticks;
         }
-        private void SetChangedDate(TDocument document)
+        private void SetChangedDate(IFeedDocument document)
         {
             long timestamp = GetServerTimeStamp();
-            document.ChangedAt = timestamp;
+            document.Timestamp = timestamp;
         }
-        private void SetChangedDate(ICollection<TDocument> documents)
+        private void SetChangedDate(ICollection<IFeedDocument> documents)
         {
             long timestamp = GetServerTimeStamp();
             foreach (var d in documents)
             {
-                d.ChangedAt = timestamp;
+                d.Timestamp = timestamp;
             }
         }
 
         public virtual TDocument InsertOne(TDocument document)
         {
-            SetChangedDate(document);
+            if(documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+                SetChangedDate(document as IFeedDocument);
+            }
+       
             _collection.InsertOne(document);
             return document;
         }
 
         public virtual Task InsertOneAsync(TDocument document)
         {
-            SetChangedDate(document);
+            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+                SetChangedDate(document as IFeedDocument);
+            }
             return Task.Run(() => _collection.InsertOneAsync(document));
         }
 
         public void InsertMany(ICollection<TDocument> documents)
         {
-            SetChangedDate(documents);
+            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+                SetChangedDate(documents.Cast<IFeedDocument>().ToList());
+            }
+            
             _collection.InsertMany(documents);
         }
 
 
         public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
         {
-            SetChangedDate(documents);
+            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+             
+                SetChangedDate(documents.Cast<IFeedDocument>().ToList());
+            }
+
             await _collection.InsertManyAsync(documents).ConfigureAwait(false);
         }
 
         public void ReplaceOne(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            SetChangedDate(document);
+            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+                SetChangedDate(document as IFeedDocument);
+            }
             _collection.ReplaceOne(filter, document);
         }
 
         public virtual async Task ReplaceOneAsync(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
-            SetChangedDate(document);
+            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            {
+                SetChangedDate(document as IFeedDocument);
+            }
             await _collection.FindOneAndReplaceAsync(filter, document).ConfigureAwait(false);
         }
 
@@ -322,16 +343,7 @@ namespace MongoBase.Repositories
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }
-        public async virtual Task<IList<TDocument>> LoadRelations(IList<TDocument> values, string relations)
-        {
-            var expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
-            return LoadRelations(values,expands).Result;
-
-        }
-        public async virtual Task<IList<TDocument>> LoadRelations(IList<TDocument> values, IList<string> relations)
-        {
-            return values;
-        }
+      
 
         
     }

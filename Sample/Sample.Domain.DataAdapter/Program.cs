@@ -17,15 +17,18 @@ namespace Sample.Domain.DataAdapter
         private static readonly ConnectionSettings db = new()
         {
             DatabaseName = "DomainProduct",
-            ConnectionString = "mongodb://admin:admin@localhost"
+            ConnectionString = "mongodb://localhost"
         };
         internal static void Main(string[] args)
         {
 
-            //SyncArticleVariants();
-            //SyncMaterialText();
-            //SyncMaterialComposition();
-            SyncMaterialClassification();
+            ProductContext context = new ProductContext(db);
+            List<Task> waitfor = new List<Task>();
+            waitfor.Add(Task.Run(()=> SyncArticleVariants(context.ArticleVariants)));
+            waitfor.Add(Task.Run(() => SyncMaterialText(context.MaterialTexts)));
+            waitfor.Add(Task.Run(() => SyncMaterialComposition(context.MaterialCompositions)));
+            waitfor.Add(Task.Run(() => SyncMaterialClassification(context.MaterialClassifications)));
+            Task.WaitAll(waitfor.ToArray());
 
         }
 
@@ -41,34 +44,37 @@ namespace Sample.Domain.DataAdapter
 
         }
 
-        private static void SyncArticleVariants()
+        private static async void SyncArticleVariants(MongoRepository<ArticleVariant> repo)
         {
-            var dataAdapter = new ArticleVariantDataAdapter();
-            var target = new Repository<ArticleVariant>(db);
-            var data = dataAdapter.Transform(dataAdapter.Extract().ToList());
-            dataAdapter.Load(data, target);
+            var materialRepo = new MongoRepository<CollectionMaterial>(repo.ConnectionSettings);
+            var dataAdapterArticles = new ArticleVariantDataAdapter();
+            var dataAdapterCollectionMaterials = new CollectionMaterialAdapter();
+            IList<ArticleVariant> articles = dataAdapterArticles.Extract().ToList();
+            articles = dataAdapterArticles.Transform(articles);
+            dataAdapterArticles.Load(articles, repo);
+            var materials = dataAdapterCollectionMaterials.Transform(articles);
+            dataAdapterCollectionMaterials.Load(materials, materialRepo);
         }
 
-        private static void SyncMaterialClassification()
+        private static async void SyncMaterialClassification(MongoRepository<MaterialClassification> repo)
         {
             var dataAdapter = new MaterialClassificationDataAdapter();
-            var target = new Repository<MaterialClassification>(db);
             var data = dataAdapter.Transform(dataAdapter.Extract().ToList());
-            dataAdapter.Load(data, target);
+            dataAdapter.Load(data, repo);
         }
-        private static void SyncMaterialComposition()
+
+        private static async void SyncMaterialComposition(MongoRepository<MaterialComposition> repo)
         {
             var dataAdapter = new MaterialCompositionDataAdapter();
-            var target = new Repository<MaterialComposition>(db);
             var data = dataAdapter.Transform(dataAdapter.Extract().ToList());
-            dataAdapter.Load(data, target);
+            dataAdapter.Load(data, repo);
         }
-        private static void SyncMaterialText()
+        
+        private static async void SyncMaterialText(MongoRepository<MaterialText> repo)
         {
             var dataAdapter = new MaterialTextDataAdapter();
-            var target = new Repository<MaterialText>(db);
             var data = dataAdapter.Transform(dataAdapter.Extract().ToList());
-            dataAdapter.Load(data, target);
+            dataAdapter.Load(data, repo);
         }
     }
 }

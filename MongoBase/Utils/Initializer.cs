@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-
+using MongoBase.Interfaces;
 using MongoBase.Models;
 using MongoBase.Repositories;
 using MongoDB.Bson;
@@ -16,12 +16,13 @@ namespace MongoBase.Utils
     public static class SchemaInitializer
     {
         private static string _sourceDir = "";
-        internal static ConnectionSettings _settings;
+        internal static IConnectionSettings _settings;
         internal static Dictionary<string, string> _files = null;
+        private static bool isInitialized = false;
 
-
-        public static void Run(ConnectionSettings settings, Assembly assembly, string sourceDir = null)
+        public static void Run(IConnectionSettings settings, Assembly assembly, string sourceDir = null)
         {
+            if (isInitialized) return;
             var assemblyName = assembly.GetName().Name;
             var assemblyVersion = assembly.GetName().Version.ToString();
             var hash = CalculateHash(_files);
@@ -32,7 +33,7 @@ namespace MongoBase.Utils
                 _sourceDir = $"{Path.GetDirectoryName(assembly.Location)}/db";
             }
             _files = ReadContent(_sourceDir);
-            Repository<DomainSchemaInfo> schemaRepo = new Repositories.Repository<DomainSchemaInfo>(_settings);
+            MongoRepository<DomainSchemaInfo> schemaRepo = new Repositories.MongoRepository<DomainSchemaInfo>(_settings);
             var schemainfo = schemaRepo.AsQueryable().SingleOrDefault(c => c.AssemblyName == assemblyName);
             
             if(schemainfo ==null || schemainfo.Hash != CalculateHash(_files))
@@ -56,6 +57,7 @@ namespace MongoBase.Utils
                     schemaRepo.ReplaceOne(newSchemaInfo);
                 }
             }
+            isInitialized = true;
         }
         private static Dictionary<string, string> ReadContent(string sourceDir)
         {

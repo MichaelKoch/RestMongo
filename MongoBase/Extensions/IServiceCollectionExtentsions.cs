@@ -17,10 +17,7 @@ namespace MongoBase
     {
         public static void AddMongoBase(this IServiceCollection services, IConfiguration Configuration)
         {
-            
             services.AddOData();
-            services.AddControllers(); 
-            services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddMvcCore(options =>
             {
                 foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
@@ -32,8 +29,11 @@ namespace MongoBase
                     inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
                 }
             });
-           
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+          
+            ConnectionSettings mongoSettings = new ConnectionSettings();
+            Configuration.GetSection("mongo").Bind(mongoSettings);
+            services.AddSingleton<IConnectionSettings>(mongoSettings);
+            services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
         }
     }
 

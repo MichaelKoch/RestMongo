@@ -1,3 +1,4 @@
+using MongoBase.Interfaces;
 using MongoBase.Repositories;
 using Sample.Domain.DataAdapter.Abstractions;
 using Sample.Domain.Models;
@@ -15,12 +16,12 @@ namespace Sample.Domain.DataAdapter
         {
 
             long timestamp = DateTime.UtcNow.Ticks;
-            
             foreach (var i in source)
             {
-                i.ChangedAt = timestamp;
+                i.Timestamp = timestamp;
             }
-            return source.ToList();
+            return this.Distinct(source);
+
         }
     }
 }

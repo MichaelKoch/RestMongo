@@ -1,16 +1,21 @@
 ﻿using System.Text.Json.Serialization;
 using MongoBase.Attributes;
+using MongoBase.Interfaces;
+using Sample.Domain.Models;
 
 [MongoBase.Attributes.BsonCollection("MaterialText")]
-public class MaterialText : MongoBase.Models.BaseDocument
+public class MaterialText : MongoBase.Models.BaseDocument,IFeedDocument
 {
     [IsQueryableAttribute()]
     [JsonPropertyName("Id")]
-    public override string Id { get; set; }
-    [IsQueryableAttribute()]
-    [JsonPropertyName("ChangedAt")]
-    public override long ChangedAt { get; set; }
-    
+    public override string Id { 
+        get 
+        {
+            return this.MaterialNumber + "-" + Locale;
+        } 
+        set { } }
+  
+
     [IsQueryableAttribute()]
     [JsonPropertyName("MaterialNumber")]
     public int MaterialNumber { get; set; }
@@ -30,4 +35,10 @@ public class MaterialText : MongoBase.Models.BaseDocument
     [IsQueryableAttribute()]
     [JsonPropertyName("Description")]
     public string Description { get; set; }
+    [IsQueryableAttribute()]
+    [JsonPropertyName("Timestamp")]
+    public long Timestamp { get; set; }
+
+
+    public CollectionMaterial Material { get; set;}
 }

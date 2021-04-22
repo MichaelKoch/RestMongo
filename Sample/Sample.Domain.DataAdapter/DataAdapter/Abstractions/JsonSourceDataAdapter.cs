@@ -13,14 +13,21 @@ namespace Sample.Domain.DataAdapter.Abstractions
 {
 
    public abstract class JsonSourceDataAdapter<TSource,TTarget>
-          where TSource : IDocument 
-          where TTarget : IDocument
+          where TSource : IFeedDocument 
+          where TTarget : IFeedDocument
     {    
         public JsonSourceDataAdapter()
         {
             
         }
-        public void Load(IEnumerable<TSource> source ,Repository<TTarget> repo)
+
+        protected IList<TTarget> Distinct(IEnumerable<TTarget> list)
+        {
+            var known = new HashSet<string>();
+            var distinct = list.Where(element => known.Add(element.Id)).ToList();
+            return distinct;
+        }
+        public void Load(IEnumerable<TTarget> data , MongoRepository<TTarget> repo)
         {
             
             if (repo is null)
@@ -28,9 +35,8 @@ namespace Sample.Domain.DataAdapter.Abstractions
                 throw new System.ArgumentNullException(nameof(repo));
             }
             long lastKnowTimestamp = repo.GetMaxLastChanged();
-            IList<TTarget> converted = Transform(source.ToList());
-            IList<TTarget> delta = converted.Where(d=>
-                d.ChangedAt > lastKnowTimestamp
+            IList<TTarget> delta = data.Where(d=>
+                d.Timestamp > lastKnowTimestamp
             ).ToList();
             repo.StoreSyncDelta(delta);
         }
