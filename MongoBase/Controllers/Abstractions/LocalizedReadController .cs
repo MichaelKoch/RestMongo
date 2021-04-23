@@ -36,10 +36,10 @@ namespace MongoBase.Controllers
                [FromQuery(Name = "$orderby")] string orderby = "",
                [FromQuery(Name = "$expand")] string expand = "")
         {
-            
+
             try
             {
-               
+
                 var retVal = this._repository.Query(JsonSerializer.Serialize(query), orderby);
                 this.LoadRelations(retVal.Values, expand, locale).Wait();
                 return Ok(retVal);
@@ -95,6 +95,7 @@ namespace MongoBase.Controllers
         [HttpGet("{id}")]
         [SwaggerResponse(200)]
         [SwaggerResponse(404, "NOT FOUND", typeof(string))]
+
         public virtual ActionResult<TDocument> Get(
             string id,
             [FromQuery(Name = "locale")] string locale = "en-GB",

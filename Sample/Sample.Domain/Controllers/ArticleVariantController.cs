@@ -12,12 +12,12 @@ namespace Sample.Domain.Controllers
     public class ArticleVariantController : LocalizedFeedController<ArticleVariant>
     {
         private ProductContext _context;
-        public ArticleVariantController(ProductContext context) : base(context.ArticleVariants)
+        public ArticleVariantController(ProductContext context) : base(context.ArticleVariants, 10000)
         {
             this._context = context;
         }
 
-        protected override async Task<bool> LoadRelations(IList<ArticleVariant> values, IList<string> relations,string locale)
+        protected override async Task<bool> LoadRelations(IList<ArticleVariant> values, IList<string> relations, string locale)
         {
             var waitFor = new List<Task>();
             foreach (var av in values)
@@ -27,7 +27,7 @@ namespace Sample.Domain.Controllers
             if (relations.Contains("SalesText"))
             {
                 relations.Remove("SalesText");
-                waitFor.Add(loadSalesText(values,locale));
+                waitFor.Add(loadSalesText(values, locale));
             }
             if (relations.Contains("Compositions"))
             {
@@ -50,7 +50,7 @@ namespace Sample.Domain.Controllers
             return true;
 
         }
-        private async Task<bool> loadSalesText(IList<ArticleVariant> values,string locale)
+        private async Task<bool> loadSalesText(IList<ArticleVariant> values, string locale)
         {
             var queryable = _context.MaterialTexts.AsQueryable();
             var materialNumbers = values.Select(c => c.MaterialNumber).ToList();

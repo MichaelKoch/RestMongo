@@ -20,16 +20,18 @@ namespace MongoBase
             services.AddOData();
             services.AddMvcCore(options =>
             {
-                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
+                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().ToList())
                 {
-                    outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
+                    options.OutputFormatters.Remove(outputFormatter);
+                    //outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
                 }
-                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
+                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().ToList())
                 {
-                    inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
+                    options.InputFormatters.Remove(inputFormatter);
+                    //inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
                 }
             });
-          
+
             ConnectionSettings mongoSettings = new ConnectionSettings();
             Configuration.GetSection("mongo").Bind(mongoSettings);
             services.AddSingleton<IConnectionSettings>(mongoSettings);

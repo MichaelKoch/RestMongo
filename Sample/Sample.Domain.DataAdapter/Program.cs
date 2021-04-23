@@ -17,17 +17,17 @@ namespace Sample.Domain.DataAdapter
         private static readonly ConnectionSettings db = new()
         {
             DatabaseName = "DomainProduct",
-            ConnectionString = "mongodb://localhost"
+            ConnectionString = "mongodb://admin:admin@localhost"
         };
         internal static void Main(string[] args)
         {
 
             ProductContext context = new ProductContext(db);
             List<Task> waitfor = new List<Task>();
-            waitfor.Add(Task.Run(()=> SyncArticleVariants(context.ArticleVariants)));
-            waitfor.Add(Task.Run(() => SyncMaterialText(context.MaterialTexts)));
-            waitfor.Add(Task.Run(() => SyncMaterialComposition(context.MaterialCompositions)));
-            waitfor.Add(Task.Run(() => SyncMaterialClassification(context.MaterialClassifications)));
+            waitfor.Add(Task.Run(() => SyncArticleVariants(context.ArticleVariants)));
+            // waitfor.Add(Task.Run(() => SyncMaterialText(context.MaterialTexts)));
+            // waitfor.Add(Task.Run(() => SyncMaterialComposition(context.MaterialCompositions)));
+            // waitfor.Add(Task.Run(() => SyncMaterialClassification(context.MaterialClassifications)));
             Task.WaitAll(waitfor.ToArray());
 
         }
@@ -69,7 +69,7 @@ namespace Sample.Domain.DataAdapter
             var data = dataAdapter.Transform(dataAdapter.Extract().ToList());
             dataAdapter.Load(data, repo);
         }
-        
+
         private static async void SyncMaterialText(MongoRepository<MaterialText> repo)
         {
             var dataAdapter = new MaterialTextDataAdapter();

@@ -32,12 +32,13 @@ namespace SampleServer
             services.AddResponseCompression();
             services.AddSwaggerGen(c =>
             {
-                c.ResolveConflictingActions(apiDescriptions => {
+                c.ResolveConflictingActions(apiDescriptions =>
+                {
                     return apiDescriptions.First();
                 });
             });
             InitSchema();
-         
+
         }
 
         protected void InitSchema()
@@ -50,7 +51,7 @@ namespace SampleServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             app.UseResponseCompression();
             if (env.IsDevelopment())
             {

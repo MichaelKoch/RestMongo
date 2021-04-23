@@ -7,23 +7,8 @@ using System.Text.Json.Serialization;
 namespace Sample.Domain.Models
 {
     [MongoBase.Attributes.BsonCollection("ArticleVariant")]
-    public class ArticleVariant: MongoBase.Models.BaseDocument,ILocalizedFeedDocument
+    public class ArticleVariant : MongoBase.Models.BaseDocument, ILocalizedFeedDocument
     {
-        public override string Id
-        {
-            get
-            {
-                if (EAN> 0)
-                {
-                    return this.EAN.ToString();
-                }
-                else if (UPC > 0)
-                {
-                    return this.UPC.ToString();
-                }
-                return "INVALID";
-            }
-        }
 
         [JsonPropertyName("Locale")]
         public string Locale { get; set; }
@@ -100,6 +85,6 @@ namespace Sample.Domain.Models
 
         [JsonPropertyName("Compositions")]
         public IList<MaterialComposition> Compositions { get; set; }
-        
+
     }
 }
