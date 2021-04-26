@@ -1,9 +1,11 @@
 using System.Text.Json.Serialization;
 using MongoBase.Attributes;
 using MongoBase.Interfaces;
-using Sample.Domain.Models;
+using MongoDB.Bson.Serialization.Attributes;
+using Sample.Domain.Models.Enities;
 
 [MongoBase.Attributes.BsonCollection("MaterialClassification")]
+[BsonIgnoreExtraElements]
 public class MaterialClassification : MongoBase.Models.BaseDocument,IFeedDocument
 {
     [IsQueryableAttribute()]
@@ -40,5 +42,5 @@ public class MaterialClassification : MongoBase.Models.BaseDocument,IFeedDocumen
 
 
 
-    public CollectionMaterial Material { get; set; }
+    public CollectionMaterialDTO Material { get; set; }
 }

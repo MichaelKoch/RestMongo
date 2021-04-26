@@ -13,27 +13,27 @@ using MongoBase.Exceptions;
 
 namespace MongoBase.Repositories
 {
-    public class MongoRepository<TDocument> : IRepository<TDocument>
-                 where TDocument : IDocument
+    public class MongoRepository<TEntity> : IRepository<TEntity>
+                 where TEntity : IDocument
     {
         public readonly IConnectionSettings ConnectionSettings;
-        private readonly IMongoCollection<TDocument> _collection;
+        private readonly IMongoCollection<TEntity> _collection;
         private readonly IMongoDatabase _database;
         private readonly MongoClient _client;
-        private readonly Type documentType = typeof(TDocument);
+        private readonly Type documentType = typeof(TEntity);
         public MongoRepository(IConnectionSettings settings)
         {
             ConnectionSettings = settings;
             _client = new MongoClient(settings.ConnectionString);
             _database = _client.GetDatabase(settings.DatabaseName);
-            _collection = _database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
+            _collection = _database.GetCollection<TEntity>(GetCollectionName(typeof(TEntity)));
         }
 
-        public IMongoCollection<TDocument> Collection => _collection;
-        public void StoreSyncDelta(IList<TDocument> delta)
+        public IMongoCollection<TEntity> Collection => _collection;
+        public void StoreSyncDelta(IList<TEntity> delta)
         {
             if (delta == null || delta.Count == 0) return;
-            var bulkOps = new List<WriteModel<TDocument>>();
+            var bulkOps = new List<WriteModel<TEntity>>();
             if ( _collection.AsQueryable().Count() == 0)
             {
                 _collection.InsertMany(delta);
@@ -42,8 +42,8 @@ namespace MongoBase.Repositories
             {
                 foreach (var record in delta)
                 {
-                    var upsertOne = new ReplaceOneModel<TDocument>(
-                        Builders<TDocument>.Filter.Where(x => x.Id == record.Id),
+                    var upsertOne = new ReplaceOneModel<TEntity>(
+                        Builders<TEntity>.Filter.Where(x => x.Id == record.Id),
                         record)
                     { IsUpsert = true };
                     bulkOps.Add(upsertOne);
@@ -52,9 +52,9 @@ namespace MongoBase.Repositories
             }
 
 
-                //IQueryable<TDocument> query = this.AsQueryable();
-                //List<TDocument> inserts = new();
-                //List<TDocument> updates = new();
+                //IQueryable<TEntity> query = this.AsQueryable();
+                //List<TEntity> inserts = new();
+                //List<TEntity> updates = new();
                 //if (_collection.AsQueryable().Where(c => c.ChangedAt > 0).Any())
                 //{
                 //    foreach (var p in delta)
@@ -100,7 +100,7 @@ namespace MongoBase.Repositories
             return retVal;
         }
    
-        public PagedResultModel<TDocument> Query(string query, string orderby = null,string expand ="", int maxPageSize = 100)
+        public PagedResultModel<TEntity> Query(string query, string orderby = null,string expand ="", int maxPageSize = 100)
         {
             var orderbyDict = new Dictionary<string, string>();
             orderby = orderby.Replace(";", ",");
@@ -127,15 +127,15 @@ namespace MongoBase.Repositories
             return retVal;
         }
 
-        public IList<TDocument> Query(FilterDefinition<TDocument> filter)
+        public IList<TEntity> Query(FilterDefinition<TEntity> filter)
         {
             return this._collection.Find(filter).ToList();
         }
 
 
-        public PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null,int maxPageSize=1000)
+        public PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null,int maxPageSize=1000)
         {
-            var retVal = new PagedResultModel<TDocument>();
+            var retVal = new PagedResultModel<TEntity>();
             if ((orderby == null) || (orderby.Count == 0))
             {
                 orderby = new Dictionary<string, string>
@@ -170,12 +170,12 @@ namespace MongoBase.Repositories
                     throw new NotSupportedException("sort direction not supported : " + direction);
                 }
             }
-            PipelineDefinition<TDocument, TDocument> pipeline = new BsonDocument[]
+            PipelineDefinition<TEntity, TEntity> pipeline = new BsonDocument[]
             {
                 matchInfo,
                 sortInfoDoc
             };
-            var results = this._collection.Aggregate<TDocument>(pipeline);
+            var results = this._collection.Aggregate<TEntity>(pipeline);
             retVal.Values = results.ToList();
             retVal.Skip = 0;
             retVal.Top = retVal.Total;
@@ -189,52 +189,52 @@ namespace MongoBase.Repositories
                 .FirstOrDefault())?.CollectionName;
         }
 
-        public virtual IQueryable<TDocument> AsQueryable()
+        public virtual IQueryable<TEntity> AsQueryable()
         {
             return _collection.AsQueryable();
         }
 
 
-        public virtual IEnumerable<TDocument> Search(string searchTerm,int maxPageSize = 50)
+        public virtual IEnumerable<TEntity> Search(string searchTerm,int maxPageSize = 50)
         {
-            var query = Builders<TDocument>.Filter.Text(searchTerm);
+            var query = Builders<TEntity>.Filter.Text(searchTerm);
             var totalCount = (int)this._collection.CountDocuments(query);
             if (totalCount > maxPageSize)
             {
                 throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
             }
-            return _collection.Find(Builders<TDocument>.Filter.Text(searchTerm)).ToList();
+            return _collection.Find(Builders<TEntity>.Filter.Text(searchTerm)).ToList();
             
         }
 
-        public virtual IEnumerable<TDocument> FilterBy(
-            Expression<Func<TDocument, bool>> filterExpression)
+        public virtual IEnumerable<TEntity> FilterBy(
+            Expression<Func<TEntity, bool>> filterExpression)
         {
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
         public virtual IEnumerable<TProjected> FilterBy<TProjected>(
-            Expression<Func<TDocument, bool>> filterExpression,
-            Expression<Func<TDocument, TProjected>> projectionExpression)
+            Expression<Func<TEntity, bool>> filterExpression,
+            Expression<Func<TEntity, TProjected>> projectionExpression)
         {
             return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
 
-        public virtual TDocument FindOne(Expression<Func<TDocument, bool>> filterExpression)
+        public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression)
         {
             return _collection.Find(filterExpression).FirstOrDefault();
         }
 
-        public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
+        public virtual Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression)
         {
             return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
         }
 
-        public virtual TDocument FindById(string id)
+        public virtual TEntity FindById(string id)
         {
             return _collection.AsQueryable().SingleOrDefault(c => c.Id == id);
         }
-        public virtual Task<TDocument> FindByIdAsync(string id)
+        public virtual Task<TEntity> FindByIdAsync(string id)
         {
             return Task.Run(() => _collection.AsQueryable().SingleOrDefault(c => c.Id == id));
         }
@@ -256,7 +256,7 @@ namespace MongoBase.Repositories
             }
         }
 
-        public virtual TDocument InsertOne(TDocument document)
+        public virtual TEntity InsertOne(TEntity document)
         {
             if(documentType.IsAssignableFrom(typeof(IFeedDocument)))
             {
@@ -267,7 +267,7 @@ namespace MongoBase.Repositories
             return document;
         }
 
-        public virtual Task InsertOneAsync(TDocument document)
+        public virtual Task InsertOneAsync(TEntity document)
         {
             if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
             {
@@ -276,7 +276,7 @@ namespace MongoBase.Repositories
             return Task.Run(() => _collection.InsertOneAsync(document));
         }
 
-        public void InsertMany(ICollection<TDocument> documents)
+        public void InsertMany(ICollection<TEntity> documents)
         {
             if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
             {
@@ -287,7 +287,7 @@ namespace MongoBase.Repositories
         }
 
 
-        public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
+        public virtual async Task InsertManyAsync(ICollection<TEntity> documents)
         {
             if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
             {
@@ -298,9 +298,9 @@ namespace MongoBase.Repositories
             await _collection.InsertManyAsync(documents).ConfigureAwait(false);
         }
 
-        public void ReplaceOne(TDocument document)
+        public void ReplaceOne(TEntity document)
         {
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, document.Id);
             if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
@@ -308,9 +308,9 @@ namespace MongoBase.Repositories
             _collection.ReplaceOne(filter, document);
         }
 
-        public virtual async Task ReplaceOneAsync(TDocument document)
+        public virtual async Task ReplaceOneAsync(TEntity document)
         {
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, document.Id);
             if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
@@ -325,7 +325,7 @@ namespace MongoBase.Repositories
 
         public void DeleteById(List<string> ids)
         {
-            var filter = Builders<TDocument>.Filter.In(doc => doc.Id, ids);
+            var filter = Builders<TEntity>.Filter.In(doc => doc.Id, ids);
             var r = _collection.DeleteManyAsync(filter).Result;
         }
 
@@ -339,7 +339,7 @@ namespace MongoBase.Repositories
             return Task.Run(() =>
             {
                 var objectId = new ObjectId(id);
-                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, id);
+                var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, id);
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }

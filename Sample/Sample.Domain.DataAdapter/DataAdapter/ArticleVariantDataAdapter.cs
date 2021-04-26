@@ -1,6 +1,6 @@
 using MongoBase.Repositories;
 using Sample.Domain.DataAdapter.Abstractions;
-using Sample.Domain.Models;
+using Sample.Domain.Models.Enities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +9,43 @@ namespace Sample.Domain.DataAdapter
     public class ArticleVariantDataAdapter: JsonSourceDataAdapter<ArticleVariant,ArticleVariant>
     {
         
-    
+        
 
         public override IList<ArticleVariant> Transform(IList<ArticleVariant> source)
         {
             long timestamp = DateTime.UtcNow.Ticks;
-            source = source.Where(s => s.EAN >= 0 && s.UPC >=0).ToList();
+            
             foreach (var i in source)
             {
-                i.Id = i.EAN.ToString();
-                if(i.EAN.ToString().Length != 11)
+                var scancode = i.EAN;
+                switch(scancode.ToString().Length)
                 {
-                    i.EAN = 0;
-                    i.UPC = i.EAN;
+                    case 11:
+
+                        i.Id = scancode.ToString();
+                        i.EAN = scancode;
+                        i.UPC = 0;
+                        break;
+                    case 13:
+                        
+                        i.Id = scancode.ToString();
+                        i.EAN = scancode;
+                        i.UPC = 0;
+                        break;
+
+                    case 12:
+                        
+                        i.Id = scancode.ToString();
+                        i.UPC = scancode;
+                        i.EAN = 0;
+                        break;
+
+                    default:
+                        
+                        i.Id = Guid.NewGuid().ToString();
+                        i.EAN = 0;
+                        i.UPC = 0;
+                        break;
                 }
                 i.Timestamp = timestamp;
             }

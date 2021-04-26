@@ -6,7 +6,7 @@ using System.Text.Json;
 using MongoBase.Models;
 using System.Collections.Generic;
 using MongoBase.Repositories;
-using Sample.Domain.Models;
+using Sample.Domain.Models.Enities;
 using System.Threading.Tasks;
 
 namespace Sample.Domain.DataAdapter
@@ -17,7 +17,7 @@ namespace Sample.Domain.DataAdapter
         private static readonly ConnectionSettings db = new()
         {
             DatabaseName = "DomainProduct",
-            ConnectionString = "mongodb://admin:admin@localhost"
+            ConnectionString = "mongodb://admin:admin@win10"
         };
         internal static void Main(string[] args)
         {
@@ -25,9 +25,9 @@ namespace Sample.Domain.DataAdapter
             ProductContext context = new ProductContext(db);
             List<Task> waitfor = new List<Task>();
             waitfor.Add(Task.Run(() => SyncArticleVariants(context.ArticleVariants)));
-            // waitfor.Add(Task.Run(() => SyncMaterialText(context.MaterialTexts)));
-            // waitfor.Add(Task.Run(() => SyncMaterialComposition(context.MaterialCompositions)));
-            // waitfor.Add(Task.Run(() => SyncMaterialClassification(context.MaterialClassifications)));
+            waitfor.Add(Task.Run(() => SyncMaterialText(context.MaterialTexts)));
+            waitfor.Add(Task.Run(() => SyncMaterialComposition(context.MaterialCompositions)));
+            waitfor.Add(Task.Run(() => SyncMaterialClassification(context.MaterialClassifications)));
             Task.WaitAll(waitfor.ToArray());
 
         }

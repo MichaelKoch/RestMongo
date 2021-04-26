@@ -14,10 +14,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MongoBase.Controllers
 {
-    public class LocalizedEntityController<TDocument> : LocalizedReadController<TDocument> 
-        where TDocument : ILocalizedFeedDocument
+    public abstract class LocalizedEntityController<TEntity, TDataTransfer> : LocalizedFeedController<TEntity, TDataTransfer> 
+        where TEntity : ILocalizedFeedDocument
     {
-        public LocalizedEntityController(IRepository<TDocument> repository,int maxPageSize =100):base(repository,maxPageSize)
+        public LocalizedEntityController(IRepository<TEntity> repository,int maxPageSize =100):base(repository,maxPageSize)
         {
             this._repository = repository;
             this._maxPageSize = maxPageSize;
@@ -27,7 +27,7 @@ namespace MongoBase.Controllers
         [SwaggerResponse(200)]
         [SwaggerResponse(409, "CONFLICT")]
         [SwaggerOperation("create new instance")]
-        public virtual ActionResult<string> Post([FromBody] TDocument value)
+        public virtual ActionResult<string> Post([FromBody] TEntity value)
         {
             var instance = this._repository.FindById(value.Id);
             if (instance != null)
@@ -42,7 +42,7 @@ namespace MongoBase.Controllers
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
         [SwaggerOperation("Update instance by ID")]
-        public virtual ActionResult Put(string id, [FromBody] TDocument value)
+        public virtual ActionResult Put(string id, [FromBody] TEntity value)
         {
             var instance = this._repository.FindById(value.Id);
             if (instance == null)

@@ -6,31 +6,31 @@ using System.Threading.Tasks;
 
 namespace MongoBase.Interfaces
 {
-    public interface IRepository<TDocument> where TDocument : IDocument
+    public interface IRepository<TEntity> where TEntity : IDocument
     {
-        IQueryable<TDocument> AsQueryable();
-        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 100);
-        PagedResultModel<TDocument> Query(string query, string orderby,string expand ="", int maxPageSize = 100);
-        IEnumerable<TDocument> Search(string searchTerm,int maxCount);
-        IEnumerable<TDocument> FilterBy(
-            Expression<Func<TDocument, bool>> filterExpression);
+        IQueryable<TEntity> AsQueryable();
+        PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 100);
+        PagedResultModel<TEntity> Query(string query, string orderby,string expand ="", int maxPageSize = 100);
+        IEnumerable<TEntity> Search(string searchTerm,int maxCount);
+        IEnumerable<TEntity> FilterBy(
+            Expression<Func<TEntity, bool>> filterExpression);
 
         
-        TDocument FindById(string id);
+        TEntity FindById(string id);
 
-        Task<TDocument> FindByIdAsync(string id);
+        Task<TEntity> FindByIdAsync(string id);
 
-        TDocument InsertOne(TDocument document);
+        TEntity InsertOne(TEntity document);
 
-        Task InsertOneAsync(TDocument document);
+        Task InsertOneAsync(TEntity document);
 
-        void InsertMany(ICollection<TDocument> documents);
+        void InsertMany(ICollection<TEntity> documents);
 
-        Task InsertManyAsync(ICollection<TDocument> documents);
+        Task InsertManyAsync(ICollection<TEntity> documents);
 
-        void ReplaceOne(TDocument document);
+        void ReplaceOne(TEntity document);
         
-        Task ReplaceOneAsync(TDocument document);
+        Task ReplaceOneAsync(TEntity document);
 
         void DeleteById(string id);
         void DeleteById(IList<string> ids);

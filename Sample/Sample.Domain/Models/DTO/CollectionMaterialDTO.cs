@@ -4,16 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Sample.Domain.Models
+namespace Sample.Domain.Models.Enities
 {
-    [MongoBase.Attributes.BsonCollection("CollectionMaterials")]
-    public class CollectionMaterial: MongoBase.Models.BaseDocument,IFeedDocument
+    
+    public class CollectionMaterialDTO
     {
-     
+        [JsonPropertyName("Locale")]
+        public string Locale { get; set; }
+
         [IsQueryableAttribute()]
         [JsonPropertyName("MaterialNumber")]
         public int MaterialNumber { get; set; }
-             
+
         [IsQueryableAttribute()]
         [JsonPropertyName("MainProductGroup")]
         public string MainProductGroup { get; set; }
@@ -49,8 +51,17 @@ namespace Sample.Domain.Models
         [IsQueryableAttribute()]
         [JsonPropertyName("Timestamp")]
         public long Timestamp { get; set; }
-        public MaterialText Text { get; set; }
-        public ArticleVariant Variants { get; set; }
 
+        [JsonPropertyName("SalesText")]
+        public MaterialTextDTO SalesText { get; set; }
+
+        [JsonPropertyName("Attributes")]
+        public IList<MaterialClassificationDTO> Attributes { get; set; }
+
+        [JsonPropertyName("Compositions")]
+        public IList<MaterialCompositionDTO> Compositions { get; set; }
+
+        [JsonPropertyName("Variants")]
+        public IList<ArticleVariantDTO> Variants { get; set; }
     }
 }

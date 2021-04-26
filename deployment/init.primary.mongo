@@ -1,5 +1,15 @@
-use admin
 
+
+
+   rs.initiate( {
+      _id : "SupplyProducts",
+      members: [
+         { _id:0, host: "win10:27017",priority:1 },
+      
+      ]
+   })
+
+use admin
 db.createUser(
       {
           user: "admin",
@@ -7,10 +17,3 @@ db.createUser(
           roles: [ "root" ]
       }
 )
-
-rs.initiate( {
-   _id : "DomainProducts",
-   members: [
-      { _id: 0, host: "localhost:27017" }
-   ]
-})

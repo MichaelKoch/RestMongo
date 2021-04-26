@@ -1,3 +1,5 @@
+
+
 using MongoBase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -11,18 +13,29 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net;
 using MongoBase.Exceptions;
+using MongoBase.Utils;
 
 namespace MongoBase.Controllers
 {
     [Route("[controller]")]
-    public abstract class LocalizedReadController<TDocument> : ControllerBase
-            where TDocument : ILocalizedDocument
+    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase where TEntity : IDocument
     {
-        protected IRepository<TDocument> _repository;
-        protected int _maxPageSize = 1000; //TODO => get it from configuration
+        protected IRepository<TEntity> _repository;
+        protected int _maxPageSize = 0; //TODO => get it from configuration
+
+        protected virtual TDataTransfer ConvertToDTO(TEntity value)
+        {
+            return CopyUtils<TDataTransfer>.Convert(value);
+        }
+
+        protected virtual IList<TDataTransfer> Convert(IList<TEntity> value)
+        {
+            return CopyUtils<IList<TDataTransfer>>.Convert(value.Cast<object>().ToList());
+        }
 
 
-        public LocalizedReadController(IRepository<TDocument> repository, int maxPageSize = 1000)
+
+        public ReadController(IRepository<TEntity> repository, int maxPageSize = 1000)
         {
             _maxPageSize = maxPageSize;
         }
@@ -30,18 +43,22 @@ namespace MongoBase.Controllers
         [HttpPost("query")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412, "MAX PAGE SIZE EXCEEDED", typeof(string))]
-        public virtual ActionResult<PagedResultModel<TDocument>> Query(
+        public async virtual Task<ActionResult<PagedResultModel<TDataTransfer>>> Query(
                [FromBody] dynamic query,
-               [FromQuery(Name = "locale")] string locale = "en-GB",
                [FromQuery(Name = "$orderby")] string orderby = "",
                [FromQuery(Name = "$expand")] string expand = "")
         {
-
+            //TODO : Clean response code 
             try
             {
-
-                var retVal = this._repository.Query(JsonSerializer.Serialize(query), orderby);
-                this.LoadRelations(retVal.Values, expand, locale).Wait();
+                PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby);
+                var retVal = new PagedResultModel<TDataTransfer>()
+                {
+                    Total = result.Total,
+                    Values = await this.LoadRelations(Convert(query.ToList()), expand),
+                    Skip = 0,
+                    Top = result.Total
+                };
                 return Ok(retVal);
             }
             catch (PageSizeExeededException ex)
@@ -55,8 +72,7 @@ namespace MongoBase.Controllers
         [HttpGet("")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412, "MAX PAGE SIZE EXCEEDED", typeof(string))]
-        public virtual ActionResult<PagedResultModel<TDocument>> Get(
-            [FromQuery(Name = "locale")] string locale = "en-GB",
+        public async virtual Task<ActionResult<PagedResultModel<TDataTransfer>>> Get(
             [FromQuery(Name = "$top")] int top = 200,
             [FromQuery(Name = "$skip")] int skip = 0,
             [FromQuery(Name = "$filter")] string filter = "",
@@ -75,52 +91,50 @@ namespace MongoBase.Controllers
             t.Remove("$skip");
             t.Remove("$expand");
             Request.QueryString = new QueryString("?" + t.ToString());
-            var queryOptions = new ODataQueryOptions(IsQueryableAttribute.GetODataQueryContext(typeof(TDocument)), Request);
+            var queryOptions = new ODataQueryOptions(IsQueryableAttribute.GetODataQueryContext(typeof(TEntity)), Request);
             var query = this._repository.AsQueryable();
-            query = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TDocument>();
+            query = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TEntity>();
             total = query.Count();
             query = query.Skip(skip);
             query = query.Take(top);
-            var retVal = new PagedResultModel<TDocument>()
+            var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,
-                Values = query.ToList(),
+                Values =await  this.LoadRelations(Convert(query.ToList()), expand),
                 Skip = skip,
                 Top = top
             };
-            this.LoadRelations(retVal.Values, expand, locale).Wait();
             return retVal;
         }
 
         [HttpGet("{id}")]
         [SwaggerResponse(200)]
         [SwaggerResponse(404, "NOT FOUND", typeof(string))]
-
-        public virtual ActionResult<TDocument> Get(
-            string id,
-            [FromQuery(Name = "locale")] string locale = "en-GB",
-            [FromQuery(Name = "$expand")] string expand = ""
-            )
+        public async virtual Task<ActionResult<TDataTransfer>> Get(string id, [FromQuery(Name = "$expand")] string expand = "")
         {
             var instance = this._repository.FindById(id);
             if (instance == null)
             {
                 return NotFound();
             }
-            this.LoadRelations(new List<TDocument>() { instance }, expand, locale).Wait();
-            return instance;
+            return this.LoadRelations(new List<TDataTransfer>() { ConvertToDTO(instance) }, expand).Result[0];
+
         }
 
 
 
-        protected async virtual Task<bool> LoadRelations(IList<TDocument> values, string relations, string locale)
+        protected async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, string relations)
         {
-            var expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
-            return await LoadRelations(values, expands, locale);
+            var expands = new List<string>();
+            if(!string.IsNullOrEmpty(relations))
+            {
+                expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
+            }
+            return await LoadRelations(values, expands);
         }
-        protected async virtual Task<bool> LoadRelations(IList<TDocument> values, IList<string> relations, string locale)
+        protected async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, IList<string> relations)
         {
-            return await Task.Run<bool>(() => { return true; });
+            return await Task.Run<IList<TDataTransfer>>(() => { return values; });
         }
     }
 }

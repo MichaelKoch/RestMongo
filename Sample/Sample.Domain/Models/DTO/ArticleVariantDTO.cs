@@ -1,14 +1,16 @@
 ﻿using MongoBase.Attributes;
 using MongoBase.Interfaces;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Sample.Domain.Models
+namespace Sample.Domain.Models.Enities
 {
-    [MongoBase.Attributes.BsonCollection("ArticleVariant")]
-    public class ArticleVariant : MongoBase.Models.BaseDocument, ILocalizedFeedDocument
+    
+    public class ArticleVariantDTO 
     {
+
 
         [JsonPropertyName("Locale")]
         public string Locale { get; set; }
@@ -78,13 +80,15 @@ namespace Sample.Domain.Models
         public long Timestamp { get; set; }
 
         [JsonPropertyName("SalesText")]
-        public MaterialText SalesText { get; set; }
+        public MaterialTextDTO SalesText { get; set; }
 
         [JsonPropertyName("Attributes")]
-        public IList<MaterialClassification> Attributes { get; set; }
+        public IList<MaterialClassificationDTO> Attributes { get; set; }
 
         [JsonPropertyName("Compositions")]
-        public IList<MaterialComposition> Compositions { get; set; }
+        public IList<MaterialCompositionDTO> Compositions { get; set; }
+
+        
 
     }
 }

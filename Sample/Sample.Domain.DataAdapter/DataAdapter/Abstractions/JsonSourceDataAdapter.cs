@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MongoBase.Interfaces;
 using MongoBase.Repositories;
-using Sample.Domain.Models;
+using Sample.Domain.Models.Enities;
 
 namespace Sample.Domain.DataAdapter.Abstractions
 {

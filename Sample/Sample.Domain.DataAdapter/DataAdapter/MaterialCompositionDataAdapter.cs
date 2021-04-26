@@ -1,7 +1,7 @@
 using MongoBase.Interfaces;
 using MongoBase.Repositories;
 using Sample.Domain.DataAdapter.Abstractions;
-using Sample.Domain.Models;
+using Sample.Domain.Models.Enities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

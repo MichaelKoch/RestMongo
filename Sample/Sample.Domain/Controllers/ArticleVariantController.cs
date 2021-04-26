@@ -1,5 +1,7 @@
-﻿using MongoBase.Controllers;
-using Sample.Domain.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoBase.Controllers;
+using MongoBase.Utils;
+using Sample.Domain.Models.Enities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 namespace Sample.Domain.Controllers
 {
 
-    public class ArticleVariantController : LocalizedFeedController<ArticleVariant>
+    public class ArticleVariantController : LocalizedFeedController<ArticleVariant, ArticleVariantDTO>
     {
         private ProductContext _context;
         public ArticleVariantController(ProductContext context) : base(context.ArticleVariants, 10000)
@@ -17,8 +19,12 @@ namespace Sample.Domain.Controllers
             this._context = context;
         }
 
-        protected override async Task<bool> LoadRelations(IList<ArticleVariant> values, IList<string> relations, string locale)
+        protected override async Task<IList<ArticleVariantDTO>> LoadRelations(IList<ArticleVariantDTO> values, IList<string> relations, string locale)
         {
+            if(relations ==null || relations.Count ==0)
+            {
+                relations = new List<string>() { "Compositions", "Attributes", "SalesText" };
+            }
             var waitFor = new List<Task>();
             foreach (var av in values)
             {
@@ -47,10 +53,10 @@ namespace Sample.Domain.Controllers
             {
                 throw new NotSupportedException("INVALID EXPAND:" + string.Join(" ", relations));
             }
-            return true;
+            return values;
 
         }
-        private async Task<bool> loadSalesText(IList<ArticleVariant> values, string locale)
+        private async Task<bool> loadSalesText(IList<ArticleVariantDTO> values, string locale)
         {
             var queryable = _context.MaterialTexts.AsQueryable();
             var materialNumbers = values.Select(c => c.MaterialNumber).ToList();
@@ -61,12 +67,12 @@ namespace Sample.Domain.Controllers
             foreach (var av in values)
             {
                 av.Locale = locale;
-                av.SalesText = relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).FirstOrDefault();
+                av.SalesText = CopyUtils<MaterialTextDTO>.Convert(relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).FirstOrDefault());
             }
             return true;
         }
 
-        private async Task<bool> loadAttributes(IList<ArticleVariant> values, string locale)
+        private async Task<bool> loadAttributes(IList<ArticleVariantDTO> values, string locale)
         {
             var queryable = _context.MaterialClassifications.AsQueryable();
             var materialNumbers = values.Select(c => c.MaterialNumber).ToList();
@@ -77,12 +83,12 @@ namespace Sample.Domain.Controllers
             foreach (var av in values)
             {
                 av.Locale = locale;
-                av.Attributes = relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).ToList();
+                av.Attributes = CopyUtils<List<MaterialClassificationDTO>>.Convert(relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).ToList());
             }
             return true;
         }
 
-        private async Task<bool> loadCompositions(IList<ArticleVariant> values, string locale)
+        private async Task<bool> loadCompositions(IList<ArticleVariantDTO> values, string locale)
         {
             var queryable = _context.MaterialCompositions.AsQueryable();
             var materialNumbers = values.Select(c => c.MaterialNumber).ToList();
@@ -93,9 +99,15 @@ namespace Sample.Domain.Controllers
             foreach (var av in values)
             {
                 av.Locale = locale;
-                av.Compositions = relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).ToList();
+                av.Compositions =CopyUtils<List<MaterialCompositionDTO>>.Convert(relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).ToList());
             }
             return true;
+        }
+
+        
+        protected override ArticleVariantDTO ConvertToDTO(ArticleVariant value)
+        {
+            return CopyUtils<ArticleVariantDTO>.Convert(value);
         }
     }
 }

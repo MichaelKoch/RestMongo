@@ -2,9 +2,11 @@
 using System.Text.Json.Serialization;
 using MongoBase.Attributes;
 using MongoBase.Interfaces;
-using Sample.Domain.Models;
+using MongoDB.Bson.Serialization.Attributes;
+using Sample.Domain.Models.Enities;
 
 [MongoBase.Attributes.BsonCollection("MaterialComposition")]
+[BsonIgnoreExtraElements]
 public class MaterialComposition : MongoBase.Models.BaseDocument,IFeedDocument
 {
     [IsQueryableAttribute()]
@@ -49,6 +51,6 @@ public class MaterialComposition : MongoBase.Models.BaseDocument,IFeedDocument
 
 
 
-    public CollectionMaterial Material { get; set; }
+
 }
 

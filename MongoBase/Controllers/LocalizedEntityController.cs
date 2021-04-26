@@ -14,20 +14,21 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MongoBase.Controllers
 {
-    public class EntityController<TDocument> : ReadController<TDocument> 
-        where TDocument : IFeedDocument
+    public abstract class EntityController<TEntity, TDataTransfer> : FeedController<TEntity, TDataTransfer> 
+        where TEntity : IFeedDocument
     {
-        public EntityController(IRepository<TDocument> repository,int maxPageSize =100):base(repository,maxPageSize)
+        public EntityController(IRepository<TEntity> repository,int maxPageSize =100):base(repository,maxPageSize)
         {
             this._repository = repository;
             this._maxPageSize = maxPageSize;
         }
         
+        
         [HttpPost]
         [SwaggerResponse(200)]
         [SwaggerResponse(409, "CONFLICT")]
         [SwaggerOperation("create new instance")]
-        public virtual ActionResult<string> Post([FromBody] TDocument value)
+        public virtual ActionResult<string> Post([FromBody] TEntity value)
         {
             var instance = this._repository.FindById(value.Id);
             if (instance != null)
@@ -36,13 +37,13 @@ namespace MongoBase.Controllers
             }
             return this._repository.InsertOne(value).Id.ToString(); ;
         }
-
-      
+        
+        
         [HttpPut("{id}")]
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
         [SwaggerOperation("Update instance by ID")]
-        public virtual ActionResult Put(string id, [FromBody] TDocument value)
+        public virtual ActionResult Put(string id, [FromBody] TEntity value)
         {
             var instance = this._repository.FindById(value.Id);
             if (instance == null)
@@ -58,6 +59,7 @@ namespace MongoBase.Controllers
             return NoContent();
         }
 
+        
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]

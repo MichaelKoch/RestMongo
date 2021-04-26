@@ -1,9 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using MongoBase.Attributes;
 using MongoBase.Interfaces;
-using Sample.Domain.Models;
+using MongoDB.Bson.Serialization.Attributes;
+using Sample.Domain.Models.Enities;
 
 [MongoBase.Attributes.BsonCollection("MaterialText")]
+[BsonIgnoreExtraElements]
 public class MaterialText : MongoBase.Models.BaseDocument,IFeedDocument
 {
     [IsQueryableAttribute()]
@@ -40,5 +42,5 @@ public class MaterialText : MongoBase.Models.BaseDocument,IFeedDocument
     public long Timestamp { get; set; }
 
 
-    public CollectionMaterial Material { get; set;}
+    public CollectionMaterialDTO Material { get; set;}
 }

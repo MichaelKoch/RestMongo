@@ -4,6 +4,8 @@ using Microsoft.AspNet.OData.Builder;
 using System.Linq;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
+using System.Reflection;
+using MongoBase.Interfaces;
 
 namespace MongoBase.Attributes
 {
@@ -37,6 +39,21 @@ namespace MongoBase.Attributes
             _cache.Add(type, retVal);
             return retVal;
         }
+
+
+        public static bool IsAssignedTo(MemberInfo member)
+        {
+            if (member.DeclaringType.IsAssignableTo(typeof(ILocalizedDocument)))
+            {
+                if (member.DeclaringType.GetCustomAttributes(typeof(IsQueryableAttribute), false).Length > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
         public IsQueryableAttribute()
         {
         }

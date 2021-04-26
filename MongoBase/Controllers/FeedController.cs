@@ -12,16 +12,16 @@ using System;
 
 namespace MongoBase.Controllers
 {
-    public class LocalizedFeedController<TDocument> : LocalizedReadController<TDocument> where TDocument : ILocalizedFeedDocument
+    public abstract class FeedController<TEntity, TDataTransfer> : ReadController<TEntity, TDataTransfer> where TEntity : IFeedDocument
     {
         [HttpGet("delta")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412)]
-        public virtual ActionResult<IEnumerable<TDocument>> Delta([FromQuery] long since = 0,
+        public virtual ActionResult<IEnumerable<TEntity>> Delta([FromQuery] long since = 0,
              [FromQuery(Name = "$top")] int top = 200,
              [FromQuery(Name = "$skip")] int skip = 0)
         {
-            if (top > this._maxPageSize)
+            if (top - skip > 100)
             {
                 StatusCode(412, "MAX PAGE SIZE EXCEEDED");
             }
@@ -33,7 +33,7 @@ namespace MongoBase.Controllers
             return query.ToList();
         }
 
-        public LocalizedFeedController(IRepository<TDocument> repository,int maxPageSize = 500):base(repository)
+        public FeedController(IRepository<TEntity> repository, int maxPageSize = 100) : base(repository)
         {
             this._repository = repository;
             this._maxPageSize = maxPageSize;
