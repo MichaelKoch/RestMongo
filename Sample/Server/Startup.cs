@@ -61,7 +61,6 @@ namespace SampleServer
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleServer v1")
                 );
             }
-           
             app.UseRouting();
             app.UseAuthorization();
             app.AddMongoBase();

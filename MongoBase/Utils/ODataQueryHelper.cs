@@ -45,7 +45,7 @@ namespace MongoBase.Utils
             return provider;
 
         }
-        public static ODataQueryContext GetODataQueryContext(Type type)
+        private static ODataQueryContext GetODataQueryContext(Type type)
         {
             if (_cache.ContainsKey(type))
             {
@@ -67,11 +67,9 @@ namespace MongoBase.Utils
         }
         public static IQueryable<TType> Apply<TType>(string filter, IQueryable<TType> query) where TType : class
         {
-
             if (string.IsNullOrEmpty(filter))
             {
                 return query;
-
             }
             var type = typeof(TType);
 
