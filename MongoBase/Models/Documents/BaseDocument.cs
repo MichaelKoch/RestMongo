@@ -8,7 +8,7 @@ using MongoDB.Bson;
 
 namespace MongoBase.Models
 {
-    public class BaseDocument : IDocument
+    public abstract class BaseDocument : IDocument
     {
         [IsQueryableAttribute]
         [JsonPropertyName("Id")]

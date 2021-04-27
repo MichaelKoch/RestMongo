@@ -25,7 +25,7 @@ namespace SampleServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMongoBase(Configuration);
+            services.AddMongoBase<ProductContext>(Configuration);
             services.AddScoped<ProductContext>();
             services.AddControllers();
             services.AddMvc(options => options.EnableEndpointRouting = false);
@@ -61,16 +61,14 @@ namespace SampleServer
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleServer v1")
                 );
             }
-            app.UseMvc(routeBuilder =>
-            {
-                routeBuilder.EnableDependencyInjection();
-            });
+           
             app.UseRouting();
             app.UseAuthorization();
-
+            app.AddMongoBase();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+             
             });
         }
     }

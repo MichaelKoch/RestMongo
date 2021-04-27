@@ -1,5 +1,6 @@
 ﻿using MongoBase.Interfaces;
 using MongoBase.Utils;
+using Sample.Domain.Models.Enities;
 using Sample.Domain.Repositories;
 
 namespace Sample.Domain
@@ -13,7 +14,7 @@ namespace Sample.Domain
         private readonly MaterialTextRepository _materialTexts;
         private readonly CollectionMaterialRepository _collectionMaterials;
 
-
+        private readonly IRepository<ReadWriteEntity> _readWriteEntities;
 
         public ProductContext(IConnectionSettings settings)
         {
@@ -23,6 +24,7 @@ namespace Sample.Domain
             _materialCompositions = new MaterialCompositionRepository(settings, this);
             _materialTexts = new MaterialTextRepository(settings, this);
             _collectionMaterials = new CollectionMaterialRepository(settings, this);
+            _readWriteEntities = new MongoBase.Repositories.MongoRepository<ReadWriteEntity>(settings);
         }
 
         public ArticleVariantRepository ArticleVariants => _articleVariants;
@@ -34,5 +36,7 @@ namespace Sample.Domain
         public MaterialTextRepository MaterialTexts => _materialTexts;
 
         public CollectionMaterialRepository CollectionMaterials => _collectionMaterials;
+
+        public IRepository<ReadWriteEntity> ReadWriteEntities => _readWriteEntities;
     }
 }

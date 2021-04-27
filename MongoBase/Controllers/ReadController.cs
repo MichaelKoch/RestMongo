@@ -14,11 +14,12 @@ using System.Threading.Tasks;
 using System.Net;
 using MongoBase.Exceptions;
 using MongoBase.Utils;
+using MongoBase.Models;
 
 namespace MongoBase.Controllers
 {
     [Route("[controller]")]
-    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase where TEntity : IDocument
+    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase where TEntity : BaseDocument
     {
         protected IRepository<TEntity> _repository;
         protected int _maxPageSize = 0; //TODO => get it from configuration
@@ -38,6 +39,7 @@ namespace MongoBase.Controllers
         public ReadController(IRepository<TEntity> repository, int maxPageSize = 1000)
         {
             _maxPageSize = maxPageSize;
+            _repository = repository;
         }
 
         [HttpPost("query")]
@@ -83,20 +85,12 @@ namespace MongoBase.Controllers
             {
                 return StatusCode(412, "MAX PAGE SIZE EXCEEDED");
             }
-            //TODO => QUICK HACK REUSING ODATA QUERY PARSER 
-            var oriQueryString = Request.QueryString;
-            var t = HttpUtility.ParseQueryString(Request.QueryString.ToUriComponent());
-            var total = 0;
-            t.Remove("$top");
-            t.Remove("$skip");
-            t.Remove("$expand");
-            Request.QueryString = new QueryString("?" + t.ToString());
-            var queryOptions = new ODataQueryOptions(IsQueryableAttribute.GetODataQueryContext(typeof(TEntity)), Request);
+
             var query = this._repository.AsQueryable();
-            query = queryOptions.ApplyTo(this._repository.AsQueryable()).OfType<TEntity>();
-            total = query.Count();
-            query = query.Skip(skip);
-            query = query.Take(top);
+            query = ODataQueryHelper.Apply<TEntity>(filter, query).OfType<TEntity>();
+            var total = query.Count();
+            query = query.Take(top).Skip(skip);
+
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,

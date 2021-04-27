@@ -6,6 +6,10 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
 using System.Reflection;
 using MongoBase.Interfaces;
+using Microsoft.OData.UriParser;
+using Microsoft.AspNet.OData.Query.Validators;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNet.OData.Query;
 
 namespace MongoBase.Attributes
 {
@@ -14,6 +18,37 @@ namespace MongoBase.Attributes
     {
         //TODO : Use threadsafe caching solution
         private static Dictionary<Type, ODataQueryContext> _cache = new Dictionary<Type, ODataQueryContext>();
+
+        //public static ODataQueryContext GetODataQueryOptions(Type type)
+        //{
+
+        //    var collection = new ServiceCollection();
+        //    collection.AddTransient<ODataUriResolver>();
+        //    collection.AddTransient<ODataQueryValidator>();
+        //    collection.AddTransient<TopQueryValidator>();
+        //    collection.AddTransient<FilterQueryValidator>();
+        //    collection.AddTransient<SkipQueryValidator>();
+        //    collection.AddTransient<OrderByQueryValidator>();
+        //    var provider = collection.BuildServiceProvider();
+        //    var routeBuilder = new RouteBuilder(Mock.Of<IApplicationBuilder>(x => x.ApplicationServices == provider));
+        //    routeBuilder.EnableDependencyInjection();
+
+        //    var modelBuilder = new ODataConventionModelBuilder(provider);
+        //    modelBuilder.EntitySet<TestModel>("TestModels");
+        //    var model = modelBuilder.GetEdmModel();
+
+
+        //    var httpContext = new DefaultHttpContext
+        //    {
+        //        RequestServices = provider
+        //    };
+        //    var httpcontext = new ODataQueryContext(model, type, new Microsoft.AspNet.OData.Routing.ODataPath());
+        //    var options = new ODataQueryOptions<type>(httpcontext, a.Request);
+        //}
+
+
+
+
 
         public static ODataQueryContext GetODataQueryContext(Type type)
         {
@@ -29,9 +64,7 @@ namespace MongoBase.Attributes
                 var modelInfo = new List<IsQueryableAttribute>(pi.GetCustomAttributes(typeof(IsQueryableAttribute), true) as IsQueryableAttribute[]).LastOrDefault();
                 if (modelInfo != null)
                 {
-
                     entityType.AddProperty(pi);
-
                 }
             }
             // var context = new ODataQueryContext(model.GetEdmModel(), typeof(TestModel), new Microsoft.AspNet.OData.Routing.ODataPath());

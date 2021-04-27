@@ -11,11 +11,12 @@ using System.Collections.Generic;
 using System;
 using MongoBase.Utils;
 using System.Threading.Tasks;
+using MongoBase.Models;
 
 namespace MongoBase.Controllers
 {
     public abstract class LocalizedFeedController<TEntity, TDataTransfer> : LocalizedReadController<TEntity, TDataTransfer>
-           where TEntity : ILocalizedFeedDocument
+           where TEntity : LocalizedFeedDocument
     {
         [HttpGet("delta")]
         [SwaggerResponse(200)]

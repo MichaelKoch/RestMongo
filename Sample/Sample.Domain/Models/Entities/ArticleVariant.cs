@@ -9,11 +9,9 @@ namespace Sample.Domain.Models.Enities
 {
     [MongoBase.Attributes.BsonCollection("ArticleVariant")]
     [BsonIgnoreExtraElements]
-    public class ArticleVariant : MongoBase.Models.BaseDocument, ILocalizedFeedDocument
+    public class ArticleVariant : MongoBase.Models.LocalizedFeedDocument, ILocalizedFeedDocument
     {
 
-        [JsonPropertyName("Locale")]
-        public string Locale { get; set; }
 
 
         [IsQueryableAttribute()]
@@ -76,9 +74,7 @@ namespace Sample.Domain.Models.Enities
         [JsonPropertyName("Size2")]
         public string Size2 { get; set; }
 
-        [IsQueryableAttribute()]
-        [JsonPropertyName("Timestamp")]
-        public long Timestamp { get; set; }
-        
+      
+
     }
 }

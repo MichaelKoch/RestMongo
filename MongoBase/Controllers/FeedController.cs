@@ -9,10 +9,11 @@ using MongoBase.Attributes;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System;
+using MongoBase.Models;
 
 namespace MongoBase.Controllers
 {
-    public abstract class FeedController<TEntity, TDataTransfer> : ReadController<TEntity, TDataTransfer> where TEntity : IFeedDocument
+    public abstract class FeedController<TEntity, TDataTransfer> : ReadController<TEntity, TDataTransfer> where TEntity : FeedDocument
     {
         [HttpGet("delta")]
         [SwaggerResponse(200)]

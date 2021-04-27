@@ -52,38 +52,7 @@ namespace MongoBase.Repositories
             }
 
 
-                //IQueryable<TEntity> query = this.AsQueryable();
-                //List<TEntity> inserts = new();
-                //List<TEntity> updates = new();
-                //if (_collection.AsQueryable().Where(c => c.ChangedAt > 0).Any())
-                //{
-                //    foreach (var p in delta)
-                //    {
-                //        var exists = query.Where(c => c.Id == p.Id).Any();
-                //        if (exists)
-                //        {
-                //            updates.Add(p);
-                //        }
-                //        else
-                //        {
-                //            inserts.Add(p);
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    inserts.AddRange(delta);
-                //}
-                //var waitfor = new List<Task>();
-                //if (inserts.Count > 0)
-                //{
-                //    waitfor.Add(this._collection.InsertManyAsync(inserts));
-                //}
-                //foreach (var u in updates)
-                //{
-                //    waitfor.Add(this._collection.ReplaceOneAsync(i => i.Id == u.Id, u));
-                //}
-                //Task.WaitAll(waitfor.ToArray());
+           
             }
         public long GetMaxLastChanged()
         {
@@ -100,7 +69,7 @@ namespace MongoBase.Repositories
             return retVal;
         }
    
-        public PagedResultModel<TEntity> Query(string query, string orderby = null,string expand ="", int maxPageSize = 100)
+        public PagedResultModel<TEntity> Query(string query, string orderby = null, int maxPageSize = 100)
         {
             var orderbyDict = new Dictionary<string, string>();
             orderby = orderby.Replace(";", ",");
@@ -127,11 +96,7 @@ namespace MongoBase.Repositories
             return retVal;
         }
 
-        public IList<TEntity> Query(FilterDefinition<TEntity> filter)
-        {
-            return this._collection.Find(filter).ToList();
-        }
-
+  
 
         public PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null,int maxPageSize=1000)
         {
@@ -143,7 +108,6 @@ namespace MongoBase.Repositories
                     { "Id", "asc" }
                 };
             }
-            
             retVal.Total = (int)this._collection.CountDocuments(query);
             if(retVal.Total > maxPageSize)
             {
@@ -181,7 +145,7 @@ namespace MongoBase.Repositories
             retVal.Top = retVal.Total;
             return retVal;
         }
-        private protected static string GetCollectionName(Type documentType)
+        private static string GetCollectionName(Type documentType)
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
                     typeof(BsonCollectionAttribute),
@@ -258,7 +222,7 @@ namespace MongoBase.Repositories
 
         public virtual TEntity InsertOne(TEntity document)
         {
-            if(documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if(documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
             }
@@ -269,7 +233,7 @@ namespace MongoBase.Repositories
 
         public virtual Task InsertOneAsync(TEntity document)
         {
-            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
             }
@@ -278,7 +242,7 @@ namespace MongoBase.Repositories
 
         public void InsertMany(ICollection<TEntity> documents)
         {
-            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 SetChangedDate(documents.Cast<IFeedDocument>().ToList());
             }
@@ -289,7 +253,7 @@ namespace MongoBase.Repositories
 
         public virtual async Task InsertManyAsync(ICollection<TEntity> documents)
         {
-            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
              
                 SetChangedDate(documents.Cast<IFeedDocument>().ToList());
@@ -301,7 +265,7 @@ namespace MongoBase.Repositories
         public void ReplaceOne(TEntity document)
         {
             var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, document.Id);
-            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
             }
@@ -311,7 +275,7 @@ namespace MongoBase.Repositories
         public virtual async Task ReplaceOneAsync(TEntity document)
         {
             var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, document.Id);
-            if (documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
             }
@@ -323,24 +287,24 @@ namespace MongoBase.Repositories
             DeleteById(new List<string>() { id });
         }
 
-        public void DeleteById(List<string> ids)
+        public void DeleteById(IList<string> ids)
         {
             var filter = Builders<TEntity>.Filter.In(doc => doc.Id, ids);
             var r = _collection.DeleteManyAsync(filter).Result;
         }
-
-        public void DeleteById(IList<string> ids)
-        {
-            DeleteById(ids);
-        }
-
         public Task DeleteByIdAsync(string id)
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
-                var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, id);
-                _collection.FindOneAndDeleteAsync(filter);
+               return DeleteByIdAsync(new List<string> { id });
+            });
+        }
+        public Task DeleteByIdAsync(IList<string> ids)
+        {
+            return Task.Run(() =>
+            {
+                var filter = Builders<TEntity>.Filter.In(doc => doc.Id, ids);
+                return  _collection.DeleteManyAsync(filter).Result;
             });
         }
       

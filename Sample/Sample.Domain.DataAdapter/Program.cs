@@ -17,7 +17,7 @@ namespace Sample.Domain.DataAdapter
         private static readonly ConnectionSettings db = new()
         {
             DatabaseName = "DomainProduct",
-            ConnectionString = "mongodb://admin:admin@win10"
+            ConnectionString = "mongodb://admin:admin@vehicle"
         };
         internal static void Main(string[] args)
         {

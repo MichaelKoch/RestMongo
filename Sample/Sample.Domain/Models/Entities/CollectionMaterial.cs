@@ -7,20 +7,17 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models.Enities
 {
-    [MongoBase.Attributes.BsonCollection("CollectionMaterials")]
+    [MongoBase.Attributes.BsonCollection("CollectionMaterial")]
     [BsonIgnoreExtraElements]
-    public class CollectionMaterial: MongoBase.Models.BaseDocument,ILocalizedFeedDocument
+    public class CollectionMaterial : MongoBase.Models.LocalizedFeedDocument, ILocalizedFeedDocument
     {
 
-       
-        [JsonPropertyName("Locale")]
-        [BsonIgnore]
-        public string Locale { get; set; }
+
 
         [IsQueryableAttribute()]
         [JsonPropertyName("MaterialNumber")]
         public int MaterialNumber { get; set; }
-             
+
         [IsQueryableAttribute()]
         [JsonPropertyName("MainProductGroup")]
         public string MainProductGroup { get; set; }
@@ -53,20 +50,5 @@ namespace Sample.Domain.Models.Enities
         [JsonPropertyName("MaterialText")]
         public string MaterialText { get; set; }
 
-        [IsQueryableAttribute()]
-        [JsonPropertyName("Timestamp")]
-        public long Timestamp { get; set; }
-
-        //[JsonPropertyName("SalesText")]
-        //public MaterialText SalesText { get; set; }
-
-        //[JsonPropertyName("Attributes")]
-        //public IList<MaterialClassification> Attributes { get; set; }
-
-        //[JsonPropertyName("Compositions")]
-        //public IList<MaterialComposition> Compositions { get; set; }
-
-        //[JsonPropertyName("Variants")]
-        //public IList<ArticleVariant> Variants { get; set; }
     }
 }

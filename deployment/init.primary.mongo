@@ -4,7 +4,7 @@
    rs.initiate( {
       _id : "SupplyProducts",
       members: [
-         { _id:0, host: "win10:27017",priority:1 },
+         { _id:0, host: "localhost:27017",priority:1 },
       
       ]
    })

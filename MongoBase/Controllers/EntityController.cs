@@ -1,4 +1,5 @@
 
+
 using System.Collections.Generic;
 using MongoBase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -10,19 +11,20 @@ using System.Web;
 using Microsoft.AspNetCore.Http;
 using MongoBase.Attributes;
 using Swashbuckle.AspNetCore.Annotations;
-
+using MongoBase.Models;
 
 namespace MongoBase.Controllers
 {
-    public abstract class LocalizedEntityController<TEntity, TDataTransfer> : LocalizedFeedController<TEntity, TDataTransfer> 
-        where TEntity : ILocalizedFeedDocument
+    public abstract class EntityController<TEntity, TDataTransfer> : FeedController<TEntity, TDataTransfer>
+        where TEntity : FeedDocument
     {
-        public LocalizedEntityController(IRepository<TEntity> repository,int maxPageSize =100):base(repository,maxPageSize)
+        public EntityController(IRepository<TEntity> repository, int maxPageSize = 100) : base(repository, maxPageSize)
         {
             this._repository = repository;
             this._maxPageSize = maxPageSize;
         }
-        
+
+
         [HttpPost]
         [SwaggerResponse(200)]
         [SwaggerResponse(409, "CONFLICT")]
@@ -34,10 +36,11 @@ namespace MongoBase.Controllers
             {
                 return Conflict("DUPLICATE KEY");
             }
+            value.Timestamp = DateTime.UtcNow.Ticks;
             return this._repository.InsertOne(value).Id.ToString(); ;
         }
 
-      
+
         [HttpPut("{id}")]
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
@@ -57,6 +60,7 @@ namespace MongoBase.Controllers
             this._repository.ReplaceOne(value);
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]

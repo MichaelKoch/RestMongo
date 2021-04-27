@@ -9,8 +9,8 @@ namespace MongoBase.Interfaces
     public interface IRepository<TEntity> where TEntity : IDocument
     {
         IQueryable<TEntity> AsQueryable();
-        PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 100);
-        PagedResultModel<TEntity> Query(string query, string orderby,string expand ="", int maxPageSize = 100);
+        PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 1000);
+        PagedResultModel<TEntity> Query(string query, string orderby, int maxPageSize = 1000);
         IEnumerable<TEntity> Search(string searchTerm,int maxCount);
         IEnumerable<TEntity> FilterBy(
             Expression<Func<TEntity, bool>> filterExpression);
