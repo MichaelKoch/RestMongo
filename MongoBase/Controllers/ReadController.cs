@@ -87,7 +87,7 @@ namespace MongoBase.Controllers
             }
 
             var query = this._repository.AsQueryable();
-            query = ODataQueryHelper.Apply<TEntity>(filter, query).OfType<TEntity>();
+            query = ODataQueryHelper.Apply<TEntity>(filter, query);
             var total = query.Count();
             query = query.Take(top).Skip(skip);
 

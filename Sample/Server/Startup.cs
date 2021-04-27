@@ -65,10 +65,11 @@ namespace SampleServer
             app.UseRouting();
             app.UseAuthorization();
             app.AddMongoBase();
+       
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-             
+                endpoints.EnableDependencyInjection();
             });
         }
     }

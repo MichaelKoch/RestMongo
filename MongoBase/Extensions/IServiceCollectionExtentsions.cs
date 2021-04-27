@@ -37,8 +37,7 @@ namespace MongoBase
             Configuration.GetSection("mongo").Bind(mongoSettings);
             services.AddSingleton<IConnectionSettings>(mongoSettings);
             services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
-            ODataQueryHelper.services= services;
-            ODataQueryHelper.serviceProvider =services.BuildServiceProvider();
+           
         }
     }
 

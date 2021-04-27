@@ -47,9 +47,7 @@ namespace MongoBase.Test
             var repo = DataHelper.getRepository();
             var context = Guid.NewGuid().ToString();
             var testData = DataHelper.CreateTestData(context, 250);
-        
-
-            repo.InsertManyAsync(testData).Wait();
+                repo.InsertManyAsync(testData).Wait();
             TestReadController controller = new TestReadController(repo);
 
            
