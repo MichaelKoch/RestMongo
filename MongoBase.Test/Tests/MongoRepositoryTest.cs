@@ -131,12 +131,7 @@ namespace MongoBase.Test
             DataHelper.Cleanup(repo, context);
         }
 
-        [TestMethod]
-        public void GetCollectioName()
-        {
-            var repo = DataHelper.getRepository<TestModelFeed>();
-            var colName = repo.get
-        }
+     
 
 
         [TestMethod]
