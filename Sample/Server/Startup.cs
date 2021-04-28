@@ -2,22 +2,15 @@ using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
 using MongoBase;
 using MongoBase.Interfaces;
 using MongoBase.Models;
-using MongoBase.Repositories;
-using System;
-using System.Collections.Generic;
+using MongoBase.Utils;
+using Sample.Domain;
 using System.Linq;
-
-using System.Threading.Tasks;
 
 namespace SampleServer
 {
@@ -30,26 +23,50 @@ namespace SampleServer
 
         public IConfiguration Configuration { get; }
 
-
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMongoBase(Configuration);
+            services.AddMongoBase<ProductContext>(Configuration);
+            services.AddScoped<ProductContext>();
+            services.AddControllers();
+            services.AddMvcCore(options =>
+            {
+                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().ToList())
+                {
+                    options.OutputFormatters.Remove(outputFormatter);
+                    //outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
+                }
+                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().ToList())
+                {
+                    options.InputFormatters.Remove(inputFormatter);
+                    //inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
+                }
+            });
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddResponseCompression();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleServer", Version = "v1" });
+                c.ResolveConflictingActions(apiDescriptions =>
+                {
+                    return apiDescriptions.First();
+                });
             });
+            InitSchema();
 
+        }
 
-           
-
-
+        protected void InitSchema()
+        {
+            ConnectionSettings mongoSettings = new ConnectionSettings();
+            Configuration.GetSection("mongo").Bind(mongoSettings);
+            SchemaInitializer.Run(mongoSettings, typeof(ProductContext).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseResponseCompression();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,13 +75,14 @@ namespace SampleServer
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleServer v1")
                 );
             }
-            app.UseMongoBase();
             app.UseRouting();
             app.UseAuthorization();
-
+            app.AddMongoBase();
+       
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.EnableDependencyInjection();
             });
         }
     }

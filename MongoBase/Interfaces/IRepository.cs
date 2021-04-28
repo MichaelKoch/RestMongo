@@ -6,42 +6,37 @@ using System.Threading.Tasks;
 
 namespace MongoBase.Interfaces
 {
-    public interface IRepository<TDocument> where TDocument : IDocument
+    public interface IRepository<TEntity> where TEntity : IDocument
     {
-        IQueryable<TDocument> AsQueryable();
-        PagedResultModel<TDocument> Query(string query, Dictionary<string, string> orderby = null, int top = 1000, int skip = 0);
-        PagedResultModel<TDocument> Query(string query, string orderby = null, int top = 1000, int skip = 0);
-        IEnumerable<TDocument> FilterBy(
-            Expression<Func<TDocument, bool>> filterExpression);
+        IQueryable<TEntity> AsQueryable();
+        PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 1000);
+        PagedResultModel<TEntity> Query(string query, string orderby, int maxPageSize = 1000);
+       
+        IEnumerable<TEntity> FilterBy(
+            Expression<Func<TEntity, bool>> filterExpression);
 
-        IEnumerable<TProjected> FilterBy<TProjected>(
-            Expression<Func<TDocument, bool>> filterExpression,
-            Expression<Func<TDocument, TProjected>> projectionExpression);
+        
+        TEntity FindById(string id);
 
-        TDocument FindOne(Expression<Func<TDocument, bool>> filterExpression);
+        Task<TEntity> FindByIdAsync(string id);
 
-        Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
+        TEntity InsertOne(TEntity document);
 
-        TDocument FindById(string id);
+        Task InsertOneAsync(TEntity document);
 
-        Task<TDocument> FindByIdAsync(string id);
+        void InsertMany(ICollection<TEntity> documents);
 
-        TDocument InsertOne(TDocument document);
+        Task InsertManyAsync(ICollection<TEntity> documents);
 
-        Task InsertOneAsync(TDocument document);
-
-        void InsertMany(ICollection<TDocument> documents);
-
-        Task InsertManyAsync(ICollection<TDocument> documents);
-
-        void ReplaceOne(TDocument document);
-
-        Task ReplaceOneAsync(TDocument document);
+        void ReplaceOne(TEntity document);
+        
+        Task ReplaceOneAsync(TEntity document);
 
         void DeleteById(string id);
         void DeleteById(IList<string> ids);
 
         Task DeleteByIdAsync(string id);
+      
 
     }
 }

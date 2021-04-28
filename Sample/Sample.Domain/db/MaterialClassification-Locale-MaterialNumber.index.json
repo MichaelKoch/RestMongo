@@ -1,0 +1,8 @@
+{
+  "indexOn": "MaterialClassification",
+  "fields": {
+    "Locale": "asc",
+    "MaterialNumber": "asc"
+  }
+}
+   

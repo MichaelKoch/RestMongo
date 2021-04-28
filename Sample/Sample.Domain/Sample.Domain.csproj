@@ -1,8 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
+   
   </PropertyGroup>
-  
-</Project>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
+  </ItemGroup>
+  <ItemGroup> 
+  <Content Include="db\**"> 
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+  </Content> 
+</ItemGroup>
+  <ItemGroup>
+    <None Remove="db\CollectionMaterial-MaterialNumber.index.json" />
+    <None Remove="db\MaterialClassification-Locale-MaterialNumber.index.json" />
+    <None Remove="db\MaterialComposition-Locale-MaterialNumber.index.json" />
+    <None Remove="db\MaterialText-Locale-Fulltext.index.json" />
+    <None Remove="db\MaterialText-Locale-MaterialNumber.index.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+ </Project>

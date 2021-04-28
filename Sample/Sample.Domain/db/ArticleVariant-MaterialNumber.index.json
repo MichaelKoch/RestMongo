@@ -1,0 +1,7 @@
+{
+  "indexOn": "CollectionMaterial",
+  "fields": {
+    "MaterialNumber": "asc"
+  }
+}
+   

@@ -1,9 +1,0 @@
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\b\MongoBase\Debug\net5\MongoBase.deps.json
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\b\MongoBase\Debug\net5\MongoBase.dll
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\b\MongoBase\Debug\net5\ref\MongoBase.dll
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\i\MongoBase\Debug\net5\MongoBase.GeneratedMSBuildEditorConfig.editorconfig
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\i\MongoBase\Debug\net5\MongoBase.AssemblyInfoInputs.cache
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\i\MongoBase\Debug\net5\MongoBase.AssemblyInfo.cs
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\i\MongoBase\Debug\net5\MongoBase.csproj.CopyComplete
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\i\MongoBase\Debug\net5\MongoBase.dll
-T:\git\github\mongobase\.vs\MongoBase\v16\lut\0\i\MongoBase\Debug\net5\ref\MongoBase.dll

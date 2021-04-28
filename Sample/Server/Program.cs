@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MongoBase.Attributes;
 using MongoBase.Models;
-using SampleServer.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +16,6 @@ namespace SampleServer
     {
         public static void Main(string[] args)
         {
-
-            MongoBase.Repositories.Repository<TestModel> repo = new MongoBase.Repositories.Repository<TestModel>(new ConnectionSettings()
-            {
-                ConnectionString = "mongodb://localhost",
-                DatabaseName = "test"
-            });
-
-
-
-
-            //var model = SchemaAttribute.GetODataQueryContext(typeof(TestModel));
             CreateHostBuilder(args).Build().Run();
         }
 

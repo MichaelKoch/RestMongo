@@ -7,7 +7,19 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Sample/Server/SampleServer.csproj",
+                "${workspaceFolder}/Sample/Server/Server.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build.DataAdapter",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Sample/Sample.Domain.DataAdapter/Sample.Domain.DataAdapter.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +31,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Sample/Server/SampleServer.csproj",
+                "${workspaceFolder}/Sample/Server/Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +44,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/Sample/Server/SampleServer.csproj",
+                "${workspaceFolder}/Sample/Server/Server.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

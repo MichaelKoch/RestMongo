@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using MongoBase.Interfaces;
 
-public class PagedResultModel<TDocument> where TDocument : IDocument
+public class PagedResultModel<TEntity>
 {
     [JsonPropertyName("Top")]
     public int Top { get; set; }
@@ -14,5 +14,5 @@ public class PagedResultModel<TDocument> where TDocument : IDocument
     public int Total { get; set; }
 
     [JsonPropertyName("Values")]
-    public List<TDocument> Values { get; set; }
+    public IList<TEntity> Values { get; set; }
 }
