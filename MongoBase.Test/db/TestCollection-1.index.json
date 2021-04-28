@@ -1,0 +1,8 @@
+{
+  "indexOn": "TestModel",
+  "fields": {
+    "Timestamp": "Text",
+    "Context": "Text"
+  }
+}
+   

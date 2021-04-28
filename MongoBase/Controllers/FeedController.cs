@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System;
 using MongoBase.Models;
+using System.Threading.Tasks;
 
 namespace MongoBase.Controllers
 {
@@ -18,7 +19,7 @@ namespace MongoBase.Controllers
         [HttpGet("delta")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412)]
-        public virtual ActionResult<IEnumerable<TEntity>> Delta([FromQuery] long since = 0,
+        public virtual async Task<ActionResult<IEnumerable<TEntity>>> Delta([FromQuery] long since = 0,
              [FromQuery(Name = "$top")] int top = 200,
              [FromQuery(Name = "$skip")] int skip = 0)
         {
@@ -31,7 +32,7 @@ namespace MongoBase.Controllers
                         .Take(top)
                         .Skip(skip)
                         .OrderByDescending(c => c.Timestamp);
-            return query.ToList();
+            return Ok(query.ToList());
         }
 
         public FeedController(IRepository<TEntity> repository, int maxPageSize = 100) : base(repository)

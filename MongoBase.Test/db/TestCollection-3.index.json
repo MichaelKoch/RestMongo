@@ -1,0 +1,9 @@
+{
+  "indexOn": "TestModelFeed",
+  "fields": {
+    "Timestamp": "desc",
+    "Name": "desc",
+    "Context": "asc"
+  }
+}
+   

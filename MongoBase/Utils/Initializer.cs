@@ -38,7 +38,6 @@ namespace MongoBase.Utils
             
             if(schemainfo ==null || schemainfo.Hash != CalculateHash(_files))
             {
-                CreateViews();
                 CreateIndizies();
                 var newSchemaInfo = new DomainSchemaInfo()
                 {
@@ -83,31 +82,31 @@ namespace MongoBase.Utils
             }
             return sb.ToString();
         }
-        private static void CreateViews()
-        {
-            var views = _files.Keys.Where(k => k.Contains(".view.json")).Select(k => _files[k]);
-            if (!views.Any()) { return; }
-            var dbClient = new MongoClient(_settings.ConnectionString);
-            var db = dbClient.GetDatabase(_settings.DatabaseName);
-            foreach (string doc in views)
-            {
-                BsonDocument def = BsonDocument.Parse(doc);
-                var name = def["create"].ToString();
-                var existingView = db.GetCollection<BaseDocument>(name);
-                if (existingView != null)
-                {
-                    db.DropCollectionAsync(name).Wait();
-                }
-                db.RunCommand<BsonDocument>(doc);
-            }
-        }
+        //private static void CreateViews()
+        //{
+        //    var views = _files.Keys.Where(k => k.Contains(".view.json")).Select(k => _files[k]);
+        //    if (!views.Any()) { return; }
+        //    var dbClient = new MongoClient(_settings.ConnectionString);
+        //    var db = dbClient.GetDatabase(_settings.DatabaseName);
+        //    foreach (string doc in views)
+        //    {
+        //        BsonDocument def = BsonDocument.Parse(doc);
+        //        var name = def["create"].ToString();
+        //        var existingView = db.GetCollection<BaseDocument>(name);
+        //        if (existingView != null)
+        //        {
+        //            db.DropCollectionAsync(name).Wait();
+        //        }
+        //        db.RunCommand<BsonDocument>(doc);
+        //    }
+        //}
         private static void CreateIndizies()
         {
-            var views = _files.Keys.Where(k => k.Contains(".index.json")).Select(k => _files[k]);
-            if (!views.Any()) { return; }
+            var indexes = _files.Keys.Where(k => k.Contains(".index.json")).Select(k => _files[k]);
+            if (!indexes.Any()) { return; }
             var dbClient = new MongoClient(_settings.ConnectionString);
             var db = dbClient.GetDatabase(_settings.DatabaseName);
-            foreach (string doc in views)
+            foreach (string doc in indexes)
             {
                 var builder = Builders<BsonDocument>.IndexKeys;
                 IndexKeysDefinition<BsonDocument> keys = null;

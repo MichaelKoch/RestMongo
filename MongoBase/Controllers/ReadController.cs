@@ -19,7 +19,8 @@ using MongoBase.Models;
 namespace MongoBase.Controllers
 {
     [Route("[controller]")]
-    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase where TEntity : BaseDocument
+    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase 
+            where TEntity : BaseDocument
     {
         protected IRepository<TEntity> _repository;
         protected int _maxPageSize = 0; //TODO => get it from configuration
@@ -27,6 +28,10 @@ namespace MongoBase.Controllers
         protected virtual TDataTransfer ConvertToDTO(TEntity value)
         {
             return CopyUtils<TDataTransfer>.Convert(value);
+        }
+        protected virtual TEntity ConvertFromDTO(TDataTransfer value)
+        {
+            return CopyUtils<TEntity>.Convert(value);
         }
 
         protected virtual IList<TDataTransfer> Convert(IList<TEntity> value)
@@ -53,11 +58,11 @@ namespace MongoBase.Controllers
             //TODO : Clean response code 
             try
             {
-                PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby);
+                PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby,this._maxPageSize);
                 var retVal = new PagedResultModel<TDataTransfer>()
                 {
                     Total = result.Total,
-                    Values = await this.LoadRelations(Convert(query.ToList()), expand),
+                    Values = await this.LoadRelations(Convert(result.Values), expand),
                     Skip = 0,
                     Top = result.Total
                 };
@@ -89,8 +94,8 @@ namespace MongoBase.Controllers
             var query = this._repository.AsQueryable();
             query = ODataQueryHelper.Apply<TEntity>(filter, query);
             var total = query.Count();
-            query = query.Take(top).Skip(skip);
-
+            query = query.Skip(skip);
+            query = query.Take(top);
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,

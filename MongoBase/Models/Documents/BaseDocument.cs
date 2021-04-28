@@ -5,9 +5,11 @@ using System.Text.Json.Serialization;
 using MongoBase.Attributes;
 using MongoBase.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace MongoBase.Models
 {
+    [BsonIgnoreExtraElements]
     public abstract class BaseDocument : IDocument
     {
         [IsQueryableAttribute]

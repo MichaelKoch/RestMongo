@@ -27,7 +27,8 @@ namespace MongoBase.Controllers
         {
             if (top > this._maxPageSize)
             {
-                StatusCode(412, "MAX PAGE SIZE EXCEEDED");
+                return StatusCode(412, "MAX PAGE SIZE EXCEEDED");
+
             }
             var result = await Task.Run(() =>
             {

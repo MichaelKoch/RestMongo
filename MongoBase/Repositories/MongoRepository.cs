@@ -10,6 +10,7 @@ using MongoBase.Interfaces;
 using MongoBase.Attributes;
 using System.Text.RegularExpressions;
 using MongoBase.Exceptions;
+using MongoBase.Models;
 
 namespace MongoBase.Repositories
 {
@@ -26,7 +27,7 @@ namespace MongoBase.Repositories
             ConnectionSettings = settings;
             _client = new MongoClient(settings.ConnectionString);
             _database = _client.GetDatabase(settings.DatabaseName);
-            _collection = _database.GetCollection<TEntity>(GetCollectionName(typeof(TEntity)));
+            _collection = _database.GetCollection<TEntity>(GetCollectionName());
         }
 
         public IMongoCollection<TEntity> Collection => _collection;
@@ -34,7 +35,7 @@ namespace MongoBase.Repositories
         {
             if (delta == null || delta.Count == 0) return;
             var bulkOps = new List<WriteModel<TEntity>>();
-            if ( _collection.AsQueryable().Count() == 0)
+            if (_collection.AsQueryable().Count() == 0)
             {
                 _collection.InsertMany(delta);
             }
@@ -50,25 +51,31 @@ namespace MongoBase.Repositories
                 }
                 _collection.BulkWrite(bulkOps);
             }
+        }
+
+        public long GetServerTimeStamp()
+        {
+            return this._database.GetServerTimeStap();
+        }
 
 
-           
-            }
         public long GetMaxLastChanged()
         {
-            if(!documentType.IsAssignableFrom(typeof(IFeedDocument)))
+            if (!documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 return 0;
             }
             long retVal = 0;
             int total = this.AsQueryable().Count();
+            var col = this._database.GetCollection<FeedDocument>(this.GetCollectionName());
             if (total > 0)
             {
-                retVal = this.AsQueryable().Cast<IFeedDocument>().Max(c => c.Timestamp);
+                var latest = col.Find(x => true).SortByDescending(f => f.Timestamp).Limit(1).FirstOrDefault();
+                retVal = latest.Timestamp;
             }
             return retVal;
         }
-   
+
         public PagedResultModel<TEntity> Query(string query, string orderby = null, int maxPageSize = 100)
         {
             var orderbyDict = new Dictionary<string, string>();
@@ -91,14 +98,14 @@ namespace MongoBase.Repositories
                     }
                 }
             }
-            var retVal    = this.Query(query, orderbyDict,maxPageSize);
-        
+            var retVal = this.Query(query, orderbyDict, maxPageSize);
+
             return retVal;
         }
 
-  
 
-        public PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null,int maxPageSize=1000)
+
+        public PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 1000)
         {
             var retVal = new PagedResultModel<TEntity>();
             if ((orderby == null) || (orderby.Count == 0))
@@ -109,15 +116,15 @@ namespace MongoBase.Repositories
                 };
             }
             retVal.Total = (int)this._collection.CountDocuments(query);
-            if(retVal.Total > maxPageSize)
+            if (retVal.Total > maxPageSize)
             {
                 throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
             }
-       
+
             var matchInfo = new BsonDocument { { "$match", BsonDocument.Parse(query) } };
             var sortInfoField = new BsonDocument();
             var sortInfoDoc = new BsonDocument { { "$sort", sortInfoField } };
-          
+
             foreach (string field in orderby.Keys)
             {
                 var direction = orderby[field];
@@ -145,9 +152,9 @@ namespace MongoBase.Repositories
             retVal.Top = retVal.Total;
             return retVal;
         }
-        private static string GetCollectionName(Type documentType)
+        private string GetCollectionName()
         {
-            return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
+            return ((BsonCollectionAttribute)this.documentType.GetCustomAttributes(
                     typeof(BsonCollectionAttribute),
                     true)
                 .FirstOrDefault())?.CollectionName;
@@ -159,17 +166,17 @@ namespace MongoBase.Repositories
         }
 
 
-        public virtual IEnumerable<TEntity> Search(string searchTerm,int maxPageSize = 50)
-        {
-            var query = Builders<TEntity>.Filter.Text(searchTerm);
-            var totalCount = (int)this._collection.CountDocuments(query);
-            if (totalCount > maxPageSize)
-            {
-                throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
-            }
-            return _collection.Find(Builders<TEntity>.Filter.Text(searchTerm)).ToList();
-            
-        }
+        //public virtual IEnumerable<TEntity> Search(string searchTerm,int maxPageSize = 50)
+        //{
+        //    var query = Builders<TEntity>.Filter.Text(searchTerm);
+        //    var totalCount = (int)this._collection.CountDocuments(query);
+        //    if (totalCount > maxPageSize)
+        //    {
+        //        throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
+        //    }
+        //    return _collection.Find(Builders<TEntity>.Filter.Text(searchTerm)).ToList();
+
+        //}
 
         public virtual IEnumerable<TEntity> FilterBy(
             Expression<Func<TEntity, bool>> filterExpression)
@@ -177,12 +184,7 @@ namespace MongoBase.Repositories
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
-        public virtual IEnumerable<TProjected> FilterBy<TProjected>(
-            Expression<Func<TEntity, bool>> filterExpression,
-            Expression<Func<TEntity, TProjected>> projectionExpression)
-        {
-            return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
-        }
+
 
         public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression)
         {
@@ -202,10 +204,7 @@ namespace MongoBase.Repositories
         {
             return Task.Run(() => _collection.AsQueryable().SingleOrDefault(c => c.Id == id));
         }
-        private long GetServerTimeStamp()
-        {
-            return new DateTime(this._collection.Database.GetServerTimeStap()).Ticks;
-        }
+       
         private void SetChangedDate(IFeedDocument document)
         {
             long timestamp = GetServerTimeStamp();
@@ -222,11 +221,11 @@ namespace MongoBase.Repositories
 
         public virtual TEntity InsertOne(TEntity document)
         {
-            if(documentType.IsAssignableTo(typeof(IFeedDocument)))
+            if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
                 SetChangedDate(document as IFeedDocument);
             }
-       
+
             _collection.InsertOne(document);
             return document;
         }
@@ -246,7 +245,7 @@ namespace MongoBase.Repositories
             {
                 SetChangedDate(documents.Cast<IFeedDocument>().ToList());
             }
-            
+
             _collection.InsertMany(documents);
         }
 
@@ -255,7 +254,7 @@ namespace MongoBase.Repositories
         {
             if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
-             
+
                 SetChangedDate(documents.Cast<IFeedDocument>().ToList());
             }
 
@@ -296,7 +295,7 @@ namespace MongoBase.Repositories
         {
             return Task.Run(() =>
             {
-               return DeleteByIdAsync(new List<string> { id });
+                return DeleteByIdAsync(new List<string> { id });
             });
         }
         public Task DeleteByIdAsync(IList<string> ids)
@@ -304,11 +303,11 @@ namespace MongoBase.Repositories
             return Task.Run(() =>
             {
                 var filter = Builders<TEntity>.Filter.In(doc => doc.Id, ids);
-                return  _collection.DeleteManyAsync(filter).Result;
+                return _collection.DeleteManyAsync(filter).Result;
             });
         }
-      
 
-        
+
+
     }
 }

@@ -23,6 +23,13 @@ namespace MongoBase.Controllers
     public abstract class LocalizedReadController<TEntity, TDataTransfer> : ControllerBase
             where TEntity : LocalizedDocument
     {
+
+
+        public LocalizedReadController(IRepository<TEntity> repo,int maxPageSize = 1000)
+        {
+            this._repository = repo;
+            this._maxPageSize = maxPageSize;
+        }
         protected IRepository<TEntity> _repository;
         protected int _maxPageSize = 0;
         protected Type _entityType = typeof(TEntity);
@@ -31,17 +38,13 @@ namespace MongoBase.Controllers
         {
             return CopyUtils<TDataTransfer>.Convert(value);
         }
-
+        protected virtual TEntity ConvertFromDTO(TDataTransfer value)
+        {
+            return CopyUtils<TEntity>.Convert(value);
+        }
         protected virtual IList<TDataTransfer> Convert(IList<TEntity> value)
         {
             return CopyUtils<IList<TDataTransfer>>.Convert(value.Cast<object>().ToList());
-        }
-
-
-        public LocalizedReadController(IRepository<TEntity> repository, int maxPageSize = 1000)
-        {
-            _maxPageSize = maxPageSize;
-
         }
 
         [HttpPost("query")]
@@ -59,7 +62,7 @@ namespace MongoBase.Controllers
 
                 if(IsQueryableAttribute.IsAssignedTo(_entityType.GetProperty("Locale")))
                 {
-                    query.TryAdd("Locale", locale);
+                   query.TryAdd("Locale", locale);
                 }
                 PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby);
                 var retVal = new PagedResultModel<TDataTransfer>()
@@ -97,13 +100,15 @@ namespace MongoBase.Controllers
             //TODO => QUICK HACK REUSING ODATA QUERY PARSER 
             var query = this._repository.AsQueryable();
             query = ODataQueryHelper.Apply<TEntity>(filter, query).OfType<TEntity>();
-            var total = query.Count();
-            query = query.Take(top).Skip(skip);
-
+        
+     
             if (IsQueryableAttribute.IsAssignedTo(_entityType.GetProperty("Locale")))
             {
                 query = query.Where(c => c.Locale == locale);
-            }
+            }   
+            var total = query.Count();      
+            query = query.Take(top).Skip(skip);
+            
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,

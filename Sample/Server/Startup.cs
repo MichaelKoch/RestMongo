@@ -1,4 +1,5 @@
 using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,19 @@ namespace SampleServer
             services.AddMongoBase<ProductContext>(Configuration);
             services.AddScoped<ProductContext>();
             services.AddControllers();
+            services.AddMvcCore(options =>
+            {
+                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().ToList())
+                {
+                    options.OutputFormatters.Remove(outputFormatter);
+                    //outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
+                }
+                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().ToList())
+                {
+                    options.InputFormatters.Remove(inputFormatter);
+                    //inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
+                }
+            });
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddResponseCompression();
             services.AddSwaggerGen(c =>

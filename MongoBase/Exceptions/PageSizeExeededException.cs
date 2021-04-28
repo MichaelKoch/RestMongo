@@ -9,8 +9,7 @@ namespace MongoBase.Exceptions
     public class PageSizeExeededException:Exception
     {
 
-        public PageSizeExeededException() { }
-        
+   
         public PageSizeExeededException(string? message):base(message)
         { }
     }

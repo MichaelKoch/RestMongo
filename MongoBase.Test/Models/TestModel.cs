@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MongoBase.Test.Models
 {
     [MongoBase.Attributes.BsonCollection("TestModel")]
-   public class TestModel:MongoBase.Models.BaseDocument,IFeedDocument
+   public class TestModel:MongoBase.Models.BaseDocument
     {
         [IsQueryableAttribute()]
         public string Name { get; set; }
@@ -17,7 +17,7 @@ namespace MongoBase.Test.Models
         public string Instance { get; set; }
         [IsQueryableAttribute()]
         public string Context { get; set; }
-        [IsQueryableAttribute()]
-        public long Timestamp { get; set; }
+
+
     }
 }

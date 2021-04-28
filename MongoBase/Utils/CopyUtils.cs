@@ -11,12 +11,10 @@ namespace MongoBase.Utils
     {
         public static TTarget Convert(object source)
         {
-            if (source == null) return default(TTarget);
             return JsonSerializer.Deserialize<TTarget>( JsonSerializer.Serialize(source));
         }
         public static TTarget Convert(List<object> source)
         {
-            if (source == null) return default(TTarget);
             return JsonSerializer.Deserialize<TTarget>(JsonSerializer.Serialize(source));
         }
     }

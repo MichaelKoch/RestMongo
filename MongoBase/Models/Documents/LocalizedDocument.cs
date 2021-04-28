@@ -5,11 +5,13 @@ using System.Text.Json.Serialization;
 using MongoBase.Attributes;
 using MongoBase.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace MongoBase.Models
 {
-    public abstract class LocalizedDocument : BaseDocument, ILocalizedDocument
+    [BsonIgnoreExtraElements]
+    public  class LocalizedDocument : BaseDocument, ILocalizedDocument
     {
-        public string Locale { get; set; }
+        public virtual string Locale { get; set; }
     }
 }

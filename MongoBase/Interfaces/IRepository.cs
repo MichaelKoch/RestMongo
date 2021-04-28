@@ -11,7 +11,7 @@ namespace MongoBase.Interfaces
         IQueryable<TEntity> AsQueryable();
         PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 1000);
         PagedResultModel<TEntity> Query(string query, string orderby, int maxPageSize = 1000);
-        IEnumerable<TEntity> Search(string searchTerm,int maxCount);
+       
         IEnumerable<TEntity> FilterBy(
             Expression<Func<TEntity, bool>> filterExpression);
 

@@ -19,20 +19,9 @@ namespace MongoBase
         public static void AddMongoBase<TContext>(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddOData();
-            services.AddMvcCore(options =>
-            {
-                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().ToList())
-                {
-                    options.OutputFormatters.Remove(outputFormatter);
-                    //outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
-                }
-                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().ToList())
-                {
-                    options.InputFormatters.Remove(inputFormatter);
-                    //inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
-                }
-            });
+            services.AddScoped(typeof(TContext));
 
+            
             ConnectionSettings mongoSettings = new ConnectionSettings();
             Configuration.GetSection("mongo").Bind(mongoSettings);
             services.AddSingleton<IConnectionSettings>(mongoSettings);
