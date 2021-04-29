@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Sample.Domain.Controllers
 {
-    public class ReadWriteController : EntityController<ReadWriteEntity, ReadWriteEntity>
+    public class ReadWriteController : ReadController#<ReadWriteEntity, ReadWriteEntity>
     {
         private ProductContext _context;
         public ReadWriteController(ProductContext context) : base(context.ReadWriteEntities, 1000)
