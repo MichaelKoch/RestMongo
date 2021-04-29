@@ -16,8 +16,12 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore
+      
     - name: Test
       run: dotnet test --verbosity normal
 
     - name: Build
       run: dotnet build --no-restore
+      
+    - name: Pack
+      run: dotnet pack --no-restore
