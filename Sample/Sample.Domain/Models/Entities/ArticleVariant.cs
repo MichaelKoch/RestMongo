@@ -1,5 +1,5 @@
-﻿using MongoBase.Attributes;
-using MongoBase.Interfaces;
+﻿using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models.Enities
 {
-    [MongoBase.Attributes.BsonCollection("ArticleVariant")]
+    [RestMongo.Attributes.BsonCollection("ArticleVariant")]
     [BsonIgnoreExtraElements]
-    public class ArticleVariant : MongoBase.Models.LocalizedFeedDocument, ILocalizedFeedDocument
+    public class ArticleVariant : RestMongo.Models.LocalizedFeedDocument, ILocalizedFeedDocument
     {
 
 
@@ -74,7 +74,7 @@ namespace Sample.Domain.Models.Enities
         [JsonPropertyName("Size2")]
         public string Size2 { get; set; }
 
-      
+
 
     }
 }

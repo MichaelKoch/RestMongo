@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="RestMongo.Interfaces.IConnectionSettings" Collapsed="true">
+    <Position X="1" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAABAAA=</HashCode>
+      <FileName>Interfaces\IConnectionSettings.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="RestMongo.Controllers.IDeltaController&lt;TEntity&gt;">
+    <Position X="3" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IDeltaController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="RestMongo.Interfaces.IDocument">
+    <Position X="6.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Interfaces\IDocument.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="RestMongo.Controllers.IFulltextController&lt;TEntity&gt;">
+    <Position X="5.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Interfaces\IFulltextController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="RestMongo.Controllers.IQueryController&lt;TEntity&gt;">
+    <Position X="3" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IQueryController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="RestMongo.Controllers.IReadController&lt;TEntity&gt;">
+    <Position X="3" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IReadController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="RestMongo.Controllers.IReadWriteController&lt;TEntity&gt;">
+    <Position X="3" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Interfaces\IReadWriteController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="8.91" />
+</ClassDiagram>

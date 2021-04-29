@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
+    <ProjectReference Include="..\..\RestMongo\RestMongo.csproj" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
   </ItemGroup>
   <ItemGroup> 

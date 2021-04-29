@@ -1,18 +1,18 @@
 using System.Text.Json.Serialization;
-using MongoBase.Attributes;
-using MongoBase.Interfaces;
+using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using MongoDB.Bson.Serialization.Attributes;
 using Sample.Domain.Models.Enities;
 
-[MongoBase.Attributes.BsonCollection("MaterialClassification")]
+[RestMongo.Attributes.BsonCollection("MaterialClassification")]
 [BsonIgnoreExtraElements]
-public class MaterialClassification : MongoBase.Models.BaseDocument,IFeedDocument
+public class MaterialClassification : RestMongo.Models.BaseDocument, IFeedDocument
 {
     [IsQueryableAttribute()]
     [JsonPropertyName("Id")]
     public override string Id
     {
-        get { return this.MaterialNumber + "-" + this.AttributeId +"-" + this.Value + "-" + this.Locale; }
+        get { return this.MaterialNumber + "-" + this.AttributeId + "-" + this.Value + "-" + this.Locale; }
         set { }
     }
 

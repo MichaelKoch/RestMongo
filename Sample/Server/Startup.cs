@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MongoBase;
-using MongoBase.Interfaces;
-using MongoBase.Models;
-using MongoBase.Utils;
+using RestMongo;
+using RestMongo.Interfaces;
+using RestMongo.Models;
+using RestMongo.Utils;
 using Sample.Domain;
 using System.Linq;
 
@@ -26,7 +26,7 @@ namespace SampleServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMongoBase<ProductContext>(Configuration);
+            services.AddRestMongo<ProductContext>(Configuration);
             services.AddScoped<ProductContext>();
             services.AddControllers();
             services.AddMvcCore(options =>
@@ -77,8 +77,8 @@ namespace SampleServer
             }
             app.UseRouting();
             app.UseAuthorization();
-            app.AddMongoBase();
-       
+            app.AddRestMongo();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

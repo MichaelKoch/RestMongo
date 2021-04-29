@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
-using MongoBase.Attributes;
-using MongoBase.Interfaces;
+using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using Sample.Domain.Models.Enities;
-public class MaterialClassificationDTO 
+public class MaterialClassificationDTO
 {
 
 

@@ -13,7 +13,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
+    <ProjectReference Include="..\..\RestMongo\RestMongo.csproj" />
     <ProjectReference Include="..\Sample.Domain\Sample.Domain.csproj" />
   </ItemGroup>
 </Project>

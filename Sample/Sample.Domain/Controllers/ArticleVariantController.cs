@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoBase.Controllers;
-using MongoBase.Utils;
+using RestMongo.Controllers;
+using RestMongo.Utils;
 using Sample.Domain.Models.Enities;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace Sample.Domain.Controllers
 
         protected override async Task<IList<ArticleVariantDTO>> LoadRelations(IList<ArticleVariantDTO> values, IList<string> relations, string locale)
         {
-            if(relations ==null || relations.Count ==0)
+            if (relations == null || relations.Count == 0)
             {
                 relations = new List<string>() { "Compositions", "Attributes", "SalesText" };
             }
@@ -99,12 +99,12 @@ namespace Sample.Domain.Controllers
             foreach (var av in values)
             {
                 av.Locale = locale;
-                av.Compositions =CopyUtils<List<MaterialCompositionDTO>>.Convert(relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).ToList());
+                av.Compositions = CopyUtils<List<MaterialCompositionDTO>>.Convert(relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).ToList());
             }
             return true;
         }
 
-        
+
         protected override ArticleVariantDTO ConvertToDTO(ArticleVariant value)
         {
             return CopyUtils<ArticleVariantDTO>.Convert(value);

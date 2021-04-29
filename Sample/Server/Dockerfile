@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["SampleServer/SampleServer.csproj", "SampleServer/"]
-COPY ["MongoBase/MongoBase.csproj", "MongoBase/"]
+COPY ["RestMongo/RestMongo.csproj", "RestMongo/"]
 RUN dotnet restore "SampleServer/SampleServer.csproj"
 COPY . .
 WORKDIR "/src/SampleServer"

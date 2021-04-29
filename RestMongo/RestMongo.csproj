@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5</TargetFramework>
+    <PackageId>RestMongo</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Michael Koch</Authors>
+    <Company>Hier könnte Ihr Name stehen</Company>
+  </PropertyGroup>
+ <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.5.7" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+   <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+   <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.1" />
+ </ItemGroup>
+</Project>

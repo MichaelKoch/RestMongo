@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MongoBase.Attributes;
-using MongoBase.Models;
+using RestMongo.Attributes;
+using RestMongo.Models;
 
 using System;
 using System.Collections.Generic;

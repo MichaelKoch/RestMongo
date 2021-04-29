@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MongoBase\MongoBase.csproj" />
+    <ProjectReference Include="..\..\RestMongo\RestMongo.csproj" />
     <ProjectReference Include="..\Sample.Domain\Sample.Domain.csproj" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>

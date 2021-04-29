@@ -1,5 +1,5 @@
-﻿using MongoBase.Attributes;
-using MongoBase.Interfaces;
+﻿using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models.Enities
 {
-    [MongoBase.Attributes.BsonCollection("CollectionMaterial")]
+    [RestMongo.Attributes.BsonCollection("CollectionMaterial")]
     [BsonIgnoreExtraElements]
-    public class CollectionMaterial : MongoBase.Models.LocalizedFeedDocument, ILocalizedFeedDocument
+    public class CollectionMaterial : RestMongo.Models.LocalizedFeedDocument, ILocalizedFeedDocument
     {
 
 

@@ -1,12 +1,12 @@
-﻿using MongoBase.Attributes;
-using MongoBase.Interfaces;
+﻿using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models.Enities
 {
-    
+
     public class CollectionMaterialDTO
     {
         [JsonPropertyName("Locale")]

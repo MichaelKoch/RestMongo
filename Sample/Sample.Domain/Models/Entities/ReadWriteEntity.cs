@@ -1,5 +1,5 @@
-﻿using MongoBase.Attributes;
-using MongoBase.Interfaces;
+﻿using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models.Enities
 {
-    [MongoBase.Attributes.BsonCollection("ReadWriteEntity")]
+    [RestMongo.Attributes.BsonCollection("ReadWriteEntity")]
     [BsonIgnoreExtraElements]
-    public class ReadWriteEntity : MongoBase.Models.FeedDocument, IFeedDocument
+    public class ReadWriteEntity : RestMongo.Models.FeedDocument, IFeedDocument
     {
 
 
@@ -23,7 +23,7 @@ namespace Sample.Domain.Models.Enities
         [JsonPropertyName("MaterialNumber")]
         public string MaterialNumber { get; set; }
 
-  
+
 
     }
 }

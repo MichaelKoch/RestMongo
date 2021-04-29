@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Domain", "Sample.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{AC52BBBC-5A5E-4B13-A198-EC943B33D5F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoBase", "..\MongoBase\MongoBase.csproj", "{4EF76D12-D176-4466-B841-B3D2972FFB17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo", "..\RestMongo\RestMongo.csproj", "{4EF76D12-D176-4466-B841-B3D2972FFB17}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Domain.DataAdapter", "Sample.Domain.DataAdapter\Sample.Domain.DataAdapter.csproj", "{41A5D70A-615E-4EF6-B87F-598975A46138}"
 EndProject
@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoBase.Test", "..\MongoBase.Test\MongoBase.Test.csproj", "{A00300C1-5B9F-4556-B1B7-28E1B93687DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo.Test", "..\RestMongo.Test\RestMongo.Test.csproj", "{A00300C1-5B9F-4556-B1B7-28E1B93687DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

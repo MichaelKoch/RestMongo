@@ -1,12 +1,12 @@
-﻿using MongoBase.Interfaces;
-using MongoBase.Utils;
+﻿using RestMongo.Interfaces;
+using RestMongo.Utils;
 using Sample.Domain.Models.Enities;
 using Sample.Domain.Repositories;
 
 namespace Sample.Domain
 {
 
-    public class ProductContext 
+    public class ProductContext
     {
         private readonly ArticleVariantRepository _articleVariants;
         private readonly MaterialClassificationRepository _materialClassifications;
@@ -18,13 +18,13 @@ namespace Sample.Domain
 
         public ProductContext(IConnectionSettings settings)
         {
-           
-            _articleVariants = new ArticleVariantRepository(settings,this);
+
+            _articleVariants = new ArticleVariantRepository(settings, this);
             _materialClassifications = new MaterialClassificationRepository(settings, this);
             _materialCompositions = new MaterialCompositionRepository(settings, this);
             _materialTexts = new MaterialTextRepository(settings, this);
             _collectionMaterials = new CollectionMaterialRepository(settings, this);
-            _readWriteEntities = new MongoBase.Repositories.MongoRepository<ReadWriteEntity>(settings);
+            _readWriteEntities = new RestMongo.Repositories.MongoRepository<ReadWriteEntity>(settings);
         }
 
         public ArticleVariantRepository ArticleVariants => _articleVariants;

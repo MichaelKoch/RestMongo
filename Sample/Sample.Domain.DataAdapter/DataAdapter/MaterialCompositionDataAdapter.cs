@@ -1,5 +1,5 @@
-using MongoBase.Interfaces;
-using MongoBase.Repositories;
+using RestMongo.Interfaces;
+using RestMongo.Repositories;
 using Sample.Domain.DataAdapter.Abstractions;
 using Sample.Domain.Models.Enities;
 using System;
@@ -9,8 +9,8 @@ namespace Sample.Domain.DataAdapter
 {
     public class MaterialCompositionDataAdapter : JsonSourceDataAdapter<MaterialComposition, MaterialComposition>
     {
-        
-    
+
+
 
         public override IList<MaterialComposition> Transform(IList<MaterialComposition> source)
         {

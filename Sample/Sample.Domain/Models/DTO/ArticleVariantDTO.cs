@@ -1,5 +1,5 @@
-﻿using MongoBase.Attributes;
-using MongoBase.Interfaces;
+﻿using RestMongo.Attributes;
+using RestMongo.Interfaces;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -7,8 +7,8 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Domain.Models.Enities
 {
-    
-    public class ArticleVariantDTO 
+
+    public class ArticleVariantDTO
     {
 
 
@@ -88,7 +88,7 @@ namespace Sample.Domain.Models.Enities
         [JsonPropertyName("Compositions")]
         public IList<MaterialCompositionDTO> Compositions { get; set; }
 
-        
+
 
     }
 }

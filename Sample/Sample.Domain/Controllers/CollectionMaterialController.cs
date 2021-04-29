@@ -1,5 +1,5 @@
-﻿using MongoBase.Controllers;
-using MongoBase.Utils;
+﻿using RestMongo.Controllers;
+using RestMongo.Utils;
 using Sample.Domain.Models.Enities;
 using System;
 using System.Collections.Generic;
@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace Sample.Domain.Controllers
 {
-   public class CollectionMaterialController: LocalizedFeedController<CollectionMaterial,CollectionMaterialDTO>
-   {
+    public class CollectionMaterialController : LocalizedFeedController<CollectionMaterial, CollectionMaterialDTO>
+    {
         private ProductContext _context;
-        public CollectionMaterialController(ProductContext  context):base(context.CollectionMaterials,1000)
+        public CollectionMaterialController(ProductContext context) : base(context.CollectionMaterials, 1000)
         {
             this._context = context;
-            
+
         }
 
         protected override CollectionMaterialDTO ConvertToDTO(CollectionMaterial value)
         {
-          return CopyUtils<CollectionMaterialDTO>.Convert(value);
+            return CopyUtils<CollectionMaterialDTO>.Convert(value);
         }
 
 
-        protected async override  Task<IList<CollectionMaterialDTO>> LoadRelations(IList<CollectionMaterialDTO> values, IList<string> relations, string locale)
+        protected async override Task<IList<CollectionMaterialDTO>> LoadRelations(IList<CollectionMaterialDTO> values, IList<string> relations, string locale)
         {
             if (relations == null || relations.Count == 0)
             {
@@ -75,7 +75,7 @@ namespace Sample.Domain.Controllers
             foreach (var av in values)
             {
                 av.Locale = locale;
-                av.SalesText = CopyUtils<MaterialTextDTO>.Convert( relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).FirstOrDefault());
+                av.SalesText = CopyUtils<MaterialTextDTO>.Convert(relValues.Where(mt => mt.MaterialNumber == av.MaterialNumber).FirstOrDefault());
             }
             return true;
         }
