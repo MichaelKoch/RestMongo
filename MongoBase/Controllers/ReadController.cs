@@ -19,7 +19,7 @@ using MongoBase.Models;
 namespace MongoBase.Controllers
 {
     [Route("[controller]")]
-    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase 
+    public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase
             where TEntity : BaseDocument
     {
         protected IRepository<TEntity> _repository;
@@ -58,7 +58,7 @@ namespace MongoBase.Controllers
             //TODO : Clean response code 
             try
             {
-                PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby,this._maxPageSize);
+                PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby, this._maxPageSize);
                 var retVal = new PagedResultModel<TDataTransfer>()
                 {
                     Total = result.Total,
@@ -99,7 +99,7 @@ namespace MongoBase.Controllers
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,
-                Values =await  this.LoadRelations(Convert(query.ToList()), expand),
+                Values = await this.LoadRelations(Convert(query.ToList()), expand),
                 Skip = skip,
                 Top = top
             };
@@ -116,7 +116,8 @@ namespace MongoBase.Controllers
             {
                 return NotFound();
             }
-            return this.LoadRelations(new List<TDataTransfer>() { ConvertToDTO(instance) }, expand).Result[0];
+            var result = await this.LoadRelations(new List<TDataTransfer>() { ConvertToDTO(instance) }, expand);
+            return result[0];
 
         }
 
@@ -125,7 +126,7 @@ namespace MongoBase.Controllers
         protected async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, string relations)
         {
             var expands = new List<string>();
-            if(!string.IsNullOrEmpty(relations))
+            if (!string.IsNullOrEmpty(relations))
             {
                 expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
             }

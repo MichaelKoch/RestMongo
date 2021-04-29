@@ -25,7 +25,7 @@ namespace MongoBase.Controllers
     {
 
 
-        public LocalizedReadController(IRepository<TEntity> repo,int maxPageSize = 1000)
+        public LocalizedReadController(IRepository<TEntity> repo, int maxPageSize = 1000)
         {
             this._repository = repo;
             this._maxPageSize = maxPageSize;
@@ -60,9 +60,9 @@ namespace MongoBase.Controllers
             try
             {
 
-                if(IsQueryableAttribute.IsAssignedTo(_entityType.GetProperty("Locale")))
+                if (IsQueryableAttribute.IsAssignedTo(_entityType.GetProperty("Locale")))
                 {
-                   query.TryAdd("Locale", locale);
+                    query.TryAdd("Locale", locale);
                 }
                 PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby);
                 var retVal = new PagedResultModel<TDataTransfer>()
@@ -76,7 +76,7 @@ namespace MongoBase.Controllers
             }
             catch (PageSizeExeededException ex)
             {
-                return StatusCode((int)HttpStatusCode.PreconditionFailed);
+                return StatusCode((int)HttpStatusCode.PreconditionFailed, ex.Message);
             }
         }
 
@@ -100,15 +100,15 @@ namespace MongoBase.Controllers
             //TODO => QUICK HACK REUSING ODATA QUERY PARSER 
             var query = this._repository.AsQueryable();
             query = ODataQueryHelper.Apply<TEntity>(filter, query).OfType<TEntity>();
-        
-     
+
+
             if (IsQueryableAttribute.IsAssignedTo(_entityType.GetProperty("Locale")))
             {
                 query = query.Where(c => c.Locale == locale);
-            }   
-            var total = query.Count();      
+            }
+            var total = query.Count();
             query = query.Take(top).Skip(skip);
-            
+
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,
@@ -153,7 +153,7 @@ namespace MongoBase.Controllers
             {
                 expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
             }
-            return await LoadRelations(values, expands,locale);
+            return await LoadRelations(values, expands, locale);
         }
         protected async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, IList<string> relations, string locale)
         {

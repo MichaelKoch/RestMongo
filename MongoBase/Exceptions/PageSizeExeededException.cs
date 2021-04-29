@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MongoBase.Exceptions
 {
-    public class PageSizeExeededException:Exception
+    public class PageSizeExeededException : Exception
     {
 
-   
-        public PageSizeExeededException(string? message):base(message)
+
+        public PageSizeExeededException(string message = "") : base(message)
         { }
     }
 }

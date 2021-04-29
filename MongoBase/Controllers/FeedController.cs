@@ -27,12 +27,16 @@ namespace MongoBase.Controllers
             {
                 StatusCode(412, "MAX PAGE SIZE EXCEEDED");
             }
-            var query = this._repository.AsQueryable()
-                        .Where(i => i.Timestamp > since)
-                        .Take(top)
-                        .Skip(skip)
-                        .OrderByDescending(c => c.Timestamp);
-            return Ok(query.ToList());
+            var result = await Task.Run<IList<TEntity>>(() =>
+            {
+                return this._repository.AsQueryable()
+                       .Where(i => i.Timestamp > since)
+                       .Take(top)
+                       .Skip(skip)
+                       .OrderByDescending(c => c.Timestamp).ToList();
+            });
+
+            return Ok(result);
         }
 
         public FeedController(IRepository<TEntity> repository, int maxPageSize = 100) : base(repository)
