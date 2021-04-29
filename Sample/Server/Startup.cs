@@ -42,15 +42,7 @@ namespace SampleServer
                     //inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
                 }
             });
-            services.AddMvc(options => options.EnableEndpointRouting = false);
-            services.AddResponseCompression();
-            services.AddSwaggerGen(c =>
-            {
-                c.ResolveConflictingActions(apiDescriptions =>
-                {
-                    return apiDescriptions.First();
-                });
-            });
+            
             InitSchema();
 
         }

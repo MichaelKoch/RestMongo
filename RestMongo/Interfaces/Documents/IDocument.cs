@@ -11,6 +11,6 @@ namespace RestMongo.Interfaces
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-
+       
     }
 }

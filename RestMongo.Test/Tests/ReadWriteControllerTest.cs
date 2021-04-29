@@ -19,7 +19,7 @@ namespace RestMongo.Test
             repo.InsertOne(instance);
             instance = repo.FindById(instance.Id);
             instance.Name = "TESTRESULT";
-            var controller = new TestReadWriteController(repo);
+            var controller = new TestReadWriteController(repo,true);
             ActionResult<string> result = controller.Put(instance.Id, instance);
             var updated = repo.FindById(instance.Id);
             Assert.IsNotNull(updated);
@@ -38,12 +38,12 @@ namespace RestMongo.Test
             var context = Guid.NewGuid().ToString();
             var instance = new TestModelFeed() { Context = context };
 
-            var controller = new TestReadWriteController(repo);
+            var controller = new TestReadWriteController(repo,false);
             controller.Post(instance);
             var inserted = repo.FindById(instance.Id);
 
             Assert.IsNotNull(inserted);
-            ActionResult<string> result = controller.Post(instance);
+            ActionResult<TestModelFeed> result = controller.Post(instance);
             Assert.IsTrue(result.Result is ConflictObjectResult);
             DataHelper.Cleanup(repo, context);
 
@@ -55,7 +55,7 @@ namespace RestMongo.Test
             var context = Guid.NewGuid().ToString();
             var instance = new TestModelFeed() { Context = context };
             repo.InsertOne(instance);
-            var controller = new TestReadWriteController(repo);
+            var controller = new TestReadWriteController(repo,false);
             controller.Delete(instance.Id);
             controller.Delete("NOT THERE");
             var inserted = repo.FindById(instance.Id);

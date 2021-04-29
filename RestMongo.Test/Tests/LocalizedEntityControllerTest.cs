@@ -19,7 +19,7 @@ namespace RestMongo.Test
             repo.InsertOne(instance);
             instance = repo.FindById(instance.Id);
             instance.Name = "TESTRESULT";
-            var controller = new TestLocalizedReadWriteController(repo);
+            var controller = new TestLocalizedReadWriteController(repo,true);
             ActionResult<string> result = controller.Put(instance.Id, instance);
             var updated = repo.FindById(instance.Id);
             Assert.IsNotNull(updated);
@@ -27,7 +27,7 @@ namespace RestMongo.Test
 
             //CONCURRENT UPDATE TEST 
             updated.Timestamp = 42 * 42;
-            result = controller.Put(instance.Id, instance);
+            result = controller.Put(instance.Id, updated);
             Assert.IsTrue(result.Result is ConflictObjectResult);
             DataHelper.Cleanup(repo, context);
         }
@@ -43,7 +43,7 @@ namespace RestMongo.Test
             var inserted = repo.FindById(instance.Id);
 
             Assert.IsNotNull(inserted);
-            ActionResult<string> result = controller.Post(instance);
+            ActionResult<TestModelFeedLocalized> result = controller.Post(instance);
             Assert.IsTrue(result.Result is ConflictObjectResult);
             DataHelper.Cleanup(repo, context);
 

@@ -10,7 +10,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace RestMongo.Models
 {
     [BsonIgnoreExtraElements]
-    public class LocalizedDocument : BaseDocument, ILocalizedDocument
+    public class LocalizedDocument : BaseDocument,ILocalizedDocument
     {
         public virtual string Locale { get; set; }
     }

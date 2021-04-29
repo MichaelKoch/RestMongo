@@ -14,12 +14,14 @@ using System.Threading.Tasks;
 
 namespace RestMongo.Controllers
 {
-    public abstract class FeedController<TEntity, TDataTransfer> : ReadController<TEntity, TDataTransfer> where TEntity : FeedDocument
+    public abstract class FeedController<TEntity, TDataTransfer> : ReadController<TEntity, TDataTransfer>
+            where TEntity : FeedDocument
+            where TDataTransfer:class
     {
         [HttpGet("delta")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412)]
-        public virtual async Task<ActionResult<IEnumerable<TEntity>>> Delta([FromQuery] long since = 0,
+        public virtual async Task<ActionResult<IEnumerable<TDataTransfer>>> Delta([FromQuery] long since = 0,
              [FromQuery(Name = "$top")] int top = 200,
              [FromQuery(Name = "$skip")] int skip = 0)
         {

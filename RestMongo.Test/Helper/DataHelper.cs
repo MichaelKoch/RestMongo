@@ -1,4 +1,5 @@
 ﻿using RestMongo.Interfaces;
+using RestMongo.Models;
 using RestMongo.Repositories;
 using RestMongo.Test.Models;
 using System;
@@ -31,7 +32,7 @@ namespace RestMongo.Test.Helper
             var inserted = repo.AsQueryable().Where(c => c.Context == context).ToList();
             repo.DeleteById(inserted.Select(i => i.Id).ToList());
         }
-        internal static MongoRepository<TType> getRepository<TType>() where TType : IDocument
+        internal static MongoRepository<TType> getRepository<TType>() where TType : BaseDocument
         {
             return new Repositories.MongoRepository<TType>(ConfigHelper.GetMongoConfig());
         }

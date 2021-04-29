@@ -30,6 +30,8 @@ namespace RestMongo.Test
             query.TryAdd("Context", context);
             actionResult = controller.Query(query, "en-GB", "Timestamp", "Test").Result;
             var pagedResultEN = ((OkObjectResult)actionResult.Result).Value as PagedResultModel<TestModelLocalized>;
+           
+            
             Assert.IsTrue(pagedResultEN.Values.Count == 0);
             Assert.IsTrue(pagedResultEN.Top == 0);
             Assert.IsTrue(pagedResultEN.Total == 0);

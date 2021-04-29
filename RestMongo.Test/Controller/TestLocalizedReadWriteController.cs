@@ -5,11 +5,12 @@ using RestMongo.Test.Models;
 namespace RestMongo.Test.Controllers
 {
 
-    public class TestLocalizedReadWriteController : LocalizedReadWriteController<TestModelFeedLocalized, TestModelFeedLocalized>
+    public class TestLocalizedReadWriteController : LocalizedReadWriteController<TestModelFeedLocalized, TestModelFeedLocalized, TestModelFeedLocalized>
     {
 
 
-        public TestLocalizedReadWriteController(MongoRepository<TestModelFeedLocalized> repo) : base(repo, 10000)
+        public TestLocalizedReadWriteController(MongoRepository<TestModelFeedLocalized> repo,bool enableConcurrency = false) 
+                : base(repo, 10000,enableConcurrency)
         {
 
         }

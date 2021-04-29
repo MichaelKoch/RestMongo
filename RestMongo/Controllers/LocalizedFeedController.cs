@@ -17,6 +17,8 @@ namespace RestMongo.Controllers
 {
     public abstract class LocalizedFeedController<TEntity, TDataTransfer> : LocalizedReadController<TEntity, TDataTransfer>
            where TEntity : LocalizedFeedDocument
+           where TDataTransfer:class
+
     {
         [HttpGet("delta")]
         [SwaggerResponse(200)]

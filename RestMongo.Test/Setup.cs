@@ -19,7 +19,9 @@ public class Setup
     [AssemblyCleanup]
     public static void Dispose()
     {
-        mongoInstance.Dispose();
+        if(mongoInstance != null)
+        { mongoInstance.Dispose(); }
+      
     }
 
     [TestInitialize] //this doesn't work!

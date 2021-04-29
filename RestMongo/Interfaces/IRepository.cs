@@ -1,3 +1,4 @@
+using RestMongo.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RestMongo.Interfaces
 {
-    public interface IRepository<TEntity> where TEntity : IDocument
+    public interface IRepository<TEntity> where TEntity : BaseDocument
     {
         IQueryable<TEntity> AsQueryable();
         PagedResultModel<TEntity> Query(string query, Dictionary<string, string> orderby = null, int maxPageSize = 1000);

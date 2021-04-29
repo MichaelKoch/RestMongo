@@ -10,9 +10,10 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace RestMongo.Models
 {
     [BsonIgnoreExtraElements]
-    public class FeedDocument : BaseDocument, IFeedDocument
+    public class FeedDocument : BaseDocument,IFeedDocument
     {
         [IsQueryableAttribute()]
+        [JsonPropertyName("Timestamp")]
         public long Timestamp { get; set; }
     }
 }

@@ -14,11 +14,11 @@
       <FileName>Interfaces\IDeltaController.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="RestMongo.Interfaces.IDocument">
+  <Interface Name="RestMongo.Interfaces.BaseDocument">
     <Position X="6.75" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
-      <FileName>Interfaces\IDocument.cs</FileName>
+      <FileName>Interfaces\BaseDocument.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="RestMongo.Controllers.IFulltextController&lt;TEntity&gt;">

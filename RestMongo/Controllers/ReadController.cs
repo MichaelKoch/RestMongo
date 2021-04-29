@@ -15,31 +15,17 @@ using System.Net;
 using RestMongo.Exceptions;
 using RestMongo.Utils;
 using RestMongo.Models;
+using System;
 
 namespace RestMongo.Controllers
 {
     [Route("[controller]")]
     public abstract class ReadController<TEntity, TDataTransfer> : ControllerBase
             where TEntity : BaseDocument
-    {
+            where TDataTransfer : class 
+      {
         protected IRepository<TEntity> _repository;
         protected int _maxPageSize = 0; //TODO => get it from configuration
-
-        protected virtual TDataTransfer ConvertToDTO(TEntity value)
-        {
-            return CopyUtils<TDataTransfer>.Convert(value);
-        }
-        protected virtual TEntity ConvertFromDTO(TDataTransfer value)
-        {
-            return CopyUtils<TEntity>.Convert(value);
-        }
-
-        protected virtual IList<TDataTransfer> Convert(IList<TEntity> value)
-        {
-            return CopyUtils<IList<TDataTransfer>>.Convert(value.Cast<object>().ToList());
-        }
-
-
 
         public ReadController(IRepository<TEntity> repository, int maxPageSize = 1000)
         {
@@ -62,7 +48,7 @@ namespace RestMongo.Controllers
                 var retVal = new PagedResultModel<TDataTransfer>()
                 {
                     Total = result.Total,
-                    Values = await this.LoadRelations(Convert(result.Values), expand),
+                    Values = await this.LoadRelations(result.Values.Transform<List<TDataTransfer>>(), expand),
                     Skip = 0,
                     Top = result.Total
                 };
@@ -96,10 +82,12 @@ namespace RestMongo.Controllers
             var total = query.Count();
             query = query.Skip(skip);
             query = query.Take(top);
+            var entityList = query.ToList();
+            var dtoList = entityList.Transform<List<TDataTransfer>>();
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,
-                Values = await this.LoadRelations(Convert(query.ToList()), expand),
+                Values = await this.LoadRelations(dtoList, expand),
                 Skip = skip,
                 Top = top
             };
@@ -111,17 +99,30 @@ namespace RestMongo.Controllers
         [SwaggerResponse(404, "NOT FOUND", typeof(string))]
         public async virtual Task<ActionResult<TDataTransfer>> Get(string id, [FromQuery(Name = "$expand")] string expand = "")
         {
-            var instance = this._repository.FindById(id);
+            TEntity instance = this._repository.FindById(id);
             if (instance == null)
             {
                 return NotFound();
             }
-            var result = await this.LoadRelations(new List<TDataTransfer>() { ConvertToDTO(instance) }, expand);
-            return result[0];
 
+            TDataTransfer dto = instance.Transform<TDataTransfer>();
+            var result = await this.LoadRelations(dto as TDataTransfer, expand);
+            return result;
         }
 
-
+        protected async virtual Task<TDataTransfer> LoadRelations(TDataTransfer value, string relations)
+        {
+            var expands = new List<string>();
+            if (!string.IsNullOrEmpty(relations))
+            {
+                expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
+            }
+            return await LoadRelations(value, expands);
+        }
+        protected async virtual Task<TDataTransfer> LoadRelations(TDataTransfer value, IList<string> relations)
+        {
+            return await Task.Run<TDataTransfer>(() => { return value; });
+        }
 
         protected async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, string relations)
         {

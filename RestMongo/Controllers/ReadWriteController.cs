@@ -13,17 +13,22 @@ using RestMongo.Attributes;
 using Swashbuckle.AspNetCore.Annotations;
 using RestMongo.Models;
 using RestMongo.Utils;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace RestMongo.Controllers
 {
-    public abstract class ReadWriteController<TEntity, TDataTransfer> : FeedController<TEntity, TDataTransfer>
+    public abstract class ReadWriteController<TEntity, TModel,TUpdateModel> : FeedController<TEntity, TModel>
         where TEntity : FeedDocument
-        where TDataTransfer : IFeedDocument
+        where TModel : class
+        where TUpdateModel : class
     {
-        public ReadWriteController(IRepository<TEntity> repository, int maxPageSize = 100) : base(repository, maxPageSize)
+        private bool _enableConcurrency;
+
+        public ReadWriteController(IRepository<TEntity> repository, int maxPageSize = 200,bool enableConcurrency = false) : base(repository, maxPageSize)
         {
             this._repository = repository;
             this._maxPageSize = maxPageSize;
+            this._enableConcurrency = enableConcurrency;
         }
 
 
@@ -31,40 +36,71 @@ namespace RestMongo.Controllers
         [SwaggerResponse(200)]
         [SwaggerResponse(409, "CONFLICT")]
         [SwaggerOperation("create new instance")]
-        public virtual ActionResult<string> Post([FromBody] TEntity value)
+        public virtual ActionResult<TModel> Post([FromBody] TUpdateModel value)
         {
-            var instance = this._repository.FindById(value.Id);
+            var feedInfo = value.Transform<FeedDocument>();
+            var instance = this._repository.FindById(feedInfo.Id);
             if (instance != null)
             {
                 return Conflict("DUPLICATE KEY");
             }
-            value.Timestamp = DateTime.UtcNow.Ticks;
-            return this._repository.InsertOne(value).Id.ToString(); ;
+            
+            TEntity insert = value.Transform<TEntity>();
+            this._repository.InsertOne(insert);
+            return insert.Transform<TModel>();
+             
         }
 
 
         [HttpPut("{id}")]
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
-        [SwaggerOperation("Update instance by ID")]
-        public virtual ActionResult Put(string id, [FromBody] TDataTransfer value)
+        [SwaggerOperation("replace instance by ID")]
+        public virtual ActionResult Put(string id, [FromBody] TUpdateModel value)
 
         {
-            var instance = this._repository.FindById(value.Id);
+            var feedInfo = value.Transform<FeedDocument>();
+            var instance = this._repository.FindById(id);
             if (instance == null)
             {
                 return NotFound();
             }
-            var updateInstance = ConvertFromDTO(value);
-            if (instance.Timestamp != value.Timestamp)
+            var updateInstance = value.Transform<TEntity>();
+            updateInstance.Id = id;
+            if (this._enableConcurrency)
             {
-                return Conflict("CONCURRENT UPDATE");
+                if ((feedInfo.Timestamp ==0) || (instance.Timestamp != feedInfo.Timestamp))
+                {
+                    return Conflict("CONCURRENCY CONFLICT");
+                }
             }
-            value.Id = id;
+           
             this._repository.ReplaceOne(updateInstance);
             return NoContent();
         }
 
+
+        //[HttpPatch("{id}")]
+        //[SwaggerResponse(204)]
+        //[SwaggerResponse(404)]
+        //[SwaggerOperation("patch instance values by ID")]
+        //public virtual ActionResult Patch(string id, [FromBody] Partial<TEntity> value)
+        //{
+
+        //    if(value.Remove<TEntity>(c=> c.Id))
+
+        //    var feedInfo = value.Transform<FeedDocument>();
+        //    var instance = this._repository.FindById(feedInfo.Id);
+        //    if (instance == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var updateInstance = value.Transform<TEntity>();
+
+        //    value.ApplyTo(instance);
+        //    this._repository.ReplaceOne(updateInstance);
+        //    return NoContent();
+        //}
 
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]

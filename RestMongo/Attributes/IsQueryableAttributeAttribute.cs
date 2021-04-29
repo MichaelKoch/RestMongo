@@ -18,7 +18,7 @@ namespace RestMongo.Attributes
     {
         public static bool IsAssignedTo(MemberInfo member)
         {
-            if (member.GetCustomAttributes(typeof(IsQueryableAttribute), true).Length > 0)
+            if (member.GetCustomAttributes(typeof(IsQueryableAttribute), false).Length > 0)
             {
                 return true;
             }

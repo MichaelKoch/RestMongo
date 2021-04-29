@@ -1,16 +1,14 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using RestMongo.Attributes;
-using RestMongo.Interfaces;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json;
+using RestMongo.Interfaces;
 
 namespace RestMongo.Models
 {
     [BsonIgnoreExtraElements]
-    public abstract class BaseDocument : IDocument
+    public class BaseDocument : IDocument
     {
         [IsQueryableAttribute]
         [JsonPropertyName("Id")]
@@ -22,5 +20,15 @@ namespace RestMongo.Models
             this.Id = Guid.NewGuid().ToString();
         }
 
+        public virtual TTarget Transform<TTarget>()
+        {
+
+           return JsonSerializer.Deserialize<TTarget>(JsonSerializer.Serialize(this, this.GetType()),
+                                                       new JsonSerializerOptions()
+                                                       {
+                                                           PropertyNameCaseInsensitive = true,
+                                                           PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                                                       });
+        }
     }
 }

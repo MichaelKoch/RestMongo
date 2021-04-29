@@ -15,7 +15,7 @@ using RestMongo.Models;
 namespace RestMongo.Repositories
 {
     public class MongoRepository<TEntity> : IRepository<TEntity>
-                 where TEntity : IDocument
+                 where TEntity : BaseDocument
     {
         public readonly IConnectionSettings ConnectionSettings;
         private readonly IMongoCollection<TEntity> _collection;
@@ -25,7 +25,7 @@ namespace RestMongo.Repositories
         public MongoRepository(IConnectionSettings settings)
         {
             ConnectionSettings = settings;
-            _client = new MongoClient(settings.ConnectionString);
+            _client = new MongoClient(MongoClientSettings.FromUrl(new MongoUrl(settings.ConnectionString)));
             _database = _client.GetDatabase(settings.DatabaseName);
             _collection = _database.GetCollection<TEntity>(GetCollectionName());
         }
@@ -154,30 +154,35 @@ namespace RestMongo.Repositories
         }
         private string GetCollectionName()
         {
-            return ((BsonCollectionAttribute)this.documentType.GetCustomAttributes(
+            var retVal = "";
+            var annotated = ((BsonCollectionAttribute)this.documentType.GetCustomAttributes(
                     typeof(BsonCollectionAttribute),
                     true)
-                .FirstOrDefault())?.CollectionName;
+                .FirstOrDefault());
+            if (annotated != null) 
+            {
+                retVal = annotated.CollectionName;
+            };
+
+            if (string.IsNullOrEmpty(retVal))
+            {
+                if (string.IsNullOrEmpty(this.documentType.Namespace))
+                {
+                    retVal = this.documentType.Name;
+                }
+                else
+                {
+                    retVal = $"{this.documentType.Namespace}.{this.documentType.Name}";
+                }
+            }
+            return retVal;
+
         }
 
         public virtual IQueryable<TEntity> AsQueryable()
         {
             return _collection.AsQueryable();
         }
-
-
-        //public virtual IEnumerable<TEntity> Search(string searchTerm,int maxPageSize = 50)
-        //{
-        //    var query = Builders<TEntity>.Filter.Text(searchTerm);
-        //    var totalCount = (int)this._collection.CountDocuments(query);
-        //    if (totalCount > maxPageSize)
-        //    {
-        //        throw new PageSizeExeededException($"MAX PAGE SIZE EXEEDED [{maxPageSize}]");
-        //    }
-        //    return _collection.Find(Builders<TEntity>.Filter.Text(searchTerm)).ToList();
-
-        //}
-
         public virtual IEnumerable<TEntity> FilterBy(
             Expression<Func<TEntity, bool>> filterExpression)
         {
@@ -266,6 +271,7 @@ namespace RestMongo.Repositories
             var filter = Builders<TEntity>.Filter.Eq(doc => doc.Id, document.Id);
             if (documentType.IsAssignableTo(typeof(IFeedDocument)))
             {
+
                 SetChangedDate(document as IFeedDocument);
             }
             _collection.ReplaceOne(filter, document);
@@ -306,8 +312,5 @@ namespace RestMongo.Repositories
                 return _collection.DeleteManyAsync(filter).Result;
             });
         }
-
-
-
     }
 }

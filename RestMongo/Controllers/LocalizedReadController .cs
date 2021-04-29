@@ -34,18 +34,7 @@ namespace RestMongo.Controllers
         protected int _maxPageSize = 0;
         protected Type _entityType = typeof(TEntity);
 
-        protected virtual TDataTransfer ConvertToDTO(TEntity value)
-        {
-            return CopyUtils<TDataTransfer>.Convert(value);
-        }
-        protected virtual TEntity ConvertFromDTO(TDataTransfer value)
-        {
-            return CopyUtils<TEntity>.Convert(value);
-        }
-        protected virtual IList<TDataTransfer> Convert(IList<TEntity> value)
-        {
-            return CopyUtils<IList<TDataTransfer>>.Convert(value.Cast<object>().ToList());
-        }
+      
 
         [HttpPost("query")]
         [SwaggerResponse(200)]
@@ -68,7 +57,7 @@ namespace RestMongo.Controllers
                 var retVal = new PagedResultModel<TDataTransfer>()
                 {
                     Total = result.Total,
-                    Values = await this.LoadRelations(Convert(result.Values), expand, locale),
+                    Values = await this.LoadRelations(result.Values.Transform<List<TDataTransfer>>(), expand, locale),
                     Skip = 0,
                     Top = result.Total
                 };
@@ -112,7 +101,7 @@ namespace RestMongo.Controllers
             var retVal = new PagedResultModel<TDataTransfer>()
             {
                 Total = total,
-                Values = await this.LoadRelations(Convert(query.ToList()), expand, locale),
+                Values = await this.LoadRelations(query.ToList().Transform<List<TDataTransfer>>(), expand, locale),
                 Skip = skip,
                 Top = top
             };
@@ -131,7 +120,7 @@ namespace RestMongo.Controllers
         {
 
             var query = this._repository.AsQueryable();
-            if (_entityType.IsAssignableTo(typeof(ILocalizedDocument)))
+            if (_entityType.IsAssignableTo(typeof(LocalizedDocument)))
             {
                 query = query.Where(c => c.Locale == locale);
             }
@@ -140,8 +129,8 @@ namespace RestMongo.Controllers
             {
                 return NotFound();
             }
-            var prepared = await this.LoadRelations(new List<TDataTransfer>() { ConvertToDTO(instance) }, expand, locale);
-            return prepared[0];
+            return  await this.LoadRelations( instance.Transform<TDataTransfer>() ,expand, locale);
+            
         }
 
 
@@ -159,5 +148,21 @@ namespace RestMongo.Controllers
         {
             return await Task.Run<IList<TDataTransfer>>(() => { return values; });
         }
+
+        protected async virtual Task<TDataTransfer> LoadRelations(TDataTransfer value, string relations, string locale)
+        {
+            var expands = new List<string>();
+            if (!string.IsNullOrEmpty(relations))
+            {
+                expands = relations.Replace(";", ",").Split(",").ToArray().Select(e => e.Trim()).ToList();
+            }
+            return await LoadRelations(value, expands,locale);
+        }
+        protected async virtual Task<TDataTransfer> LoadRelations(TDataTransfer value, IList<string> relations, string locale)
+        {
+            return await Task.Run<TDataTransfer>(() => { return value; });
+        }
+
+       
     }
 }
