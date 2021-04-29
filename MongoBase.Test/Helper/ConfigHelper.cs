@@ -10,13 +10,15 @@ namespace MongoBase.Test
 {
     public class ConfigHelper
     {
-        public static IConnectionSettings GetMongoConfig()
+        public static ConnectionSettings _config =new ConnectionSettings()
         {
-            return new ConnectionSettings()
-            {
-                ConnectionString = "mongodb://admin:admin@vehicle:27017",
+            ConnectionString = "mongodb://admin:admin@vehicle:27017",
                 DatabaseName = "test"
             };
+
+        public static IConnectionSettings GetMongoConfig()
+        {
+            return _config;
         }
 
     }
