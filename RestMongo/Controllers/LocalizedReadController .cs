@@ -86,11 +86,8 @@ namespace RestMongo.Controllers
             {
                 return StatusCode(412, "MAX PAGE SIZE EXCEEDED");
             }
-            //TODO => QUICK HACK REUSING ODATA QUERY PARSER 
             var query = this._repository.AsQueryable();
             query = ODataQueryHelper.Apply<TEntity>(filter, query).OfType<TEntity>();
-
-
             if (IsQueryableAttribute.IsAssignedTo(_entityType.GetProperty("Locale")))
             {
                 query = query.Where(c => c.Locale == locale);
@@ -129,11 +126,8 @@ namespace RestMongo.Controllers
             {
                 return NotFound();
             }
-            return  await this.LoadRelations( instance.Transform<TDataTransfer>() ,expand, locale);
-            
+            return  await this.LoadRelations( instance.Transform<TDataTransfer>() ,expand, locale);    
         }
-
-
 
         protected async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, string relations, string locale)
         {
@@ -162,7 +156,5 @@ namespace RestMongo.Controllers
         {
             return await Task.Run<TDataTransfer>(() => { return value; });
         }
-
-       
     }
 }

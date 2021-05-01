@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5</TargetFramework>
     <PackageId>RestMongo</PackageId>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <Authors>Michael Koch</Authors>
     <Company>Hier könnte Ihr Name stehen</Company>
   </PropertyGroup>
