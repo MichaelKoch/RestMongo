@@ -14,6 +14,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using RestMongo.Models;
 using RestMongo.Utils;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Threading.Tasks;
 
 namespace RestMongo.Controllers
 {
@@ -36,7 +37,7 @@ namespace RestMongo.Controllers
         [SwaggerResponse(200)]
         [SwaggerResponse(409, "CONFLICT")]
         [SwaggerOperation("create new instance")]
-        public virtual ActionResult<TModel> Post([FromBody] TUpdateModel value)
+        public virtual async Task<ActionResult<TModel>> Post([FromBody] TUpdateModel value)
         {
             var feedInfo = value.Transform<FeedDocument>();
             var instance = this._repository.FindById(feedInfo.Id);
@@ -56,7 +57,7 @@ namespace RestMongo.Controllers
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
         [SwaggerOperation("replace instance by ID")]
-        public virtual ActionResult Put(string id, [FromBody] TUpdateModel value)
+        public virtual async Task<ActionResult> Put(string id, [FromBody] TUpdateModel value)
 
         {
             var feedInfo = value.Transform<FeedDocument>();
@@ -106,14 +107,14 @@ namespace RestMongo.Controllers
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
         [SwaggerOperation("Delete instance by ID")]
-        public virtual ActionResult Delete(string id)
+        public async virtual Task<ActionResult> Delete(string id)
         {
             var instance = this._repository.FindById(id);
             if (instance == null)
             {
                 return NotFound();
             }
-            this._repository.DeleteById(id);
+            await this._repository.DeleteByIdAsync(id);
             return NoContent();
         }
     }
