@@ -99,7 +99,6 @@ namespace RestMongo.Repositories
                 }
             }
             var retVal = this.Query(query, orderbyDict, maxPageSize);
-
             return retVal;
         }
 
@@ -190,7 +189,6 @@ namespace RestMongo.Repositories
         }
 
 
-
         public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression)
         {
             return _collection.Find(filterExpression).FirstOrDefault();
@@ -250,7 +248,6 @@ namespace RestMongo.Repositories
             {
                 SetChangedDate(documents.Cast<IFeedDocument>().ToList());
             }
-
             _collection.InsertMany(documents);
         }
 

@@ -21,7 +21,7 @@ namespace RestMongo.Controllers
         [HttpGet("delta")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412)]
-        public virtual async Task<ActionResult<IEnumerable<TDataTransfer>>> Delta([FromQuery] long since = 0,
+        public virtual async Task<ActionResult<IEnumerable<TDataTransfer>>> Delta([FromQuery] long timestamp = 0,
              [FromQuery(Name = "$top")] int top = 200,
              [FromQuery(Name = "$skip")] int skip = 0)
         {
@@ -32,7 +32,7 @@ namespace RestMongo.Controllers
             var result = await Task.Run<IList<TEntity>>(() =>
             {
                 return this._repository.AsQueryable()
-                       .Where(i => i.Timestamp > since)
+                       .Where(i => i.Timestamp > timestamp)
                        .Take(top)
                        .Skip(skip)
                        .OrderByDescending(c => c.Timestamp).ToList();

@@ -37,15 +37,14 @@ namespace RestMongo.Controllers
         [SwaggerResponse(200)]
         [SwaggerResponse(409, "CONFLICT")]
         [SwaggerOperation("create new instance")]
-        public virtual async Task<ActionResult<TModel>> Post([FromBody] TUpdateModel value)
+        public virtual async Task<ActionResult<TModel>> Create([FromBody] TUpdateModel value)
         {
             var feedInfo = value.Transform<FeedDocument>();
-            var instance = this._repository.FindById(feedInfo.Id);
+            var instance =await  this._repository.FindByIdAsync(feedInfo.Id);
             if (instance != null)
             {
                 return Conflict("DUPLICATE KEY");
             }
-            
             TEntity insert = value.Transform<TEntity>();
             this._repository.InsertOne(insert);
             return insert.Transform<TModel>();
@@ -57,11 +56,11 @@ namespace RestMongo.Controllers
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]
         [SwaggerOperation("replace instance by ID")]
-        public virtual async Task<ActionResult> Put(string id, [FromBody] TUpdateModel value)
+        public virtual async Task<ActionResult> Update(string id, [FromBody] TUpdateModel value)
 
         {
             var feedInfo = value.Transform<FeedDocument>();
-            var instance = this._repository.FindById(id);
+            var instance = await this._repository.FindByIdAsync(id);
             if (instance == null)
             {
                 return NotFound();
@@ -74,35 +73,11 @@ namespace RestMongo.Controllers
                 {
                     return Conflict("CONCURRENCY CONFLICT");
                 }
-            }
-           
+            }   
             this._repository.ReplaceOne(updateInstance);
             return NoContent();
         }
-
-
-        //[HttpPatch("{id}")]
-        //[SwaggerResponse(204)]
-        //[SwaggerResponse(404)]
-        //[SwaggerOperation("patch instance values by ID")]
-        //public virtual ActionResult Patch(string id, [FromBody] Partial<TEntity> value)
-        //{
-
-        //    if(value.Remove<TEntity>(c=> c.Id))
-
-        //    var feedInfo = value.Transform<FeedDocument>();
-        //    var instance = this._repository.FindById(feedInfo.Id);
-        //    if (instance == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var updateInstance = value.Transform<TEntity>();
-
-        //    value.ApplyTo(instance);
-        //    this._repository.ReplaceOne(updateInstance);
-        //    return NoContent();
-        //}
-
+          
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]
         [SwaggerResponse(404)]

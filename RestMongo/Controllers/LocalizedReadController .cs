@@ -20,10 +20,9 @@ using RestMongo.Models;
 namespace RestMongo.Controllers
 {
     [Route("[controller]")]
-    public abstract class LocalizedReadController<TEntity, TDataTransfer> : ControllerBase
+    public abstract class LocalizedReadController<TEntity, TDataTransfer> : DocumentControllerBase<TEntity,TDataTransfer>
             where TEntity : LocalizedDocument
     {
-
 
         public LocalizedReadController(IRepository<TEntity> repo, int maxPageSize = 1000)
         {
