@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RestMongo.Controllers
 {
-    public class DocumentControllerBase<TEntity, TDataTransfer>:ControllerBase
+    public abstract class DocumentControllerBase<TEntity, TDataTransfer> : ControllerBase
     {
         protected internal async Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, string relations)
         {
@@ -18,12 +18,7 @@ namespace RestMongo.Controllers
             }
             return await LoadRelations(values, expands);
         }
-        protected internal async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, IList<string> relations)
-        {
-            return await Task.Run<IList<TDataTransfer>>(() => { return values; });
-        }
-
-        protected internal async virtual Task<TDataTransfer> LoadRelations(TDataTransfer value, string relations)
+        protected internal async Task<TDataTransfer> LoadRelations(TDataTransfer value, string relations)
         {
             var expands = new List<string>();
             if (!string.IsNullOrEmpty(relations))
@@ -32,6 +27,13 @@ namespace RestMongo.Controllers
             }
             return await LoadRelations(value, expands);
         }
+
+        protected internal async virtual Task<IList<TDataTransfer>> LoadRelations(IList<TDataTransfer> values, IList<string> relations)
+        {
+            return await Task.Run<IList<TDataTransfer>>(() => { return values; });
+        }
+
+
         protected internal async virtual Task<TDataTransfer> LoadRelations(TDataTransfer value, IList<string> relations)
         {
             return await Task.Run<TDataTransfer>(() => { return value; });

@@ -10,7 +10,7 @@ public class Setup
 
     public static MongoDbRunner mongoInstance = null;
     [AssemblyInitialize]
-    public static void InitializeTestRun(TestContext context)
+    public static void Prepare(TestContext context)
     {
 
         mongoInstance = Mongo2Go.MongoDbRunner.Start(singleNodeReplSet: true);
@@ -24,9 +24,6 @@ public class Setup
       
     }
 
-    [TestInitialize] //this doesn't work!
-    public static void InitializeTest()
-    {
-        //... code that runs before each test
-    }
+   
+
 }

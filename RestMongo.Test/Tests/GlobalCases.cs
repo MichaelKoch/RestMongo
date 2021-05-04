@@ -22,7 +22,7 @@ namespace RestMongo.Test
         public void EmptyOdataFilter()
         {
             var list = DataHelper.CreateTestDataFeed("NO", 10);
-            ODataQueryHelper.Apply<TestModelFeed>("", list.AsQueryable());
+            //ODataQueryHelper.Apply<TestModelFeed>("", list.AsQueryable());
 
 
         }
