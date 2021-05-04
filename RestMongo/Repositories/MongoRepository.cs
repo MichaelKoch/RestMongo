@@ -1,16 +1,16 @@
 
+using MongoDB.Bson;
+using MongoDB.Driver;
+using RestMongo.Attributes;
+using RestMongo.Exceptions;
+using RestMongo.Interfaces;
+using RestMongo.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using RestMongo.Interfaces;
-using RestMongo.Attributes;
 using System.Text.RegularExpressions;
-using RestMongo.Exceptions;
-using RestMongo.Models;
+using System.Threading.Tasks;
 
 namespace RestMongo.Repositories
 {
@@ -158,14 +158,14 @@ namespace RestMongo.Repositories
                     typeof(BsonCollectionAttribute),
                     true)
                 .FirstOrDefault());
-            if (annotated != null) 
+            if (annotated != null)
             {
                 retVal = annotated.CollectionName;
             };
 
             if (string.IsNullOrEmpty(retVal))
-            {               
-                retVal = this.documentType.Name;  
+            {
+                retVal = this.documentType.Name;
             }
             return retVal;
 
@@ -181,11 +181,11 @@ namespace RestMongo.Repositories
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
-        public  virtual Task<List<TEntity>> FilterByAsync(
+        public virtual Task<List<TEntity>> FilterByAsync(
            Expression<Func<TEntity, bool>> filterExpression)
         {
             return Task.Run(() => _collection.Find(filterExpression).ToListAsync());
-           
+
         }
         public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression)
         {

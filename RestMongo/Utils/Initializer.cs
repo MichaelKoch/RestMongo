@@ -1,3 +1,8 @@
+using MongoDB.Bson;
+using MongoDB.Driver;
+using RestMongo.Interfaces;
+using RestMongo.Models;
+using RestMongo.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,11 +10,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using RestMongo.Interfaces;
-using RestMongo.Models;
-using RestMongo.Repositories;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace RestMongo.Utils
 {

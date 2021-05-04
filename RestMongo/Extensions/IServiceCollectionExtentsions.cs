@@ -1,21 +1,16 @@
-using System.Linq;
-
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Formatter;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
+using MongoDB.Driver;
 using RestMongo.Interfaces;
 using RestMongo.Models;
 using RestMongo.Repositories;
-using RestMongo.Utils;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using Microsoft.AspNetCore.Builder;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Reflection;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Text.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Linq;
+using System.Reflection;
 namespace RestMongo
 {
     public static class IServiceCollectionExtentsions
@@ -59,20 +54,20 @@ namespace RestMongo
                         {
                             retVal = methodInfo.Name + apiDesc.RelativePath.Split("/")[0];
                             var queryParam = apiDesc.ParameterDescriptions.Where(c => c.Source.Id != "Body" && !c.Name.Contains("$"));
-                            if(queryParam.Count() > 0)
+                            if (queryParam.Count() > 0)
                             {
                                 retVal += "By";
-                                foreach(var parm in queryParam)
+                                foreach (var parm in queryParam)
                                 {
                                     var parmName = parm.Name;
-                                    parmName = parmName[0].ToString().ToUpper() + parmName.Substring(1, parmName.Length-1);
+                                    parmName = parmName[0].ToString().ToUpper() + parmName.Substring(1, parmName.Length - 1);
                                     retVal += parmName;
                                     if (queryParam.Last() != parm)
                                     {
                                         retVal += "And";
                                     }
                                 }
-                                
+
                             };
                             return retVal;
                         }
@@ -80,11 +75,11 @@ namespace RestMongo
                         {
                             return operationInfo.OperationId;
                         }
-                        
-                       
+
+
                     }
                     return retVal;
-                    
+
 
                 });
                 c.ResolveConflictingActions(apiDescriptions =>

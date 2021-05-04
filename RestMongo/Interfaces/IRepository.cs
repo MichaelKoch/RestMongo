@@ -24,7 +24,7 @@ namespace RestMongo.Interfaces
         TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression);
 
         Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression);
-       
+
         TEntity InsertOne(TEntity document);
 
         Task InsertOneAsync(TEntity document);

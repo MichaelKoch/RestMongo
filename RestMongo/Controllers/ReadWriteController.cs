@@ -1,23 +1,23 @@
-using RestMongo.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using RestMongo.Interfaces;
 using RestMongo.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
 namespace RestMongo.Controllers
 {
-    public abstract class ReadWriteController<TEntity, TReadModel,TCreateModel,TUpdateModel> : ReadController<TEntity, TReadModel>
-        where TEntity       : FeedDocument
-        where TReadModel    : class
-        where TCreateModel  : class
-        where TUpdateModel  : class
+    public abstract class ReadWriteController<TEntity, TReadModel, TCreateModel, TUpdateModel> : ReadController<TEntity, TReadModel>
+        where TEntity : FeedDocument
+        where TReadModel : class
+        where TCreateModel : class
+        where TUpdateModel : class
     {
         private bool _enableConcurrency;
 
-        public ReadWriteController(IRepository<TEntity> repository, int maxPageSize = 200,bool enableConcurrency = false) : base(repository, maxPageSize)
+        public ReadWriteController(IRepository<TEntity> repository, int maxPageSize = 200, bool enableConcurrency = false) : base(repository, maxPageSize)
         {
-            this._repository        = repository;
-            this._maxPageSize       = maxPageSize;
+            this._repository = repository;
+            this._maxPageSize = maxPageSize;
             this._enableConcurrency = enableConcurrency;
         }
 
@@ -46,7 +46,7 @@ namespace RestMongo.Controllers
 
         [HttpPut("{id}")]
         [SwaggerResponse(204)]
-        [SwaggerResponse(404,"NOT FOUND",typeof(ProblemDetails))]
+        [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
         [SwaggerOperation("replace instance by ID")]
         [SwaggerResponse(400)]
         [SwaggerResponse(500)]
@@ -64,18 +64,18 @@ namespace RestMongo.Controllers
             updateInstance.Id = id;
             if (this._enableConcurrency)
             {
-                if ((feedInfo.Timestamp ==0) || (instance.Timestamp != feedInfo.Timestamp))
+                if ((feedInfo.Timestamp == 0) || (instance.Timestamp != feedInfo.Timestamp))
                 {
                     return Conflict("CONCURRENCY CONFLICT");
                 }
-            }   
+            }
             this._repository.ReplaceOne(updateInstance);
             return NoContent();
         }
-          
+
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]
-        [SwaggerResponse(404,"NOT FOUND", typeof(ProblemDetails))]
+        [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
         [SwaggerResponse(400)]
         [SwaggerResponse(500)]
         [Consumes("application/json")]

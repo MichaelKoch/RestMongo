@@ -33,7 +33,7 @@
 //        protected int _maxPageSize = 0;
 //        protected Type _entityType = typeof(TEntity);
 
-      
+
 
 //        [HttpPost("query")]
 //        [SwaggerResponse(200)]

@@ -1,16 +1,12 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
 using RestMongo.Attributes;
 using RestMongo.Interfaces;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace RestMongo.Models
 {
     [BsonIgnoreExtraElements]
-    public class FeedDocument : BaseDocument,IFeedDocument
+    public class FeedDocument : BaseDocument, IFeedDocument
     {
         [IsQueryableAttribute()]
         [JsonPropertyName("Timestamp")]
