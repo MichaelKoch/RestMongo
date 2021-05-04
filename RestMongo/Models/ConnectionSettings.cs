@@ -1,6 +1,4 @@
-using System;
 using RestMongo.Interfaces;
-using MongoDB.Bson;
 
 namespace RestMongo.Models
 {

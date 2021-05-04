@@ -1,21 +1,10 @@
 
 
-using RestMongo.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Linq;
-using Microsoft.AspNet.OData.Query;
-using System.Web;
-using Microsoft.AspNetCore.Http;
-using RestMongo.Attributes;
-using Swashbuckle.AspNetCore.Annotations;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Net;
-using RestMongo.Exceptions;
-using RestMongo.Utils;
+using RestMongo.Interfaces;
 using RestMongo.Models;
-using System;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Threading.Tasks;
 
 namespace RestMongo.Controllers
 {
@@ -33,7 +22,7 @@ namespace RestMongo.Controllers
         {
             _maxPageSize = maxPageSize;
             _repository = repository;
-            
+
         }
 
         [HttpGet("{id}")]
@@ -44,7 +33,7 @@ namespace RestMongo.Controllers
         [Consumes("application/json")]
         [Produces("application/json")]
         [SwaggerOperation("Get item by id ")]
-        public async virtual Task<ActionResult<TReadModel>> Get(string id, 
+        public async virtual Task<ActionResult<TReadModel>> Get(string id,
                 [FromQuery(Name = "$expand")] string expand = "")
         {
             TEntity instance = this._repository.FindById(id);
@@ -57,7 +46,7 @@ namespace RestMongo.Controllers
             return result;
         }
 
-        
-       
+
+
     }
 }

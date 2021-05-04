@@ -1,5 +1,5 @@
-using RestMongo.Interfaces;
 using MongoDB.Bson.Serialization.Attributes;
+using RestMongo.Interfaces;
 
 namespace RestMongo.Models
 {

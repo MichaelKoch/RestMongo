@@ -1,9 +1,9 @@
-using System;
-using System.Text.Json.Serialization;
-using RestMongo.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json;
+using RestMongo.Attributes;
 using RestMongo.Interfaces;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RestMongo.Models
 {
@@ -23,12 +23,12 @@ namespace RestMongo.Models
         public virtual TTarget Transform<TTarget>()
         {
 
-           return JsonSerializer.Deserialize<TTarget>(JsonSerializer.Serialize(this, this.GetType()),
-                                                       new JsonSerializerOptions()
-                                                       {
-                                                           PropertyNameCaseInsensitive = true,
-                                                           PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                                                       });
+            return JsonSerializer.Deserialize<TTarget>(JsonSerializer.Serialize(this, this.GetType()),
+                                                        new JsonSerializerOptions()
+                                                        {
+                                                            PropertyNameCaseInsensitive = true,
+                                                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                                                        });
         }
     }
 }
