@@ -25,7 +25,7 @@ namespace RestMongo.Controllers
              [FromQuery(Name = "$top")] int top = 200,
              [FromQuery(Name = "$skip")] int skip = 0)
         {
-            if (top - skip > 100)
+            if (top> 100)
             {
                 StatusCode(412, "MAX PAGE SIZE EXCEEDED");
             }

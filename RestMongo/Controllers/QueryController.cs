@@ -33,7 +33,7 @@ namespace RestMongo.Controllers
         [SwaggerResponse(200)]
         [SwaggerResponse(412, "MAX PAGE SIZE EXCEEDED", typeof(string))]
         public async virtual Task<ActionResult<PagedResultModel<TDataTransfer>>> Get(
-            [FromQuery(Name = "$top")] int top = 200,
+            [FromQuery(Name = "$top")]   int top = 200,
             [FromQuery(Name = "$skip")] int skip = 0,
             [FromQuery(Name = "$filter")] string filter = "",
             [FromQuery(Name = "$expand")] string expand = ""
@@ -61,15 +61,14 @@ namespace RestMongo.Controllers
         }
 
 
-        [HttpPost("query")]
+        [HttpPost("queries")]
         [SwaggerResponse(200)]
         [SwaggerResponse(412, "MAX PAGE SIZE EXCEEDED", typeof(string))]
         public async virtual Task<ActionResult<PagedResultModel<TDataTransfer>>> Query(
               [FromBody] dynamic query,
               [FromQuery(Name = "$orderby")] string orderby = "",
-              [FromQuery(Name = "$expand")] string expand = "")
+              [FromQuery(Name = "$expand")]  string expand  = "")
         {
-            //TODO : Clean response code 
             try
             {
                 PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby, this._maxPageSize);

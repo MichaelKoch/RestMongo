@@ -164,15 +164,8 @@ namespace RestMongo.Repositories
             };
 
             if (string.IsNullOrEmpty(retVal))
-            {
-                if (string.IsNullOrEmpty(this.documentType.Namespace))
-                {
-                    retVal = this.documentType.Name;
-                }
-                else
-                {
-                    retVal = $"{this.documentType.Namespace}.{this.documentType.Name}";
-                }
+            {               
+                retVal = this.documentType.Name;  
             }
             return retVal;
 
@@ -188,7 +181,12 @@ namespace RestMongo.Repositories
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
-
+        public  virtual Task<List<TEntity>> FilterByAsync(
+           Expression<Func<TEntity, bool>> filterExpression)
+        {
+            return Task.Run(() => _collection.Find(filterExpression).ToListAsync());
+           
+        }
         public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression)
         {
             return _collection.Find(filterExpression).FirstOrDefault();
