@@ -22,6 +22,11 @@ namespace RestMongo
     {
         public static void AddRestMongo<TContext>(this IServiceCollection services, IConfiguration Configuration)
         {
+
+
+
+
+
             services.AddOData();
             services.AddScoped(typeof(TContext));
             ConnectionSettings mongoSettings = new ConnectionSettings();

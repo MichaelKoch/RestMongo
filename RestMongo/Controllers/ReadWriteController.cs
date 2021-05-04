@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RestMongo.Controllers
 {
-    public abstract class ReadWriteController<TEntity, TReadModel,TCreateModel,TUpdateModel> : FeedController<TEntity, TReadModel>
+    public abstract class ReadWriteController<TEntity, TReadModel,TCreateModel,TUpdateModel> : ReadController<TEntity, TReadModel>
         where TEntity       : FeedDocument
         where TReadModel    : class
         where TCreateModel  : class
@@ -24,8 +24,12 @@ namespace RestMongo.Controllers
 
         [HttpPost]
         [SwaggerResponse(200)]
-        [SwaggerResponse(409, "CONFLICT")]
+        [SwaggerResponse(409, "CONFLICT", typeof(ProblemDetails))]
         [SwaggerOperation("create new instance")]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(500)]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public virtual async Task<ActionResult<TReadModel>> Create([FromBody] TCreateModel value)
         {
             var feedInfo = value.Transform<FeedDocument>();
@@ -42,8 +46,12 @@ namespace RestMongo.Controllers
 
         [HttpPut("{id}")]
         [SwaggerResponse(204)]
-        [SwaggerResponse(404)]
+        [SwaggerResponse(404,"NOT FOUND",typeof(ProblemDetails))]
         [SwaggerOperation("replace instance by ID")]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(500)]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         public virtual async Task<ActionResult> Update(string id, [FromBody] TUpdateModel value)
         {
             var feedInfo = value.Transform<FeedDocument>();
@@ -67,7 +75,11 @@ namespace RestMongo.Controllers
           
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]
-        [SwaggerResponse(404)]
+        [SwaggerResponse(404,"NOT FOUND", typeof(ProblemDetails))]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(500)]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         [SwaggerOperation("Delete instance by ID")]
         public async virtual Task<ActionResult> Delete(string id)
         {

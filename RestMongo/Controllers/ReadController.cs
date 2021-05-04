@@ -38,7 +38,11 @@ namespace RestMongo.Controllers
 
         [HttpGet("{id}")]
         [SwaggerResponse(200)]
-        [SwaggerResponse(404, "NOT FOUND", typeof(string))]
+        [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(500)]
+        [Consumes("application/json")]
+        [Produces("application/json")]
         [SwaggerOperation("Get item by id ")]
         public async virtual Task<ActionResult<TReadModel>> Get(string id, 
                 [FromQuery(Name = "$expand")] string expand = "")
@@ -48,7 +52,6 @@ namespace RestMongo.Controllers
             {
                 return NotFound();
             }
-
             TReadModel dto = instance.Transform<TReadModel>();
             var result = await this.LoadRelations(dto as TReadModel, expand);
             return result;

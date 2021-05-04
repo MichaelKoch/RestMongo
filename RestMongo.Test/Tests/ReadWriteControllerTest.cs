@@ -19,15 +19,15 @@ namespace RestMongo.Test
             repo.InsertOne(instance);
             instance = repo.FindById(instance.Id);
             instance.Name = "TESTRESULT";
-            var controller = new TestReadWriteController(repo,true);
-            ActionResult<string> result = controller.Put(instance.Id, instance).Result;
+            var controller = new TestModelReadWriteController(repo,true);
+            ActionResult<string> result = controller.Update(instance.Id, instance).Result;
             var updated = repo.FindById(instance.Id);
             Assert.IsNotNull(updated);
             Assert.IsTrue(updated.Name == "TESTRESULT");
 
             //CONCURRENT UPDATE TEST 
             updated.Timestamp = 42 * 42;
-            result = controller.Put(instance.Id, instance).Result;
+            result = controller.Update(instance.Id, instance).Result;
             Assert.IsTrue(result.Result is ConflictObjectResult);
             DataHelper.Cleanup(repo, context);
         }
@@ -38,12 +38,12 @@ namespace RestMongo.Test
             var context = Guid.NewGuid().ToString();
             var instance = new TestModelFeed() { Context = context };
 
-            var controller = new TestReadWriteController(repo,false);
-            controller.Post(instance).Wait();
+            var controller = new TestModelReadWriteController(repo,false);
+            controller.Create(instance).Wait();
             var inserted = repo.FindById(instance.Id);
 
             Assert.IsNotNull(inserted);
-            ActionResult<TestModelFeed> result = controller.Post(instance).Result;
+            ActionResult<TestModelFeed> result = controller.Create(instance).Result;
             Assert.IsTrue(result.Result is ConflictObjectResult);
             DataHelper.Cleanup(repo, context);
 
@@ -55,7 +55,7 @@ namespace RestMongo.Test
             var context = Guid.NewGuid().ToString();
             var instance = new TestModelFeed() { Context = context };
             repo.InsertOne(instance);
-            var controller = new TestReadWriteController(repo,false);
+            var controller = new TestModelReadWriteController(repo,false);
             controller.Delete(instance.Id).Wait();
             controller.Delete("NOT THERE").Wait();
             var inserted = repo.FindById(instance.Id);
