@@ -28,8 +28,8 @@ namespace RestMongo.Controllers
         [HttpGet("{id}")]
         [SwaggerResponse(200)]
         [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(500)]
+        [SwaggerResponse(400, "BAD REQUEST", typeof(ProblemDetails))]
+        [SwaggerResponse(500, "INTERNAL SERVER ERROR", typeof(ProblemDetails))]
         [Consumes("application/json")]
         [Produces("application/json")]
         [SwaggerOperation("Get item by id ")]
@@ -45,8 +45,5 @@ namespace RestMongo.Controllers
             var result = await this.LoadRelations(dto as TReadModel, expand);
             return result;
         }
-
-
-
     }
 }

@@ -1,21 +1,12 @@
 ﻿
-using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RestMongo.Interfaces;
-using RestMongo.Models;
-using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
-using RestMongo.Utils;
-using MongoDB.Driver;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestMongo.Test
 {

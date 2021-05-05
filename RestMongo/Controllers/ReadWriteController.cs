@@ -24,12 +24,12 @@ namespace RestMongo.Controllers
 
         [HttpPost]
         [SwaggerResponse(200)]
+        [SwaggerResponse(400, "BAD REQUEST", typeof(ProblemDetails))]
         [SwaggerResponse(409, "CONFLICT", typeof(ProblemDetails))]
-        [SwaggerOperation("create new instance")]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(500)]
+        [SwaggerResponse(500, "INTERNAL SERVER ERROR", typeof(ProblemDetails))]
         [Consumes("application/json")]
         [Produces("application/json")]
+        [SwaggerOperation("create new instance")]
         public virtual async Task<ActionResult<TReadModel>> Create([FromBody] TCreateModel value)
         {
             var feedInfo = value.Transform<FeedDocument>();
@@ -48,8 +48,8 @@ namespace RestMongo.Controllers
         [SwaggerResponse(204)]
         [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
         [SwaggerOperation("replace instance by ID")]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(500)]
+        [SwaggerResponse(400, "BAD REQUEST", typeof(ProblemDetails))]
+        [SwaggerResponse(500, "INTERNAL SERVER ERROR", typeof(ProblemDetails))]
         [Consumes("application/json")]
         [Produces("application/json")]
         public virtual async Task<ActionResult> Update(string id, [FromBody] TUpdateModel value)
@@ -76,8 +76,8 @@ namespace RestMongo.Controllers
         [HttpDelete("{id}")]
         [SwaggerResponse(204)]
         [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
-        [SwaggerResponse(400)]
-        [SwaggerResponse(500)]
+        [SwaggerResponse(400, "BAD REQUEST")]
+        [SwaggerResponse(500, "INTERNAL SERVER ERROR", typeof(ProblemDetails))]
         [Consumes("application/json")]
         [Produces("application/json")]
         [SwaggerOperation("Delete instance by ID")]

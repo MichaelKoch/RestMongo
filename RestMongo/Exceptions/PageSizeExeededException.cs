@@ -2,11 +2,12 @@
 
 namespace RestMongo.Exceptions
 {
-    public class PageSizeExeededException : Exception
+    public class PageSizeExeededException : HttpStatusCodeException
     {
 
+        public PageSizeExeededException(string message = "", Exception innerException = null) : base(message, 412)
+        {
 
-        public PageSizeExeededException(string message = "") : base(message)
-        { }
+        }
     }
 }

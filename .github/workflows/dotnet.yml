@@ -15,6 +15,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+
     - name: Restore dependencies
       run: dotnet restore
       
@@ -26,10 +27,9 @@ jobs:
       
     - name: Pack
       run: dotnet pack --no-restore
+
     - name: Publish NuGet
-        
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
         PROJECT_FILE_PATH: RestMongo/RestMongo.csproj
         NUGET_KEY: ${{ secrets.NUGET_KEY }}
-          
