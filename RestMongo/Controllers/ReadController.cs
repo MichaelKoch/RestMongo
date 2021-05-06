@@ -22,17 +22,13 @@ namespace RestMongo.Controllers
         {
             _maxPageSize = maxPageSize;
             _repository = repository;
-
         }
 
         [HttpGet("{id}")]
         [SwaggerResponse(200)]
         [SwaggerResponse(404, "NOT FOUND", typeof(ProblemDetails))]
-        [SwaggerResponse(400, "BAD REQUEST", typeof(ProblemDetails))]
-        [SwaggerResponse(500, "INTERNAL SERVER ERROR", typeof(ProblemDetails))]
         [Consumes("application/json")]
         [Produces("application/json")]
-        [SwaggerOperation("Get item by id ")]
         public async virtual Task<ActionResult<TReadModel>> Get(string id,
                 [FromQuery(Name = "$expand")] string expand = "")
         {

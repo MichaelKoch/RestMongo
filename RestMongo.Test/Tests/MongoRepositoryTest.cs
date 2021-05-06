@@ -18,8 +18,6 @@ namespace RestMongo.Test
     public class MongoRepositoryTest
     {
 
-
-
         [TestMethod]
         public void Query()
         {
@@ -29,7 +27,6 @@ namespace RestMongo.Test
             repo.InsertManyAsync(testData).Wait();
             var query = new ExpandoObject();
             query.TryAdd("Context", context);
-
             var existing = repo.Query(JsonSerializer.Serialize(query), "", 200);
             Assert.IsTrue(existing.Values.Count() == 200);
             Assert.IsTrue(existing.Total == 200);

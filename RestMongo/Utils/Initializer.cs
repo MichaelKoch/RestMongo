@@ -35,7 +35,6 @@ namespace RestMongo.Utils
             _files = ReadContent(_sourceDir);
             MongoRepository<DomainSchemaInfo> schemaRepo = new Repositories.MongoRepository<DomainSchemaInfo>(_settings);
             var schemainfo = schemaRepo.AsQueryable().SingleOrDefault(c => c.AssemblyName == assemblyName);
-
             if (schemainfo == null || schemainfo.Hash != CalculateHash(_files))
             {
                 CreateIndizies();

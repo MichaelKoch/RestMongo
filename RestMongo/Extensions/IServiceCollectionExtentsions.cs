@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -13,39 +14,47 @@ namespace RestMongo
 {
     public static class IServiceCollectionExtentsions
     {
-        private static void AddDefaultResponseCode(SwaggerGenOptions options)
+
+        private static string makeSigular(string value)
+        {
+            //TODO : Dirty remove "S" at the end --> use Pluralize / Singular Services 
+            //possible services available in dependency 
+            //SEE --> https://docs.microsoft.com/de-de/dotnet/api/system.data.entity.design.pluralizationservices.pluralizationservice.pluralize
+            //NEED decission : Use or not to use ;)
+            if (value.EndsWith("s") || (value.EndsWith("S")))
+            {
+                value = value.Substring(0, value.Length - 1);
+            }
+            return value;
+        }
+        private static  string makeFirstLetterUpperCase(string value)
+        {
+          return    value.ToUpper().Substring(0, 1) + value.ToLower().Substring(1, value.Length-1);
+        }
+        private static void AddCommonResponseCode(SwaggerGenOptions options)
         {
            
         }
-        private static void AddCustomOperationIds(SwaggerGenOptions options)
+        private static string AddCustomOperationIds(ApiDescription apiDesc)
         {
-            options.CustomOperationIds(apiDesc =>
-            {
+          
                 var retVal = "";
                 if (apiDesc.TryGetMethodInfo(out MethodInfo methodInfo))
                 {
                     var operationInfo = methodInfo.GetCustomAttribute<SwaggerOperationAttribute>();
-                    if (operationInfo == null || string.IsNullOrEmpty(operationInfo.OperationId))
-                    {
-                        retVal = methodInfo.Name + apiDesc.RelativePath.Split("/")[0];
-
-                        //TODO : Dirty remove "S" at the end --> use Pluralize / Singular Services 
-                        //possible services available in dependency 
-                        //SEE --> https://docs.microsoft.com/de-de/dotnet/api/system.data.entity.design.pluralizationservices.pluralizationservice.pluralize
-                        //NEED decission : Use or not to use ;)
-
-                        if (retVal.EndsWith("s") || (retVal.EndsWith("S")))
-                        {
-                            retVal = retVal.Substring(0, retVal.Length - 2);
-                        }
-                        var queryParam = apiDesc.ParameterDescriptions.Where(c => c.Source.Id != "Body" && c.IsRequired);
+                if (operationInfo == null || string.IsNullOrEmpty(operationInfo.OperationId))
+                {
+                    var methodName = methodInfo.Name;
+                    var routeName = apiDesc.RelativePath.Split("/")[0];
+                        routeName = makeFirstLetterUpperCase(makeSigular(routeName));
+                    retVal = methodName + routeName;
+                    var queryParam = apiDesc.ParameterDescriptions.Where(c => c.Source.Id != "Body" && c.IsRequired);
                         if (queryParam.Count() > 0)
                         {
                             retVal += "By";
                             foreach (var parm in queryParam)
                             {
-                                var parmName = parm.Name;
-                                parmName = parmName[0].ToString().ToUpper() + parmName.Substring(1, parmName.Length - 1);
+                            var parmName = makeFirstLetterUpperCase(parm.Name);
                                 retVal += parmName;
                                 if (queryParam.Last() != parm)
                                 {
@@ -53,15 +62,13 @@ namespace RestMongo
                                 }
                             }
                         };
-                        return retVal;
                     }
                     else
                     {
-                        return operationInfo.OperationId;
+                        retVal = operationInfo.OperationId;
                     }
                 }
-                return retVal;
-            });
+            return retVal;
         }
 
         public static void AddRestMongo<TContext>(this IServiceCollection services, IConfiguration Configuration)
@@ -75,7 +82,8 @@ namespace RestMongo
             services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
-                AddCustomOperationIds(c);
+                c.OperationFilter<AddCommonResponseTypesFilter>();
+                c.CustomOperationIds(AddCustomOperationIds);
                 c.ResolveConflictingActions(apiDescriptions =>
                 {
                     return apiDescriptions.First();
