@@ -19,7 +19,7 @@ namespace RestMongo.Controllers
         public QueryController(IRepository<TEntity> repository, int maxPageSize = 1000)
         {
             _maxPageSize = maxPageSize;
-            _repository  = repository;
+            _repository = repository;
         }
 
         [HttpPost("queries")]
@@ -28,7 +28,7 @@ namespace RestMongo.Controllers
         public async virtual Task<ActionResult<PagedResultModel<TDataTransfer>>> Query(
             [FromBody] dynamic query,
             [FromQuery(Name = "$orderby")] string orderby = "",
-            [FromQuery(Name = "$expand")]  string expand  = ""
+            [FromQuery(Name = "$expand")] string expand = ""
         )
         {
             PagedResultModel<TEntity> result = this._repository.Query(JsonSerializer.Serialize(query), orderby, this._maxPageSize);
