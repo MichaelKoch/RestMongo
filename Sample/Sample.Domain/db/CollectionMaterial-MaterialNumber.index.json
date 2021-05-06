@@ -1,7 +1,0 @@
-{
-  "indexOn": "ArticleVariant",
-  "fields": {
-    "MaterialNumber": "asc"
-  }
-}
-   

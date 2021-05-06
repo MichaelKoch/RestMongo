@@ -1,8 +1,0 @@
-{
-  "indexOn": "MaterialComposition",
-  "fields": {
-    "Locale": "asc",
-    "MaterialNumber": "asc"
-  }
-}
-   
