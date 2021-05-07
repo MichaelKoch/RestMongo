@@ -78,6 +78,7 @@ namespace RestMongo.Repositories
 
         public PagedResultModel<TEntity> Query(string query, string orderby = null, int maxPageSize = 100)
         {
+            query = query.Replace("\"Id\"","\"_id\"");
             var orderbyDict = new Dictionary<string, string>();
             orderby = orderby.Replace(";", ",");
             var orderbySplit = orderby.Split(",");

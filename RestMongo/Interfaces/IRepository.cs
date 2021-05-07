@@ -17,6 +17,10 @@ namespace RestMongo.Interfaces
             Expression<Func<TEntity, bool>> filterExpression);
 
 
+        Task<List<TEntity>> FilterByAsync(Expression<Func<TEntity, bool>> filterExpression);
+
+
+
         TEntity FindById(string id);
 
         Task<TEntity> FindByIdAsync(string id);

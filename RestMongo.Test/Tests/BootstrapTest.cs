@@ -18,7 +18,7 @@ namespace RestMongo.Test
         public void IApplicationBuilder()
         {
             var app = Mock.Of<IApplicationBuilder>();
-            app.AddRestMongo();
+            app.AddRestMongo(null);
         }
 
         [TestMethod]

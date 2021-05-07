@@ -7,6 +7,7 @@ using RestMongo.Interfaces;
 using RestMongo.Models;
 using RestMongo.Repositories;
 using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 using System.Reflection;
@@ -31,10 +32,7 @@ namespace RestMongo
         {
             return value.ToUpper().Substring(0, 1) + value.ToLower().Substring(1, value.Length - 1);
         }
-        private static void AddCommonResponseCode(SwaggerGenOptions options)
-        {
-
-        }
+      
         private static string AddCustomOperationIds(ApiDescription apiDesc)
         {
 
@@ -79,10 +77,12 @@ namespace RestMongo
             services.AddSingleton<IConnectionSettings>(mongoSettings);
             services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
             services.AddResponseCompression();
+            services.AddSwaggerExamplesFromAssemblyOf<Query>();
             services.AddSwaggerGen(c =>
             {
-
+                
                 c.EnableAnnotations();
+               // c.OperationFilter<ExamplesOperationFilter>();
                 c.CustomOperationIds(AddCustomOperationIds);
                 c.ResolveConflictingActions(apiDescriptions =>
                 {
