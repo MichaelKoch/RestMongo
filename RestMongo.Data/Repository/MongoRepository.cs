@@ -9,8 +9,8 @@ using MongoDB.Driver;
 using RestMongo.Data.Abstractions.Repository;
 using RestMongo.Data.Abstractions.Repository.Mongo.Configuration;
 using RestMongo.Data.Abstractions.Repository.Mongo.Documents;
+using RestMongo.Data.Abstractions.Extensions;
 using RestMongo.Data.Attributes;
-using RestMongo.Data.Extensions;
 using RestMongo.Data.Repository.Documents;
 
 namespace RestMongo.Data.Repository
@@ -56,7 +56,7 @@ namespace RestMongo.Data.Repository
 
         public long GetServerTimeStamp()
         {
-            return this._database.GetServerTimeStap();
+            return this._database.GetServerTimeStamp();
         }
 
 

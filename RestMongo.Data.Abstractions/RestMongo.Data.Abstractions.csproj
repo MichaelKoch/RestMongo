@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MongoDB.Bson" Version="2.12.3" />
+		<PackageReference Include="MongoDB.Driver" Version="2.12.3" />
 	</ItemGroup>
 
 </Project>

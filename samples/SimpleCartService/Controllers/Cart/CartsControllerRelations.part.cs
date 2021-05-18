@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using RestMongo;
-using RestMongo.Data.Extensions;
+using RestMongo.Data.Abstractions.Extensions;
 using SimpleCartService.Models.CartItem;
 
 namespace SimpleCartService.Controllers.Cart

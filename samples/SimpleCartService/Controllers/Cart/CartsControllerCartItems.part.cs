@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RestMongo;
-using RestMongo.Data.Extensions;
+using RestMongo.Data.Abstractions.Extensions;
 using SimpleCartService.Entities;
 using SimpleCartService.Models.CartItem;
 using Swashbuckle.AspNetCore.Annotations;

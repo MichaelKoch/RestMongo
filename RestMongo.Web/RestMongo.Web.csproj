@@ -17,7 +17,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\RestMongo.Data.Abstractions\RestMongo.Data.Abstractions.csproj" />
-		<ProjectReference Include="..\RestMongo.Data\RestMongo.Data.csproj" />
 	</ItemGroup>
 
 </Project>

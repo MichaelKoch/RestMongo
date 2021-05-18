@@ -5,9 +5,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using RestMongo.Data.Abstractions.Transform;
 
-namespace RestMongo.Data.Extensions
+namespace RestMongo.Data.Abstractions.Extensions
 {
-    public static class TransformableObjectExtentsions
+    public static class TransformableObjectExtensions
     {
 
         public static IList<TTarget> Transform<TSource, TTarget>(this IList<TSource> source)

@@ -1,11 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace RestMongo.Data.Extensions
+namespace RestMongo.Data.Abstractions.Extensions
 {
-    static class MongoDatabaseTimeStampExtension
+    public static class MongoDatabaseTimeStampExtension
     {
-        public static long GetServerTimeStap(this IMongoDatabase Instance)
+        public static long GetServerTimeStamp(this IMongoDatabase Instance)
         {
 
             var serverStatusCmd = new BsonDocumentCommand<BsonDocument>(new BsonDocument { { "serverStatus", 1 } });

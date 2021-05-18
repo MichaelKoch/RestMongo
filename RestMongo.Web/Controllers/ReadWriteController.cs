@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using RestMongo.Data.Abstractions.Extensions;
 using RestMongo.Data.Abstractions.Repository;
 using RestMongo.Data.Abstractions.Repository.Mongo.Documents;
-using RestMongo.Data.Extensions;
-using RestMongo.Data.Repository.Documents;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace RestMongo.Web.Controllers
@@ -31,7 +30,7 @@ namespace RestMongo.Web.Controllers
         [Produces("application/json")]
         public virtual async Task<ActionResult<TReadModel>> Create([FromBody] TCreateModel value)
         {
-            var feedInfo = value.Transform<FeedDocument>();
+            var feedInfo = value.Transform<KeyedDto>();
             var instance = await this._repository.FindByIdAsync(feedInfo.Id);
             if (instance != null)
             {
@@ -50,7 +49,7 @@ namespace RestMongo.Web.Controllers
         [Produces("application/json")]
         public virtual async Task<ActionResult> Update(string id, [FromBody] TUpdateModel value)
         {
-            var feedInfo = value.Transform<FeedDocument>();
+            var feedInfo = value.Transform<ConcurrentKeyedDto>();
             var instance = await this._repository.FindByIdAsync(id);
             if (instance == null)
             {
