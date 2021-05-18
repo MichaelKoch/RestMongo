@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+	  <PackageId>RestMongo.Data</PackageId>
+	  <Version>0.0.1</Version>
+	  <Authors>Multiple authors (see github repo)</Authors>
+	  <Company>it could be  your name</Company>
   </PropertyGroup>
 
   <ItemGroup>

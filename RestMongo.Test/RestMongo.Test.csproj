@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RestMongo.Extensions\RestMongo.Extensions.csproj" />
-    <ProjectReference Include="..\RestMongo\RestMongo.csproj" />
   </ItemGroup>
 
   <ItemGroup>

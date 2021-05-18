@@ -1,9 +1,35 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
+	<Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 	<PropertyGroup>
 		<TargetFramework>net5</TargetFramework>
 		<PackageId>RestMongo</PackageId>
-		<Version>0.0.6</Version>
-		<Authors>Michael Koch</Authors>
+		<Version>0.0.7</Version>
+		<Authors>Multiple authors (see github repo)</Authors>
 		<Company>it could be  your name</Company>
+
+		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);PopulateNuspec</GenerateNuspecDependsOn>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<IncludeContentInPack>false</IncludeContentInPack>
+		<IncludeSource>false</IncludeSource>
+		<IncludeSymbols>false</IncludeSymbols>
+		<NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
 	</PropertyGroup>
+
+	<Target Name="PopulateNuspec">
+		<PropertyGroup>
+			<NuspecProperties>
+				id=$(PackageId);
+				authors=$(Authors);
+				configuration=$(Configuration);
+				targetPath=$(TargetPath);
+				version=$(Version);
+			</NuspecProperties>
+		</PropertyGroup>
+	</Target>
+
+	<Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+	<!-- No need for an assembly. -->
+	<Target Name="Compile" />
+	<Target Name="CopyFilesToOutputDirectory" />
 </Project>

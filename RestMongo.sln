@@ -16,8 +16,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo.Data.Abstractions
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo.Web", "RestMongo.Web\RestMongo.Web.csproj", "{7060C665-F4E9-4E13-993A-CD6705DA1C90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo.Web.Abstractions", "RestMongo.Web.Abstractions\RestMongo.Web.Abstractions.csproj", "{EF3F214D-10B4-4A35-965D-D26A6275DD97}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo.Extensions", "RestMongo.Extensions\RestMongo.Extensions.csproj", "{B8D19FC3-C21E-43DC-8E91-4428F3D7A3CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestMongo.Data", "RestMongo.Data\RestMongo.Data.csproj", "{8B3CD7B7-04E2-43A8-B38F-5AE9C9680407}"
@@ -88,18 +86,6 @@ Global
 		{7060C665-F4E9-4E13-993A-CD6705DA1C90}.Release|x64.Build.0 = Release|Any CPU
 		{7060C665-F4E9-4E13-993A-CD6705DA1C90}.Release|x86.ActiveCfg = Release|Any CPU
 		{7060C665-F4E9-4E13-993A-CD6705DA1C90}.Release|x86.Build.0 = Release|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Debug|x64.Build.0 = Debug|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Debug|x86.Build.0 = Debug|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Release|x64.ActiveCfg = Release|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Release|x64.Build.0 = Release|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Release|x86.ActiveCfg = Release|Any CPU
-		{EF3F214D-10B4-4A35-965D-D26A6275DD97}.Release|x86.Build.0 = Release|Any CPU
 		{B8D19FC3-C21E-43DC-8E91-4428F3D7A3CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8D19FC3-C21E-43DC-8E91-4428F3D7A3CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8D19FC3-C21E-43DC-8E91-4428F3D7A3CC}.Debug|x64.ActiveCfg = Debug|Any CPU
