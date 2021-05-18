@@ -1,13 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo.Test.Controllers;
+using RestMongo.Test.Controller;
 using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Tests
 {
     [TestClass]
     public class ReadControllerTest

@@ -1,18 +1,14 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo;
-using RestMongo.Exceptions;
-using RestMongo.Interfaces;
-using RestMongo.Models;
-using RestMongo.Repositories;
-using RestMongo.Test.Helper;
-using RestMongo.Test.Models;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RestMongo.Extensions.Exceptions;
+using RestMongo.Test.Helper;
+using RestMongo.Test.Models;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Tests
 {
     [TestClass]
     public class MongoRepositoryTest
@@ -27,10 +23,9 @@ namespace RestMongo.Test
             repo.InsertManyAsync(testData).Wait();
             var query = new ExpandoObject();
             query.TryAdd("Context", context);
-            var existing = repo.Query(JsonSerializer.Serialize(query), "", 200);
-            Assert.IsTrue(existing.Values.Count() == 200);
-            Assert.IsTrue(existing.Total == 200);
-            Assert.IsTrue(existing.Top == 200);
+            var existing = repo.Query(JsonSerializer.Serialize(query), "", out var total, 200);
+            Assert.IsTrue(existing.Count() == 200);
+            Assert.IsTrue(total == 200);
 
             DataHelper.Cleanup(repo, context);
 
@@ -46,13 +41,11 @@ namespace RestMongo.Test
             var query = new ExpandoObject();
             query.TryAdd("Context", context);
 
-            var existing = repo.Query(JsonSerializer.Serialize(query), "Id desc,Name asc", 200);
-            Assert.IsTrue(existing.Values.Count() == 200);
-            Assert.IsTrue(existing.Total == 200);
-            Assert.IsTrue(existing.Top == 200);
+            var existing = repo.Query(JsonSerializer.Serialize(query), "Id desc,Name asc", out var total, 200);
+            Assert.IsTrue(existing.Count() == 200);
+            Assert.IsTrue(total == 200);
 
             DataHelper.Cleanup(repo, context);
-
         }
 
 
@@ -95,7 +88,7 @@ namespace RestMongo.Test
             query.TryAdd("Context", context);
             Assert.ThrowsException<PageSizeExeededException>(() =>
             {
-                repo.Query(JsonSerializer.Serialize(query), "", maxPageSize);
+                repo.Query(JsonSerializer.Serialize(query), "", out _, maxPageSize);
             });
 
             DataHelper.Cleanup(repo, context);
@@ -381,9 +374,9 @@ namespace RestMongo.Test
             repo.InsertMany(testData);
             var query = new ExpandoObject();
             query.TryAdd("Context", context);
-            var result = repo.Query(System.Text.Json.JsonSerializer.Serialize(query), "");
-            Assert.IsTrue(result.Values.Count() == 100);
-            Assert.IsTrue(result.Total == 100);
+            var result = repo.Query(System.Text.Json.JsonSerializer.Serialize(query), "", out var total);
+            Assert.IsTrue(result.Count() == 100);
+            Assert.IsTrue(total == 100);
             DataHelper.Cleanup(repo, context);
         }
     }

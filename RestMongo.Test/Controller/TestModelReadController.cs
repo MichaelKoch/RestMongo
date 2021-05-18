@@ -1,8 +1,8 @@
-﻿using RestMongo.Controllers;
-using RestMongo.Repositories;
+﻿using RestMongo.Data.Repository;
 using RestMongo.Test.Models;
+using RestMongo.Web.Controllers;
 
-namespace RestMongo.Test.Controllers
+namespace RestMongo.Test.Controller
 {
 
     public class TestModelReadController : ReadController<TestModel, TestModel>

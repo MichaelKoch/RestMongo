@@ -1,11 +1,11 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo.Test.Controllers;
+using RestMongo.Test.Controller;
 using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
-using System;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Tests
 {
     [TestClass]
     public class ReadWriteControllerTest
