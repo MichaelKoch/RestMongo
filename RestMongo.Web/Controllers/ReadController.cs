@@ -46,8 +46,6 @@ namespace RestMongo.Web.Controllers
           [FromQuery(Name = "$expand")] string expand = ""
         )
         {
-
-
             var result = this._repository.Query(JsonSerializer.Serialize( query), orderby, out var total, this._maxPageSize).ToList();
             var retVal = new PagedResultModel<TReadModel>()
             {
