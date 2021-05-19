@@ -1,16 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo.Models;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MongoDB.Driver;
 using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
-using RestMongo.Utils;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Tests
 {
     [TestClass]
     public class SchemaInitilizerTest

@@ -1,24 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo;
-using RestMongo.Attributes;
-using RestMongo.Interfaces;
-using RestMongo.Models;
-using RestMongo.Repositories;
-using RestMongo.Test.Helper;
+using RestMongo.Data.Attributes;
 using RestMongo.Test.Models;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Tests
 {
     [TestClass]
     public class ModelTest
     {
-
-
-
         [TestMethod]
         public void IsQueryableTest()
         {
@@ -28,6 +16,5 @@ namespace RestMongo.Test
             Assert.IsFalse(IsQueryableAttribute.IsAssignedTo(notQueryable));
             Assert.IsTrue(IsQueryableAttribute.IsAssignedTo(queryable));
         }
-
     }
 }

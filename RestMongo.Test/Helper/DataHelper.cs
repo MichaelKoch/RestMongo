@@ -1,12 +1,12 @@
-﻿using RestMongo.Interfaces;
-using RestMongo.Models;
-using RestMongo.Repositories;
-using RestMongo.Test.Models;
+﻿using RestMongo.Test.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RestMongo.Data.Abstractions.Repository.Mongo.Documents;
+using RestMongo.Data.Repository;
+using RestMongo.Data.Repository.Documents;
+using RestMongo.Domain.Abstractions.Services;
+using RestMongo.Domain.Services;
 
 namespace RestMongo.Test.Helper
 {
@@ -34,7 +34,16 @@ namespace RestMongo.Test.Helper
         }
         internal static MongoRepository<TType> getRepository<TType>() where TType : BaseDocument
         {
-            return new Repositories.MongoRepository<TType>(ConfigHelper.GetMongoConfig());
+            return new MongoRepository<TType>(ConfigHelper.GetMongoConfig());
+        }
+        
+        internal static ReadWriteDomainService<TType, TType, TType, TType> getDomainService<TType>(MongoRepository<TType> repo) where TType : BaseDocument, IFeedDocument
+        {
+            return new(repo);
+        }
+        internal static ReadDomainService<TType, TType> getReadonlyDomainService<TType>(MongoRepository<TType> repo) where TType : BaseDocument
+        {
+            return new(repo);
         }
 
         internal static IList<TestModelLocalized> CreateTestDataLocalizedModel(string context, long count, string locale = "")
@@ -65,6 +74,5 @@ namespace RestMongo.Test.Helper
             }
             return retVal;
         }
-
     }
 }

@@ -1,12 +1,7 @@
-﻿using RestMongo.Interfaces;
-using RestMongo.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RestMongo.Data.Abstractions.Repository.Mongo.Configuration;
+using RestMongo.Data.Repository.Configuration;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Helper
 {
     public class ConfigHelper
     {

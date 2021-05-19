@@ -1,14 +1,15 @@
-﻿
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo.Interfaces;
-using RestMongo.Test.Models;
 using Moq;
-using System.Collections.Generic;
+using RestMongo.Data.Abstractions.Repository;
+using RestMongo.Extensions;
+using RestMongo.Test.Helper;
+using RestMongo.Test.Models;
 
-namespace RestMongo.Test
+namespace RestMongo.Test.Tests
 {
     [TestClass]
     public class BootstrapTest

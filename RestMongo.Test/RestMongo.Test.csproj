@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RestMongo\RestMongo.csproj" />
+    <ProjectReference Include="..\RestMongo.Data\RestMongo.Data.csproj" />
+    <ProjectReference Include="..\RestMongo.Extensions\RestMongo.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

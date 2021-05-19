@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<PackageId>RestMongo.Data.Extensions</PackageId>
+		<Version>0.0.1</Version>
+		<Authors>Multiple authors (see github repo)</Authors>
+		<Company>it could be  your name</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.2.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RestMongo.Data\RestMongo.Data.csproj" />
+		<ProjectReference Include="..\RestMongo.Domain\RestMongo.Domain.csproj" />
+		<ProjectReference Include="..\RestMongo.Web\RestMongo.Web.csproj" />
+	</ItemGroup>
+
+</Project>

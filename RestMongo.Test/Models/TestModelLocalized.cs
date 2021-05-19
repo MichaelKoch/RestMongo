@@ -1,16 +1,11 @@
-﻿using RestMongo.Attributes;
-using RestMongo.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
+using RestMongo.Data.Attributes;
+using RestMongo.Data.Repository.Documents;
 
 namespace RestMongo.Test.Models
 {
-    [RestMongo.Attributes.BsonCollection("TestModelLocalized")]
-    public class TestModelLocalized : RestMongo.Models.LocalizedDocument
+    [BsonCollection("TestModelLocalized")]
+    public class TestModelLocalized : LocalizedDocument
     {
         [IsQueryableAttribute()]
         [JsonPropertyName("Name")]

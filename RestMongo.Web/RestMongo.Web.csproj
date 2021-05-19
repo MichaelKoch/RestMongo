@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<PackageId>RestMongo.Data.Web</PackageId>
+		<Version>0.0.1</Version>
+		<Authors>Multiple authors (see github repo)</Authors>
+		<Company>it could be  your name</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters.Abstractions" Version="7.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RestMongo.Domain.Abstractions\RestMongo.Domain.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>
