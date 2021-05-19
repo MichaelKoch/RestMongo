@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RestMongo.Data.Abstractions.Repository;
+using RestMongo.Domain.Abstractions.Services;
 using RestMongo.Web.Controllers;
+using SimpleCartService.DomainServices;
 using SimpleCartService.Entities;
 using SimpleCartService.Models.Cart;
 
@@ -14,20 +15,13 @@ namespace SimpleCartService.Controllers.Cart
     [Route("/carts")]
     [ApiController]
 
-    public partial class CartsController : ReadWriteController<CartEntity, CartDto, CartCreateModel, CartUpdateModel>
+    public partial class CartsController : ReadWriteController<CartDto, CartCreateModel, CartUpdateModel>
     {
-        private IRepository<CartEntity> _cartRepo;
-        private IRepository<CartItemEntity> _cartItemRepo;
+        private readonly CartItemDomainService _cartItemService;
 
-        public override Task<ActionResult<CartDto>> Get(string id, [FromQuery(Name = "$expand")] string expand = "")
+        public CartsController(CartDomainService cartService, CartItemDomainService cartItemService) : base(cartService)
         {
-            return base.Get(id, expand);
-        }
-
-        public CartsController(IRepository<CartEntity> cartRepo, IRepository<CartItemEntity> cartItemRepo) : base(cartRepo)
-        {
-            this._cartRepo = cartRepo;
-            this._cartItemRepo = cartItemRepo;
+            _cartItemService = cartItemService;
         }
     }
 }

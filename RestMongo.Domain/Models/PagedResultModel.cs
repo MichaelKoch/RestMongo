@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using RestMongo.Domain.Abstractions.Models;
 
-namespace RestMongo.Web.Models
+namespace RestMongo.Domain.Models
 {
-    public class PagedResultModel<TEntity>
+    public class PagedResultModel<TEntity> : IPagedResultModel<TEntity>
     {
         [JsonPropertyName("Top")] public int Top { get; set; }
 

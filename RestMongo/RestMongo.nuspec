@@ -12,6 +12,7 @@
 		<dependencies>
 			<group targetFramework="net5">
 				<dependency id="RestMongo.Data" version="0.0.1" exclude="Build,Analyzers" />
+				<dependency id="RestMongo.Domain" version="0.0.1" exclude="Build,Analyzers" />
 				<dependency id="RestMongo.Web" version="0.0.1" exclude="Build,Analyzers" />
 				<dependency id="RestMongo.Extensions" version="0.0.1" exclude="Build,Analyzers" />
 			</group>

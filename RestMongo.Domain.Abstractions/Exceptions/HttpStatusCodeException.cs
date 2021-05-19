@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RestMongo.Extensions.Exceptions.Abstractions
+namespace RestMongo.Domain.Abstractions.Exceptions
 {
     public abstract class HttpStatusCodeException : Exception
     {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
-using RestMongo.Extensions.Exceptions.Abstractions;
+using RestMongo.Domain.Abstractions.Exceptions;
 
 namespace RestMongo.Extensions.Middleware
 {

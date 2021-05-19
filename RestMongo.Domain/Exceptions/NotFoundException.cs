@@ -1,14 +1,12 @@
 ﻿using System;
-using RestMongo.Extensions.Exceptions.Abstractions;
+using RestMongo.Domain.Abstractions.Exceptions;
 
-namespace RestMongo.Extensions.Exceptions
+namespace RestMongo.Domain.Exceptions
 {
     public class NotFoundException : HttpStatusCodeException
     {
-
         public NotFoundException(string message = "", Exception innerException = null) : base(message, 404)
         {
-
         }
     }
 }

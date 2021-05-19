@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RestMongo;
-using RestMongo.Data.Abstractions.Extensions;
-using SimpleCartService.Entities;
 using SimpleCartService.Models.CartItem;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -20,12 +17,8 @@ namespace SimpleCartService.Controllers.Cart
 
         public virtual async Task<ActionResult<CartItem>> GetItem(string id, string itemId)
         {
-            if (await _cartRepo.FindByIdAsync(id) == null)
-            {
-                return NotFound();
-            }
-            var item = _cartItemRepo.FindOneAsync(c => c.CartId == id && c.Id == itemId);
-            return item.Transform<CartItem>();
+            var retVal = await _cartItemService.GetItemOfCartById(id, itemId);
+            return Ok(retVal);
         }
 
         [HttpGet("{id}/items")]
@@ -36,12 +29,8 @@ namespace SimpleCartService.Controllers.Cart
         [SwaggerOperation("Get CartDto items by ID", OperationId = "CartGetAllItems")]
         public virtual async Task<ActionResult<IList<CartItem>>> GetAllItems(string id)
         {
-            if (await _cartRepo.FindByIdAsync(id) == null)
-            {
-                return NotFound();
-            }
-            var items = _cartItemRepo.FilterBy(c => c.CartId == id);
-            return Ok(items.Transform<List<CartItem>>());
+            var retVal = await _cartItemService.GetAllItemsOfCart(id);
+            return Ok(retVal);
         }
 
         [HttpPost("{id}/items/")]
@@ -52,14 +41,8 @@ namespace SimpleCartService.Controllers.Cart
         [SwaggerOperation("update cart item by id", OperationId = "CartCreateItem")]
         public virtual async Task<ActionResult> CreateItem(string id, [FromBody] CartItemCreateModel value)
         {
-            if (await _cartRepo.FindByIdAsync(id) == null)
-            {
-                return NotFound();
-            }
-            var itemEntity = value.Transform<CartItemEntity>();
-            itemEntity.CartId = id;
-            await _cartItemRepo.InsertOneAsync(itemEntity);
-            return Ok(itemEntity.Transform<CartItem>());
+            var retVal = await _cartItemService.CreateItem(id, value);
+            return Ok(retVal);
         }
 
         [HttpPut("{id}/items/{itemId}")]
@@ -70,13 +53,7 @@ namespace SimpleCartService.Controllers.Cart
         [SwaggerOperation("update cart item by id", OperationId = "CartUpdateItemById")]
         public virtual async Task<ActionResult<string>> UpdateItem(string id, string itemId, [FromBody] CartItemUpdateModel value)
         {
-            if (await _cartRepo.FindByIdAsync(id) == null)
-            {
-                return NotFound();
-            }
-            var itemEntity = value.Transform<CartItemEntity>();
-            itemEntity.CartId = id;
-            await _cartItemRepo.ReplaceOneAsync(itemEntity);
+            await _cartItemService.UpdateItem(id, itemId, value);
             return NoContent();
         }
 
@@ -90,12 +67,7 @@ namespace SimpleCartService.Controllers.Cart
         [SwaggerOperation("delete cart item by id", OperationId = "CartDeleteItemById")]
         public virtual async Task<ActionResult<CartItem>> DeleteItem(string id, string itemId)
         {
-            if (await _cartRepo.FindByIdAsync(id) == null)
-            {
-                return NotFound();
-            }
-
-            await _cartItemRepo.DeleteByIdAsync(itemId);
+            await _cartItemService.DeleteItem(id, itemId);
             return NoContent();
         }
     }

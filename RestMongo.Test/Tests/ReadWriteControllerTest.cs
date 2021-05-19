@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RestMongo.Domain.Exceptions;
 using RestMongo.Test.Controller;
 using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
@@ -19,7 +20,7 @@ namespace RestMongo.Test.Tests
             repo.InsertOne(instance);
             instance = repo.FindById(instance.Id);
             instance.Name = "TESTRESULT";
-            var controller = new TestModelReadWriteController(repo,true);
+            var controller = new TestModelReadWriteController(DataHelper.getDomainService(repo),true);
             ActionResult<string> result = controller.Update(instance.Id, instance).Result;
             var updated = repo.FindById(instance.Id);
             Assert.IsNotNull(updated);
@@ -27,8 +28,21 @@ namespace RestMongo.Test.Tests
 
             //CONCURRENT UPDATE TEST 
             updated.Timestamp = 42 * 42;
-            result = controller.Update(instance.Id, instance).Result;
-            Assert.IsTrue(result.Result is ConflictObjectResult);
+            try
+            {
+                controller.Update(instance.Id, instance).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException?.GetType() == typeof(ConflictException))
+                {
+                    Assert.IsTrue(true);
+                }
+                else
+                {
+                    Assert.Fail("There was no ConflictException.");
+                }
+            }
             DataHelper.Cleanup(repo, context);
         }
         [TestMethod]
@@ -38,15 +52,29 @@ namespace RestMongo.Test.Tests
             var context = Guid.NewGuid().ToString();
             var instance = new TestModelFeed() { Context = context };
 
-            var controller = new TestModelReadWriteController(repo,false);
+            var controller = new TestModelReadWriteController(DataHelper.getDomainService(repo), false);
             controller.Create(instance).Wait();
             var inserted = repo.FindById(instance.Id);
 
             Assert.IsNotNull(inserted);
-            ActionResult<TestModelFeed> result = controller.Create(instance).Result;
-            Assert.IsTrue(result.Result is ConflictObjectResult);
-            DataHelper.Cleanup(repo, context);
 
+            try
+            {
+                controller.Create(instance).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException?.GetType() == typeof(ConflictException))
+                {
+                    Assert.IsTrue(true);
+                }
+                else
+                {
+                    Assert.Fail("There was no ConflictException.");
+                }
+            }
+
+            DataHelper.Cleanup(repo, context);
         }
         [TestMethod]
         public void Delete()
@@ -55,9 +83,25 @@ namespace RestMongo.Test.Tests
             var context = Guid.NewGuid().ToString();
             var instance = new TestModelFeed() { Context = context };
             repo.InsertOne(instance);
-            var controller = new TestModelReadWriteController(repo,false);
+            var controller = new TestModelReadWriteController(DataHelper.getDomainService(repo), false);
             controller.Delete(instance.Id).Wait();
-            controller.Delete("NOT THERE").Wait();
+
+            try
+            {
+                controller.Delete("NOT THERE").Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException?.GetType() == typeof(NotFoundException))
+                {
+                    Assert.IsTrue(true);
+                }
+                else
+                {
+                    Assert.Fail("There was no NotFoundException.");
+                }
+            }
+
             var inserted = repo.FindById(instance.Id);
             Assert.IsNull(inserted);
             DataHelper.Cleanup(repo, context);

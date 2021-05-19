@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using RestMongo.Extensions;
+using SimpleCartService.Controllers.Cart;
+using SimpleCartService.DomainServices;
+using SimpleCartService.Entities;
+using SimpleCartService.Models.Cart;
+using SimpleCartService.Models.CartItem;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace SimpleCartService
@@ -34,6 +34,10 @@ namespace SimpleCartService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Domain.CartService", Version = "v1" });
             });
+
+            // showcase simple instance injection
+            services.AddDomainService<CartDomainService>();
+            services.AddDomainService<CartItemDomainService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

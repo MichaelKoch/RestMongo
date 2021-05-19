@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\RestMongo.Data\RestMongo.Data.csproj" />
+		<ProjectReference Include="..\RestMongo.Domain\RestMongo.Domain.csproj" />
 		<ProjectReference Include="..\RestMongo.Web\RestMongo.Web.csproj" />
 	</ItemGroup>
 

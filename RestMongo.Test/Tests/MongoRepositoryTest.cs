@@ -4,7 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RestMongo.Extensions.Exceptions;
+using RestMongo.Domain.Exceptions;
 using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
 
@@ -86,13 +86,13 @@ namespace RestMongo.Test.Tests
             repo.InsertManyAsync(testData).Wait();
             var query = new ExpandoObject();
             query.TryAdd("Context", context);
-            Assert.ThrowsException<PageSizeExeededException>(() =>
+
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
             {
                 repo.Query(JsonSerializer.Serialize(query), "", out _, maxPageSize);
             });
 
             DataHelper.Cleanup(repo, context);
-
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using RestMongo.Data.Abstractions.Repository.Mongo.Documents;
 using RestMongo.Data.Attributes;
 using RestMongo.Data.Repository.Documents;
 
@@ -16,5 +17,7 @@ namespace RestMongo.Test.Models
         [IsQueryableAttribute()]
         [JsonPropertyName("Context")]
         public string Context { get; set; }
+
+        public long Timestamp { get; set; }
     }
 }

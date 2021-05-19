@@ -1,5 +1,6 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RestMongo.Domain.Exceptions;
 using RestMongo.Test.Controller;
 using RestMongo.Test.Helper;
 using RestMongo.Test.Models;
@@ -55,15 +56,27 @@ namespace RestMongo.Test.Tests
             var context = Guid.NewGuid().ToString();
             var instance = new TestModel() { Context = context };
             repo.InsertOne(instance);
-            TestModelReadController controller = new TestModelReadController(repo);
+            TestModelReadController controller = new TestModelReadController(DataHelper.getReadonlyDomainService(repo));
 
             var actionResult = controller.Get(instance.Id);
             var result = actionResult.Result.Value;
             Assert.IsNotNull(result);
 
-            actionResult = controller.Get("NOT THERE");
-            result = actionResult.Result.Value;
-            Assert.IsNull(result);
+            try
+            {
+                _ = controller.Get("NOT THERE").Result;
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException?.GetType() == typeof(NotFoundException))
+                {
+                    Assert.IsTrue(true);
+                }
+                else
+                {
+                    Assert.Fail("There was no NotFoundException.");
+                }
+            }
             DataHelper.Cleanup(repo, context);
         }
 

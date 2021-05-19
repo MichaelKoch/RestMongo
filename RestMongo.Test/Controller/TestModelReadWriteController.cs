@@ -1,18 +1,18 @@
 ﻿using RestMongo.Data.Repository;
+using RestMongo.Domain.Abstractions.Services;
+using RestMongo.Domain.Services;
 using RestMongo.Test.Models;
 using RestMongo.Web.Controllers;
 
 namespace RestMongo.Test.Controller
 {
-
-    public class TestModelReadWriteController : ReadWriteController<TestModelFeed, TestModelFeed, TestModelFeed,TestModelFeed>
+    public class
+        TestModelReadWriteController : ReadWriteController<TestModelFeed, TestModelFeed, TestModelFeed>
     {
-
-
-        public TestModelReadWriteController(MongoRepository<TestModelFeed> repo,bool enableConcurrency) : base(repo, 10000,enableConcurrency)
+        public TestModelReadWriteController(
+            IReadWriteDomainService<TestModelFeed, TestModelFeed, TestModelFeed> domainService,
+            bool enableConcurrency) : base(domainService, 10000, enableConcurrency)
         {
-
         }
-
     }
 }

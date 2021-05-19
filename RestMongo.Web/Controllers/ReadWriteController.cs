@@ -1,27 +1,28 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RestMongo.Data.Abstractions.Extensions;
-using RestMongo.Data.Abstractions.Repository;
-using RestMongo.Data.Abstractions.Repository.Mongo.Documents;
+using RestMongo.Domain.Abstractions.Services;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace RestMongo.Web.Controllers
 {
-    public abstract class ReadWriteController<TEntity, TReadModel, TCreateModel, TUpdateModel> : ReadController<TEntity, TReadModel>
-        where TEntity : class, IFeedDocument
+    public abstract class
+        ReadWriteController<TReadModel, TCreateModel, TUpdateModel> : ReadController<TReadModel>
         where TReadModel : class
         where TCreateModel : class
         where TUpdateModel : class
     {
+        private readonly IReadWriteDomainService<TReadModel, TCreateModel, TUpdateModel> _readWriteDomainService;
         private bool _enableConcurrency;
 
-        public ReadWriteController(IRepository<TEntity> repository, int maxPageSize = 200, bool enableConcurrency = false) : base(repository, maxPageSize)
+        public ReadWriteController(
+            IReadWriteDomainService<TReadModel, TCreateModel, TUpdateModel> readWriteDomainService,
+            int maxPageSize = 200, bool enableConcurrency = false
+        ) : base(readWriteDomainService, maxPageSize)
         {
-            this._repository = repository;
-            this._maxPageSize = maxPageSize;
-            this._enableConcurrency = enableConcurrency;
+            _maxPageSize = maxPageSize;
+            _readWriteDomainService = readWriteDomainService;
+            _enableConcurrency = enableConcurrency;
         }
-
 
         [HttpPost]
         [SwaggerResponse(200)]
@@ -30,15 +31,8 @@ namespace RestMongo.Web.Controllers
         [Produces("application/json")]
         public virtual async Task<ActionResult<TReadModel>> Create([FromBody] TCreateModel value)
         {
-            var feedInfo = value.Transform<KeyedDto>();
-            var instance = await this._repository.FindByIdAsync(feedInfo.Id);
-            if (instance != null)
-            {
-                return Conflict("DUPLICATE KEY");
-            }
-            TEntity insert = value.Transform<TEntity>();
-            this._repository.InsertOne(insert);
-            return insert.Transform<TReadModel>();
+            var retVal = await _readWriteDomainService.Create(value);
+            return Ok(retVal);
         }
 
 
@@ -49,22 +43,7 @@ namespace RestMongo.Web.Controllers
         [Produces("application/json")]
         public virtual async Task<ActionResult> Update(string id, [FromBody] TUpdateModel value)
         {
-            var feedInfo = value.Transform<ConcurrentKeyedDto>();
-            var instance = await this._repository.FindByIdAsync(id);
-            if (instance == null)
-            {
-                return NotFound();
-            }
-            var updateInstance = value.Transform<TEntity>();
-            updateInstance.Id = id;
-            if (this._enableConcurrency)
-            {
-                if ((feedInfo.Timestamp == 0) || (instance.Timestamp != feedInfo.Timestamp))
-                {
-                    return Conflict("CONCURRENCY CONFLICT");
-                }
-            }
-            this._repository.ReplaceOne(updateInstance);
+            await _readWriteDomainService.UpdateById(id, value, _enableConcurrency);
             return NoContent();
         }
 
@@ -76,12 +55,7 @@ namespace RestMongo.Web.Controllers
         [Produces("application/json")]
         public virtual async Task<ActionResult> Delete(string id)
         {
-            var instance = this._repository.FindById(id);
-            if (instance == null)
-            {
-                return NotFound();
-            }
-            await this._repository.DeleteByIdAsync(id);
+            await _readWriteDomainService.DeleteById(id);
             return NoContent();
         }
     }

@@ -1,4 +1,4 @@
-namespace RestMongo.Web.Controllers
+namespace RestMongo.Domain.Models
 {
     public class KeyedDto
     {

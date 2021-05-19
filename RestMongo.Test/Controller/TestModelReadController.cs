@@ -1,18 +1,16 @@
 ﻿using RestMongo.Data.Repository;
+using RestMongo.Domain.Abstractions.Services;
+using RestMongo.Domain.Services;
 using RestMongo.Test.Models;
 using RestMongo.Web.Controllers;
 
 namespace RestMongo.Test.Controller
 {
 
-    public class TestModelReadController : ReadController<TestModel, TestModel>
+    public class TestModelReadController : ReadController<TestModel>
     {
-
-
-        public TestModelReadController(MongoRepository<TestModel> repo, int maxPageSize = 200) : base(repo, maxPageSize)
+        public TestModelReadController(IReadDomainService<TestModel> domainService, int maxPageSize = 200) : base(domainService, maxPageSize)
         {
-
         }
-
     }
 }
